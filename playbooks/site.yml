@@ -10,13 +10,13 @@
   roles:
     - role: aws_creds
       vars:
-        file_path: "/root/.aws/config"
-        aws_access_key_id: {{ aws_access_key_id }}
-        aws_secret_access_key: {{ aws_secret_access_key }}
+        aws_creds_file_path: "/root/.aws/config"
+        aws_creds_aws_access_key_id: "{{ aws_access_key_id }}"
+        aws_creds_aws_secret_access_key: "{{ aws_secret_access_key }}"
     - role: acme_cert
       vars:
-        domains: {{ domains  }}
-        email: {{ acme_email }}
+        acme_cert_domains: "{{ domains  }}"
+        acme_cert_email: "{{ acme_email }}"
 
   # You can define roles specific to groups later, e.g.:
   # roles:
