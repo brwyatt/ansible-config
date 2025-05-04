@@ -2,9 +2,8 @@
 - name: Apply common configurations to all hosts
   hosts: all
   become: true
-  tasks:
-    - name: Include common tasks
-      include_tasks: common.yml
+  roles:
+    - role: common
 
   # You can define roles specific to groups later, e.g.:
   # roles:

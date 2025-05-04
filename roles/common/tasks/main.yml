@@ -1,9 +1,9 @@
 ---
 - name: Update apt cache
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 86400 # Check cache at most once per day (in seconds)
 - name: Ensure vim is installed
-  apt:
+  ansible.builtin.apt:
     name: vim
     state: present

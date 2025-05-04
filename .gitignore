@@ -1,2 +1,5 @@
+/.ansible
+/.venv
+/.vscode
 /ansible.log
 /vault_key
