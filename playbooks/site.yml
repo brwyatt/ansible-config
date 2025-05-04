@@ -2,8 +2,6 @@
 - name: Apply common configurations to all hosts
   hosts: all
   become: true
-  vars_files:
-    - vars/secrets.yaml
   tasks:
     - name: Include common tasks
       include_tasks: common.yml
