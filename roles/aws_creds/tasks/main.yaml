@@ -1,10 +1,12 @@
 ---
 - name: Create AWS Config directory
+  become: true
   ansible.builtin.file:
     path: "{{ aws_creds_file_path | dirname }}"
     state: directory
     mode: "0700"
 - name: Create AWS Credential file
+  become: true
   ansible.builtin.copy:
     mode: "0600"
     dest: "{{ aws_creds_file_path }}"
