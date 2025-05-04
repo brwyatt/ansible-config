@@ -4,6 +4,19 @@
   become: true
   roles:
     - role: common
+- name: MQTT Load Balancer hosts
+  hosts: mqttloadbalancers
+  become: true
+  roles:
+    - role: aws_creds
+      vars:
+        file_path: "/root/.aws/config"
+        aws_access_key_id: {{ aws_access_key_id }}
+        aws_secret_access_key: {{ aws_secret_access_key }}
+    - role: acme_cert
+      vars:
+        domains: {{ domains  }}
+        email: {{ acme_email }}
 
   # You can define roles specific to groups later, e.g.:
   # roles:

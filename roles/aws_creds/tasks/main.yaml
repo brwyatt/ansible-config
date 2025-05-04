@@ -1,0 +1,14 @@
+---
+- name: Create AWS Config directory
+  ansible.builtin.file:
+    path: "{{ file_path | dirname }}"
+    state: directory
+    mode: "0700"
+- name: Create AWS Credential file
+  ansible.builtin.copy:
+    mode: "0600"
+    dest: "{{ file_path }}"
+    content: |
+      [default]
+      aws_access_key_id={{ aws_access_key_id }}
+      aws_secret_access_key={{ aws_secret_access_key }}

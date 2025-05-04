@@ -1,0 +1,13 @@
+---
+- name: Install certbot and route53 plugin
+  ansible.builtin.apt:
+    name:
+      - certbot
+      - python3-certbot-dns-route53
+    state: present
+  become: true
+- name: Request certificate using Route53
+  ansible.builtin.command:
+    cmd: "certbot certonly --dns-route53 -d {{ domains | join(' -d ') }} --agree-tos --no-interaction --email {{ email }}"
+    creates: "/etc/letsencrypt/live/{{ domains[0] }}/fullchain.pem"
+  become: true
