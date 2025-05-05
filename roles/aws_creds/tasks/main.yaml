@@ -12,8 +12,8 @@
     mode: "0600"
     state: present
     section: "default"
-    section_has_values:
-      - option: "aws_access_key_id"
-        value: "{{ aws_creds_aws_access_key_id }}"
-      - option: "aws_secret_access_keyd"
-        value: "{{ aws_creds_aws_secret_access_key }}"
+    option: "{{ option }}"
+    value: "{{ value }}"
+  with_items:
+    - {"option": "aws_access_key_id", "value": "{{ aws_creds_aws_access_key_id }}"}
+    - {"option": "aws_secret_access_key", "value": "{{ aws_creds_aws_secret_access_key }}"}
