@@ -15,7 +15,8 @@
         aws_creds_aws_secret_access_key: "{{ aws_secret_access_key }}"
     - role: certbot
       vars:
-        certbot_certs: "{{ certs }}"
+        certbot_certs:
+          - "{{ cert }}"
         certbot_email: "{{ acme_email }}"
 
   # You can define roles specific to groups later, e.g.:

@@ -1,4 +1,4 @@
 ---
-certs:
-  - - mqtt.iot.home.brwyatt.net
-    - mqtt.home.brwyatt.net
+cert:
+  - mqtt.iot.home.brwyatt.net
+  - mqtt.home.brwyatt.net
