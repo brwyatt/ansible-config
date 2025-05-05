@@ -5,12 +5,15 @@
     path: "{{ aws_creds_file_path | dirname }}"
     state: directory
     mode: "0700"
-- name: Create AWS Credential file
+- name: Set AWS creds for default profile
   become: true
-  ansible.builtin.copy:
+  community.general.ini_file:
+    path: "{{ aws_creds_file_path }}"
     mode: "0600"
-    dest: "{{ aws_creds_file_path }}"
-    content: |
-      [default]
-      aws_access_key_id={{ aws_creds_aws_access_key_id }}
-      aws_secret_access_key={{ aws_creds_aws_secret_access_key }}
+    state: present
+    section: "default"
+    section_has_values:
+      - option: "aws_access_key_id"
+        value: "{{ aws_creds_aws_access_key_id }}"
+      - option: "aws_secret_access_keyd"
+        value: "{{ aws_creds_aws_secret_access_key }}"
