@@ -8,7 +8,7 @@
   become: true
 - name: Certbot account
   become: true
-  certbot.account:
+  account:
     email: "{{ certbot_email }}"
 - name: Request certificate using Route53
   ansible.builtin.command:

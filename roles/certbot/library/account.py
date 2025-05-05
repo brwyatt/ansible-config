@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 import re
@@ -8,7 +8,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 
 regexs = {
-    'server': re.compile(r'^Account details for serer (.*)$'),
+    'server': re.compile(r'^Account details for server (.*)$'),
     'account_url': re.compile(r'^  Account URL: (.*)$'),
     'thumbprint': re.compile(r'^  Account Thumbprint: (.*)$'),
     'email': re.compile(r'^  Email contact: (.*)$'),
@@ -83,8 +83,9 @@ def main():
         else:
             result = {
                 **data,
+                'email': email,
                 'registered': True,
-                'changed': data['email'] != email
+                'changed': data['email'] != email,
             }
     elif state == 'query':
         pass
