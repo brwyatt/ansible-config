@@ -6,8 +6,12 @@
       - python3-certbot-dns-route53
     state: present
   become: true
+- name: Certbot account
+  become: true
+  certbot.account:
+    email: "{{ certbot_email }}"
 - name: Request certificate using Route53
   ansible.builtin.command:
-    cmd: "certbot certonly --dns-route53 -d {{ acme_cert_domains | join(' -d ') }} --agree-tos --no-interaction --email {{ acme_cert_email }}"
+    cmd: "certbot certonly --dns-route53 -d {{ acme_cert_domains | join(' -d ') }} --agree-tos --no-interaction"
     creates: "/etc/letsencrypt/live/{{ acme_cert_domains[0] }}/fullchain.pem"
   become: true

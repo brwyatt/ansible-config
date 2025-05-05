@@ -13,10 +13,10 @@
         aws_creds_file_path: "/root/.aws/config"
         aws_creds_aws_access_key_id: "{{ aws_access_key_id }}"
         aws_creds_aws_secret_access_key: "{{ aws_secret_access_key }}"
-    - role: acme_cert
+    - role: certbot
       vars:
-        acme_cert_domains: "{{ domains  }}"
-        acme_cert_email: "{{ acme_email }}"
+        certbot_domains: "{{ domains  }}"
+        certbot_email: "{{ acme_email }}"
 
   # You can define roles specific to groups later, e.g.:
   # roles:
