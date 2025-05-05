@@ -10,8 +10,9 @@
   become: true
   account:
     email: "{{ certbot_email }}"
-- name: Request certificate using Route53
+- name: "Request certificate using Route53 for {{ item[0] }}"
   ansible.builtin.command:
-    cmd: "certbot certonly --dns-route53 -d {{ acme_cert_domains | join(' -d ') }} --agree-tos --no-interaction"
-    creates: "/etc/letsencrypt/live/{{ acme_cert_domains[0] }}/fullchain.pem"
+    cmd: "certbot certonly --dns-route53 -d {{ item | join(' -d ') }} --agree-tos --no-interaction"
+    creates: "/etc/letsencrypt/live/{{ item[0] }}/fullchain.pem"
+  loop: "{{ certbot_certs }}"
   become: true

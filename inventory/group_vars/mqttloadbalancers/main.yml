@@ -1,4 +1,4 @@
 ---
-domains:
-  - mqtt.iot.home.brwyatt.net
-  - mqtt.home.brwyatt.net
+certs:
+  - - mqtt.iot.home.brwyatt.net
+    - mqtt.home.brwyatt.net
