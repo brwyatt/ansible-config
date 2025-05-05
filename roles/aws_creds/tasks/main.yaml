@@ -11,6 +11,7 @@
     path: "{{ aws_creds_file_path }}"
     mode: "0600"
     state: present
+    no_extra_spaces: true
     section: "default"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
