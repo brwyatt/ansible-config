@@ -79,7 +79,7 @@ def main():
                 **result,
                 **query(),
             }
-            result['changed'] = data['email'] != result['email'] or data['thumbprint'] != result['thumbprint'],
+            result['changed'] = data['email'] != result['email'] or data['thumbprint'] != result['thumbprint']
         else:
             result = {
                 **data,
