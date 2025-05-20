@@ -11,3 +11,4 @@ haproxy_options: []
 haproxy_resolvers: {}
 haproxy_frontends: {}
 haproxy_backends: {}
+haproxy_certbot_deploy_hook: "/etc/letsencrypt/renewal-hooks/deploy/haproxy.sh"

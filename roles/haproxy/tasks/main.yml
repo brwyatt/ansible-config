@@ -5,6 +5,19 @@
     state: present
   become: true
 
+- name: Add Certbot deploy hooks
+  when: haproxy_certbot_certs is defined
+  ansible.builtin.template:
+    src: certbot-deploy-hook.sh.j2
+    dest: "{{ haproxy_certbot_deploy_hook }}"
+    owner: root
+    group: root
+    mode: '0755'
+  vars:
+    certs: "{{ haproxy_certbot_certs }}"
+  become: true
+  notify: HAProxy Certbot Deploy
+
 - name: Create HAProxy configuration file from template
   ansible.builtin.template:
     src: haproxy.cfg.j2

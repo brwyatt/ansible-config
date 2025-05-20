@@ -2,6 +2,8 @@
 cert:
   - mqtt.iot.home.brwyatt.net
   - mqtt.home.brwyatt.net
+haproxy_certbot_certs:
+  - "{{ cert[0] }}"
 haproxy_options:
   - "forwardfor"
   - "http-server-close"

@@ -4,3 +4,9 @@
     name: haproxy
     state: restarted
   become: true
+
+- name: HAProxy Certbot Deploy
+  ansible.builtin.command:
+    cmd: "{{ haproxy_certbot_deploy_hook }}"
+  changed_when: true
+  become: true

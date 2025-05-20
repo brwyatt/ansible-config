@@ -1,0 +1,18 @@
+#!/bin/bash
+
+SITES=(
+{% for site in certs %}
+  "{{ site }}"
+{% endfor %}
+)
+
+haproxy_dir=/etc/haproxy/certs
+certbot_live=/etc/letsencrypt/live
+
+# cat files to make combined .pem for haproxy
+for SITE in "${SITES[@]}"; do
+    cat ${certbot_live}/${SITE}/fullchain.pem ${certbot_live}/${SITE}/privkey.pem > ${haproxy_dir}/$SITE.pem
+done
+
+# reload haproxy
+service haproxy reload
