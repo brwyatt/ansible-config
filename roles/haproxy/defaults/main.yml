@@ -1,0 +1,15 @@
+---
+haproxy_user: "haproxy"
+haproxy_group: "haproxy"
+haproxy_maxconn: 2048
+haproxy_stats_port: 9000
+haproxy_default_mode: "http"
+haproxy_timeout_connect: 5000
+haproxy_timeout_client: 50000
+haproxy_timeout_server: 50000
+haproxy_options:
+  - "forwardfor"
+  - "http-server-close"
+haproxy_resolvers: {}
+haproxy_frontends: {}
+haproxy_backends: {}

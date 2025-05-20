@@ -18,6 +18,7 @@
         certbot_certs:
           - "{{ cert }}"
         certbot_email: "{{ acme_email }}"
+    - role: haproxy
 
   # You can define roles specific to groups later, e.g.:
   # roles:
