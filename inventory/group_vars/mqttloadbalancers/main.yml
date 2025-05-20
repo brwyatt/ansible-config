@@ -2,6 +2,9 @@
 cert:
   - mqtt.iot.home.brwyatt.net
   - mqtt.home.brwyatt.net
+haproxy_options:
+  - "forwardfor"
+  - "http-server-close"
 haproxy_resolvers:
   localdns:
     nameservers:

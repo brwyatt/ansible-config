@@ -7,9 +7,7 @@ haproxy_default_mode: "http"
 haproxy_timeout_connect: 5000
 haproxy_timeout_client: 50000
 haproxy_timeout_server: 50000
-haproxy_options:
-  - "forwardfor"
-  - "http-server-close"
+haproxy_options: []
 haproxy_resolvers: {}
 haproxy_frontends: {}
 haproxy_backends: {}
