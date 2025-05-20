@@ -61,7 +61,11 @@ frontend {{ name }}
 {% if config.mode is defined %}
         mode {{ config.mode }}
 {% endif %}
+{% if config.client_timeout is definied %}
+        timeout client {{ config.client_timeout }}
+{% endif %}
         bind {{ config.bind.host | default("") }}:{{ config.bind.port }}{% if config.bind.ssl_cert is defined %} ssl crt {{ config.bind.ssl_cert }}{% endif %}
+
 
         # Options
 {% for option in config.options|default([]) %}
@@ -80,6 +84,9 @@ backend {{ name }}
         mode {{ config.mode }}
 {% endif %}
         balance {{ config.balance|default("leastconn") }}
+{% if config.server_timeout is definied %}
+        timeout server {{ config.server_timeout }}
+{% endif %}
 
         # Options
 {% for option in config.options|default([]) %}

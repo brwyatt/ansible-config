@@ -32,19 +32,17 @@ haproxy_frontends:
       - "http-request set-header X-Forwarded-Proto https"
   mqtt:
     mode: "tcp"
+    client_timeout: "180s"
     bind:
       port: 1883
     backend: "mqtts"
-    options:
-      - "timeout client 180s"
   mqtts:
     mode: "tcp"
+    client_timeout: "180s"
     bind:
       port: 8883
       ssl_cert: "/etc/haproxy/certs/mqtt.iot.home.brwyatt.net.pem"
     backend: "mqtts"
-    options:
-      - "timeout client 180s"
 haproxy_backends:
   https:
     balance: "leastconn"
@@ -56,7 +54,7 @@ haproxy_backends:
   mqtts:
     balance: "leastconn"
     mode: "tcp"
+    server_timeout: "180s"
     options:
-      - "timeout server 180s"
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt send-proxy"
       - "server-template mqtts 1-5 _mqtts._tcp.mqtt.iot.home.brwyatt.net resolvers localdns init-addr none"
