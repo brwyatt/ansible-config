@@ -39,6 +39,7 @@ defaults
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
 
+        # Options
 {% for option in haproxy_options %}
         option {{ option }}
 {% endfor %}
@@ -48,6 +49,8 @@ resolvers {{ name }}
 {% for ns_name, ns_config in (config.nameservers|default({})).items() %}
         nameserver {{ ns_name }} {{ ns_config.host }}:{{ ns_config.port }}
 {% endfor %}
+
+        # Options
 {% for key, value in (config.options|default({})).items() %}
         {{ key }} {{ value }}
 {% endfor %}
@@ -60,10 +63,12 @@ frontend {{ name }}
 {% endif %}
         bind {{ config.bind.host | default("") }}:{{ config.bind.port }}{% if config.bind.ssl_cert is defined %} ssl crt {{ config.bind.ssl_cert }}{% endif %}
 
+        # Options
 {% for option in config.options|default([]) %}
         {{ option }}
 {% endfor %}
 
+        # Backend
 {% if config.backend is defined %}
         default_backend {{ config.backend }}
 {% endif %}
@@ -76,6 +81,7 @@ backend {{ name }}
 {% endif %}
         balance {{ config.balance|default("leastconn") }}
 
+        # Options
 {% for option in config.options|default([]) %}
         {{ option }}
 {% endfor %}
