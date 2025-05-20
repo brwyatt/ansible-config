@@ -9,7 +9,7 @@ SITES=(
 haproxy_dir="/etc/haproxy/certs"
 certbot_live="/etc/letsencrypt/live"
 
-mkdir "${haproxy_dir}"
+mkdir -p "${haproxy_dir}"
 
 # cat files to make combined .pem for haproxy
 for SITE in "${SITES[@]}"; do
