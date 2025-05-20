@@ -9,7 +9,7 @@ haproxy_resolvers:
         host: "127.0.0.53"
         port: "53"
     options:
-      accepted_payload_size: 8192
+      - "accepted_payload_size 8192"
 haproxy_frontends:
   stats:
     bind:

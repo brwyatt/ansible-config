@@ -38,22 +38,26 @@ defaults
         errorfile 502 /etc/haproxy/errors/502.http
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
+{% if haproxy_options is defined and haproxy_options|length > 0 %}
 
         # Options
 {% for option in haproxy_options %}
         option {{ option }}
 {% endfor %}
+{% endif %}
 {% for name, config in (haproxy_resolvers|default({})).items() %}
 
 resolvers {{ name }}
 {% for ns_name, ns_config in (config.nameservers|default({})).items() %}
         nameserver {{ ns_name }} {{ ns_config.host }}:{{ ns_config.port }}
 {% endfor %}
+{% if config.options is defined and config.options|length > 0 %}
 
         # Options
-{% for key, value in (config.options|default({})).items() %}
-        {{ key }} {{ value }}
+{% for option in config.options %}
+        {{ option }}
 {% endfor %}
+{% endif %}
 {% endfor %}
 {% for name, config in (haproxy_frontends|default({})).items() %}
 
@@ -65,15 +69,16 @@ frontend {{ name }}
         timeout client {{ config.client_timeout }}
 {% endif %}
         bind {{ config.bind.host | default("") }}:{{ config.bind.port }}{% if config.bind.ssl_cert is defined %} ssl crt {{ config.bind.ssl_cert }}{% endif %}
-
+{% if config.options is defined and config.options|length > 0 %}
 
         # Options
-{% for option in config.options|default([]) %}
+{% for option in config.options %}
         {{ option }}
 {% endfor %}
+{% endif %}
+{% if config.backend is defined %}
 
         # Backend
-{% if config.backend is defined %}
         default_backend {{ config.backend }}
 {% endif %}
 {% endfor %}
@@ -87,9 +92,11 @@ backend {{ name }}
 {% if config.server_timeout is defined %}
         timeout server {{ config.server_timeout }}
 {% endif %}
+{% if config.options is defined and config.options|length > 0 %}
 
         # Options
-{% for option in config.options|default([]) %}
+{% for option in config.options %}
         {{ option }}
 {% endfor %}
+{% endif %}
 {% endfor %}
