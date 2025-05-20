@@ -11,7 +11,7 @@ certbot_live=/etc/letsencrypt/live
 
 # cat files to make combined .pem for haproxy
 for SITE in "${SITES[@]}"; do
-    cat ${certbot_live}/${SITE}/fullchain.pem ${certbot_live}/${SITE}/privkey.pem > ${haproxy_dir}/$SITE.pem
+    cat ${certbot_live}/${SITE}/fullchain.pem ${certbot_live}/${SITE}/privkey.pem > ${haproxy_dir}/${SITE}.pem
 done
 
 # reload haproxy
