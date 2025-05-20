@@ -29,7 +29,7 @@ haproxy_frontends:
   www-https:
     bind:
       port: 443
-      ssl_cert: "/etc/haproxy/certs/mqtt.iot.home.brwyatt.net.pem"
+      ssl_cert: "/etc/haproxy/certs/{{ cert[0] }}.pem"
     backend: "https"
     options:
       - "http-request set-header X-Forwarded-Proto https"
@@ -44,7 +44,7 @@ haproxy_frontends:
     client_timeout: "180s"
     bind:
       port: 8883
-      ssl_cert: "/etc/haproxy/certs/mqtt.iot.home.brwyatt.net.pem"
+      ssl_cert: "/etc/haproxy/certs/{{ cert[0] }}.pem"
     backend: "mqtts"
 haproxy_backends:
   https:
