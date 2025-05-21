@@ -19,6 +19,10 @@
   ansible.builtin.apt:
     name: vim
     state: present
+- name: Ensure htop is installed
+  ansible.builtin.apt:
+    name: htop
+    state: present
 - name: Install qemu-guest-agent on Qemu VMs
   ansible.builtin.apt:
     name: qemu-guest-agent
