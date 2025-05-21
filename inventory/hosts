@@ -7,3 +7,7 @@ mqttloadbalancers:
   hosts:
     mqtt-haproxy[01:02].iot.home.brwyatt.net:
       ansible_user: root
+proxmoxloadbalancers:
+  hosts:
+    proxmox-haproxy[01:03].server.home.brwyatt.net:
+      ansible_user: root

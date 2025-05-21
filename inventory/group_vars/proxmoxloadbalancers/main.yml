@@ -1,0 +1,51 @@
+---
+cert:
+  - proxmox.home.brwyatt.net
+haproxy_certbot_certs:
+  - "{{ cert[0] }}"
+haproxy_options:
+  - "forwardfor"
+  - "http-server-close"
+haproxy_resolvers:
+  localdns:
+    nameservers:
+      dns1:
+        host: "127.0.0.53"
+        port: "53"
+    options:
+      - "accepted_payload_size 8192"
+haproxy_frontends:
+  stats:
+    bind:
+      port: 8404
+    options:
+      - "stats enable"
+      - "stats uri /"
+      - "stats refresh 5s"
+  www-http:
+    bind:
+      port: 80
+    options:
+      - "http-request redirect scheme https code 301"
+  proxmox:
+    bind:
+      port: 443
+      ssl_cert: "/etc/haproxy/certs/{{ cert[0] }}.pem"
+    backend: "proxmox-hosts"
+    options:
+      - "http-request set-header X-Forwarded-Proto https"
+haproxy_backends:
+  proxmox-hosts:
+    balance: "leastconn"
+    options:
+      - "cookie SERVER insert indirect nocache dynamic"
+      - "dynamic-cookie-key {{ proxmox_haproxy_cookie_key }}"
+      - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
+      - "server-template pve-web 1-5 _proxmoxweb._tcp.home.brwyatt.net resolvers localdns init-addr none"
+  mqtts:
+    balance: "leastconn"
+    mode: "tcp"
+    server_timeout: "180s"
+    options:
+      - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt send-proxy"
+      - "server-template mqtts 1-5 _mqtts._tcp.mqtt.iot.home.brwyatt.net resolvers localdns init-addr none"

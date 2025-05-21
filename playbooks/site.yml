@@ -19,10 +19,18 @@
           - "{{ cert }}"
         certbot_email: "{{ acme_email }}"
     - role: haproxy
-
-  # You can define roles specific to groups later, e.g.:
-  # roles:
-  #   - role: webserver
-  #     when: "'webservers' in group_names"
-  #   - role: database
-  #     when: "'databases' in group_names"
+- name: Proxmox Load Balancer hosts
+  hosts: proxmoxloadbalancers
+  become: true
+  roles:
+    - role: aws_creds
+      vars:
+        aws_creds_file_path: "/root/.aws/config"
+        aws_creds_aws_access_key_id: "{{ aws_access_key_id }}"
+        aws_creds_aws_secret_access_key: "{{ aws_secret_access_key }}"
+    - role: certbot
+      vars:
+        certbot_certs:
+          - "{{ cert }}"
+        certbot_email: "{{ acme_email }}"
+    - role: haproxy
