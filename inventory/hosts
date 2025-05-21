@@ -3,6 +3,10 @@ mqttservers:
   hosts:
     mqtt[01:03].iot.home.brwyatt.net:
       ansible_user: root
+loadbalancers:
+  children:
+    mqttloadbalancers:
+    proxmoxloadbalancers:
 mqttloadbalancers:
   hosts:
     mqtt-haproxy[01:02].iot.home.brwyatt.net:

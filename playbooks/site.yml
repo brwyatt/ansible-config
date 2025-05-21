@@ -4,23 +4,8 @@
   become: true
   roles:
     - role: common
-- name: MQTT Load Balancer hosts
-  hosts: mqttloadbalancers
-  become: true
-  roles:
-    - role: aws_creds
-      vars:
-        aws_creds_file_path: "/root/.aws/config"
-        aws_creds_aws_access_key_id: "{{ aws_access_key_id }}"
-        aws_creds_aws_secret_access_key: "{{ aws_secret_access_key }}"
-    - role: certbot
-      vars:
-        certbot_certs:
-          - "{{ cert }}"
-        certbot_email: "{{ acme_email }}"
-    - role: haproxy
-- name: Proxmox Load Balancer hosts
-  hosts: proxmoxloadbalancers
+- name: Load Balancer hosts
+  hosts: loadbalancers
   become: true
   roles:
     - role: aws_creds
