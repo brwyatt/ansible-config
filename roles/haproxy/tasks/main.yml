@@ -4,7 +4,6 @@
     name: haproxy
     state: present
   become: true
-
 - name: Add Certbot deploy hooks
   when: haproxy_certbot_certs is defined
   ansible.builtin.template:
@@ -17,7 +16,6 @@
     certs: "{{ haproxy_certbot_certs }}"
   become: true
   notify: HAProxy Certbot Deploy
-
 - name: Create HAProxy configuration file from template
   ansible.builtin.template:
     src: haproxy.cfg.j2
@@ -27,7 +25,6 @@
     mode: '0644'
   become: true
   notify: Restart HAProxy
-
 - name: Ensure HAProxy is running and enabled
   ansible.builtin.service:
     name: haproxy
