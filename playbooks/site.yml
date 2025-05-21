@@ -14,3 +14,4 @@
         certbot_certs:
           - "{{ cert }}"
     - role: haproxy
+    - role: keepalived

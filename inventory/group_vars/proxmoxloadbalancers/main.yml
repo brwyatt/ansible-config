@@ -42,3 +42,11 @@ haproxy_backends:
       - "dynamic-cookie-key {{ proxmox_haproxy_cookie_key }}"
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
       - "server-template pve-web 1-5 _proxmoxweb._tcp.home.brwyatt.net resolvers localdns init-addr none"
+keepalived_check_scripts:
+  proxmox:
+    backend_name: "proxmox-hosts"
+keepalived_instances:
+  proxmox:
+    virtual_ip: 172.17.30.20/24
+    auth_pass: "{{ keepalived_auth_pass }}"
+    check_script: proxmox

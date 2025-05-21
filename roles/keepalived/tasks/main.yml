@@ -1,0 +1,29 @@
+---
+- name: Install Keepalived
+  ansible.builtin.package:
+    name: keepalived
+    state: present
+  become: true
+- name: HAProxy Backend Tracking Script
+  ansible.builtin.copy:
+    src: haproxy_track.sh
+    dest: /usr/local/bin/haproxy_track.sh
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+- name: Create Keepalived configuration file from template
+  ansible.builtin.template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart Keepalived
+- name: Ensure Keepalived is running and enabled
+  ansible.builtin.service:
+    name: keepalived
+    state: started
+    enabled: true
+  become: true

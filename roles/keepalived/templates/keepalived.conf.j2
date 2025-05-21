@@ -1,0 +1,50 @@
+global_defs {
+  router_id {{ keepalived_router_id }}
+  vrrp_version 2
+  vrrp_garp_master_delay {{ keepalived_garp_master_delay }}
+  vrrp_garp_master_refresh {{ keepalived_garp_master_refresh }}
+  script_user {{ keepalived_script_user }}
+{% if keepalived_enable_script_security %}
+  enable_script_security
+{% endif %}
+}
+{% for name, config in (keepalived_check_scripts|default({})).items() %}
+
+vrrp_script {{ name|replace("-", "_") }} {
+{% if config.type == "haproxy" %}
+  script "/usr/local/bin/haproxy_track.sh {{ config.backend_name|default(name) }}"
+{% endif %}
+  timeout {{ config.timeout|default(1) }}
+  interval {{ config.interval|default(1) }}
+  weight {{ config.weight|default(2) }}
+  fall {{ config.fall|default(2) }}
+  rise {{ config.rise|default(2) }}
+}
+{% endfor %}
+{% for name, config in (keepalived_instances|default({})).items() %}
+
+vrrp_instance {{ name|replace("-", "_") }} {
+  state {{ config.state|default("BACKUP")|upper }}
+  interface {{ config.interface|default("eth0") }}
+  virtual_router_id {{ config.virtual_router_id|default(config.virtual_ip|split("/")|first|split(".")|last) }}
+  priority {{ config.priority|default(100) }}
+  advert_int {{ config.advert_int|default(1) }}
+{% if config.nopreempt|default(true) %}
+  nopreempt
+{% endif %}
+{% if config.auth_pass is defined %}
+  authentication {
+    auth_type PASS
+    auth_pass {{ config.auth_pass }}
+  }
+{% endif %}
+  virtual_ipaddress {
+    config.virtual_ip
+  }
+{% if config.check_script is defined %}
+  track_script {
+    {{ config.check_script|replace("-", "_") }}
+  }
+{% endif %}
+}
+{% endfor %}

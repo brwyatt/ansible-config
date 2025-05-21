@@ -63,3 +63,10 @@ haproxy_backends:
     options:
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt send-proxy"
       - "server-template mqtts 1-5 _mqtts._tcp.mqtt.iot.home.brwyatt.net resolvers localdns init-addr none"
+keepalived_check_scripts:
+  mqtts: {}
+keepalived_instances:
+  mqtts:
+    virtual_ip: 172.17.20.243/24
+    auth_pass: "{{ keepalived_auth_pass }}"
+    check_script: mqtts

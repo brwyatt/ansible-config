@@ -1,0 +1,8 @@
+---
+keepalived_router_id: "{{ ansible_hostname | split('.') | first | lower | replace('-', '_') }}"
+keepalived_garp_master_delay: 1
+keepalived_garp_master_refresh: 60
+keepalived_script_user: "root"
+keepalived_enable_script_security: true
+keepalived_check_scripts: {}
+keepalived_instances: {}
