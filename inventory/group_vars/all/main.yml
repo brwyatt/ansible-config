@@ -1,1 +1,2 @@
 ---
+aws_creds_file_path: "/root/.aws/config"
