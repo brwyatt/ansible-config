@@ -53,7 +53,7 @@ haproxy_backends:
     balance: "leastconn"
     options:
       - "cookie SERVER insert indirect nocache dynamic"
-      - "dynamic-cookie-key RANDOMSECRET"
+      - "dynamic-cookie-key {{ mqtt_haproxy_cookie_key }}"
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
       - "server-template web 1-5 _https._tcp.mqtt.iot.home.brwyatt.net resolvers localdns init-addr none"
   mqtts:
