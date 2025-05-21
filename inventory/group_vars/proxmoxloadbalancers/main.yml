@@ -44,6 +44,7 @@ haproxy_backends:
       - "server-template pve-web 1-5 _proxmoxweb._tcp.home.brwyatt.net resolvers localdns init-addr none"
 keepalived_check_scripts:
   proxmox:
+    type: haproxy
     backend_name: "proxmox-hosts"
 keepalived_instances:
   proxmox:
