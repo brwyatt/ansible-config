@@ -1,4 +1,16 @@
 ---
+- name: Set Admin Password
+  ansible.builtin.user:
+    name: "{{ common_admin_user }}"
+    password: "{{ common_admin_password }}"
+  become: true
+- name: Manage Admin SSH Keys
+  ansible.builtin.authorized_key:
+    user: "{{ common_admin_user }}"
+    key: "{{ (common_admin_keys|default([]))|join('\n') }}"
+    exclusive: true
+    manage_dir: true
+  become: true
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: true
