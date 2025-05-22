@@ -37,7 +37,7 @@ synchronous={{ nutserver_ups_synchronous }}
 
 # UPS config
 {% for name, config in (nutserver_ups_upss|default({})).items() %}
-{% if !loop.first %}
+{% if not loop.first %}
 
 {% endif %}
 [{{ name }}]

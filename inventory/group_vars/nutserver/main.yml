@@ -1,6 +1,6 @@
 ---
 nutserver_nut_mode: "netserver"
-nutserver_ups_max_retry: 3
+nutserver_ups_maxretry: 3
 nutserver_ups_pollinterval: 15
 nutserver_ups_synchronous: "yes" 
 nutserver_ups_upss:
@@ -11,7 +11,7 @@ nutserver_ups_upss:
     port: "deskups.ups.home.brwyatt.net"
     mibs: "cyberpower"
     secLevel: "authPriv"
-    secNme: "nutserver"
+    secName: "nutserver"
     snmp_version: "v3"
     authProtocol: "SHA"
     authPassword: "{{ deskups_auth_password }}"
@@ -24,7 +24,7 @@ nutserver_ups_upss:
     port: "rackups1.ups.home.brwyatt.net"
     mibs: "cyberpower"
     secLevel: "authPriv"
-    secNme: "nutserver"
+    secName: "nutserver"
     snmp_version: "v3"
     authProtocol: "SHA"
     authPassword: "{{ rackups1_auth_password }}"
@@ -37,7 +37,7 @@ nutserver_ups_upss:
     port: "rackups2.ups.home.brwyatt.net"
     mibs: "cyberpower"
     secLevel: "authPriv"
-    secNme: "nutserver"
+    secName: "nutserver"
     snmp_version: "v3"
     authProtocol: "SHA"
     authPassword: "{{ rackups2_auth_password }}"
@@ -50,7 +50,7 @@ nutserver_ups_upss:
     port: "livingroomups.ups.home.brwyatt.net"
     mibs: "cyberpower"
     secLevel: "authPriv"
-    secNme: "nutserver"
+    secName: "nutserver"
     snmp_version: "v3"
     authProtocol: "SHA"
     authPassword: "{{ livingroomups_auth_password }}"
