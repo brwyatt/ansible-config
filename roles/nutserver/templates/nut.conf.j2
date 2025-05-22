@@ -1,0 +1,19 @@
+{% if nutserver_nut_mode is defined %}
+MODE={{ nutserver_nut_mode }}
+{% endif %}
+{% if nutserver_nut_allow_no_device is defined %}
+ALLOW_NO_DEVICE={{ nutserver_nut_allow_no_device }}
+export ALLOW_NO_DEVICE
+{% endif %}
+{% if nutserver_nut_upsd_options is defined %}
+UPSD_OPTIONS={{ nutserver_nut_upsd_options }}
+{% endif %}
+{% if nutserver_nut_upsmon_options is defined %}
+UPSMON_OPTIONS={{ nutserver_nut_upsmon_options }}
+{% endif %}
+{% if nutserver_nut_poweroff_wait is defined %}
+POWEROFF_WAIT={{ nutserver_nut_poweroff_wait }}
+{% endif %}
+{% if nutserver_nut_poweroff_quiet is defined %}
+POWEROFF_QUIET={{ "true" if nutserver_nut_poweroff_quiet else "false" }}
+{% endif %}

@@ -1,0 +1,40 @@
+---
+- name: Install NUT Server
+  ansible.builtin.package:
+    name: nut-server
+    state: present
+  become: true
+- name: Install NUT Client
+  ansible.builtin.package:
+    name: nut-client
+    state: present
+  become: true
+- name: Install NUT SNMP
+  ansible.builtin.package:
+    name: nut-snmp
+    state: present
+  become: true
+- name: NUT config file
+  ansible.builtin.template:
+    src: nut.conf.j2
+    dest: /etc/nut/nut.conf
+    owner: root
+    group: nut
+    mode: '0640'
+  become: true
+  notify: Restart NUT Server
+- name: NUT UPS config file
+  ansible.builtin.template:
+    src: ups.conf.j2
+    dest: /etc/nut/ups.conf
+    owner: root
+    group: nut
+    mode: '0640'
+  become: true
+  notify: Restart NUT Server
+- name: Ensure NUT Server is running and enabled
+  ansible.builtin.service:
+    name: nut-server
+    state: started
+    enabled: true
+  become: true

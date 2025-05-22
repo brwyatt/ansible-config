@@ -1,0 +1,58 @@
+---
+nutserver_nut_mode: "netserver"
+nutserver_ups_max_retry: 3
+nutserver_ups_pollinterval: 15
+nutserver_ups_synchronous: "yes" 
+nutserver_ups_upss:
+  DeskUPS:
+    desc: "Desk UPS"
+    pollfreq: 30
+    driver: "snmp-ups"
+    port: "deskups.ups.home.brwyatt.net"
+    mibs: "cyberpower"
+    secLevel: "authPriv"
+    secNme: "nutserver"
+    snmp_version: "v3"
+    authProtocol: "SHA"
+    authPassword: "{{ deskups_auth_password }}"
+    privProtocol: "AES"
+    privPassword: "{{ deskups_priv_password }}"
+  RackUPS1:
+    desc: "Rack UPS 1"
+    pollfreq: 30
+    driver: "snmp-ups"
+    port: "rackups1.ups.home.brwyatt.net"
+    mibs: "cyberpower"
+    secLevel: "authPriv"
+    secNme: "nutserver"
+    snmp_version: "v3"
+    authProtocol: "SHA"
+    authPassword: "{{ rackups1_auth_password }}"
+    privProtocol: "AES"
+    privPassword: "{{ rackups1_priv_password }}"
+  RackUPS2:
+    desc: "Rack UPS 2"
+    pollfreq: 30
+    driver: "snmp-ups"
+    port: "rackups2.ups.home.brwyatt.net"
+    mibs: "cyberpower"
+    secLevel: "authPriv"
+    secNme: "nutserver"
+    snmp_version: "v3"
+    authProtocol: "SHA"
+    authPassword: "{{ rackups2_auth_password }}"
+    privProtocol: "AES"
+    privPassword: "{{ rackups2_priv_password }}"
+  LivingRoomUPS:
+    desc: "Living Room UPS"
+    pollfreq: 30
+    driver: "snmp-ups"
+    port: "livingroomups.ups.home.brwyatt.net"
+    mibs: "cyberpower"
+    secLevel: "authPriv"
+    secNme: "nutserver"
+    snmp_version: "v3"
+    authProtocol: "SHA"
+    authPassword: "{{ livingroomups_auth_password }}"
+    privProtocol: "AES"
+    privPassword: "{{ livingroomups_priv_password }}"

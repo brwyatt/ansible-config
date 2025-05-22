@@ -15,3 +15,8 @@
           - "{{ cert }}"
     - role: haproxy
     - role: keepalived
+- name: NUT Server
+  hosts: nutserver
+  become: true
+  roles:
+    - role: nutserver
