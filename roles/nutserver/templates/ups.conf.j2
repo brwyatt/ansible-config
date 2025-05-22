@@ -1,38 +1,38 @@
 # Global config
 {% if nutserver_ups_maxretry is defined %}
-maxretry={{ nutserver_ups_maxretry }}
+maxretry = {{ nutserver_ups_maxretry }}
 {% endif %}
 {% if nutserver_ups_retrydelay is defined %}
-retrydelay={{ nutserver_ups_retrydelay }}
+retrydelay = {{ nutserver_ups_retrydelay }}
 {% endif %}
 {% if nutserver_ups_chroot is defined %}
-chroot={{ nutserver_ups_chroot }}
+chroot = {{ nutserver_ups_chroot }}
 {% endif %}
 {% if nutserver_ups_driverpath is defined %}
-driverpath={{ nutserver_ups_driverpath }}
+driverpath = {{ nutserver_ups_driverpath }}
 {% endif %}
 {% if nutserver_ups_nowait is defined %}
-nowait={{ nutserver_ups_nowait }}
+nowait = {{ nutserver_ups_nowait }}
 {% endif %}
 {% if nutserver_ups_pollinterval is defined %}
-pollinterval={{ nutserver_ups_pollinterval }}
+pollinterval = {{ nutserver_ups_pollinterval }}
 {% endif %}
 
 # Shared config
 {% if nutserver_ups_maxstartdelay is defined %}
-maxstartdelay={{ nutserver_ups_maxstartdelay }}
+maxstartdelay = {{ nutserver_ups_maxstartdelay }}
 {% endif %}
 {% if nutserver_ups_debug_min is defined %}
-debug_min={{ nutserver_ups_debug_min }}
+debug_min = {{ nutserver_ups_debug_min }}
 {% endif %}
 {% if nutserver_ups_user is defined %}
-user={{ nutserver_ups_user }}
+user = {{ nutserver_ups_user }}
 {% endif %}
 {% if nutserver_ups_group is defined %}
-group={{ nutserver_ups_group }}
+group = {{ nutserver_ups_group }}
 {% endif %}
 {% if nutserver_ups_synchronous is defined %}
-synchronous={{ nutserver_ups_synchronous }}
+synchronous = {{ nutserver_ups_synchronous }}
 {% endif %}
 
 # UPS config
@@ -42,6 +42,6 @@ synchronous={{ nutserver_ups_synchronous }}
 {% endif %}
 [{{ name }}]
 {% for key, value in config.items() %}
-{{ key }} = {{ value }}
+{{ key }} = {{ value if ' ' not in value | string else '"' + value + '"' }}
 {% endfor %}
 {% endfor %}
