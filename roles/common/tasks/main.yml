@@ -3,9 +3,9 @@
   ansible.builtin.user:
     name: "{{ common_admin_user }}"
     # generate the password hash using the hostname to generate the salt
-    password: >
+    password: >-
       {{ common_admin_password | string |
-      password_hash(hashtype='sha512', salt=lookup(
+      password_hash('sha512', lookup(
         'ansible.builtin.password', '/dev/null', chars=["ascii_letters", "digits"], seed=inventory_hostname, length=16
       )) }}
   become: true
