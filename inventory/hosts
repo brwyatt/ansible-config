@@ -15,3 +15,43 @@ proxmoxloadbalancers:
   hosts:
     proxmox-haproxy[01:03].server.home.brwyatt.net:
       ansible_user: root
+jellyfin:
+  hosts:
+    jellyfin.server.home.brwyatt.net:
+      ansible_user: brwyatt
+renderers:
+  hosts:
+    render[01:03].server.home.brwyatt.net:
+      ansible_user: root
+ntp:
+  hosts:
+    ntp[01:04].server.home.brwyatt.net:
+      ansible_user: brwyatt
+seedbox:
+  hosts:
+    seedbox.server.home.brwyatt.net:
+      ansible_user: brwyatt
+devbox:
+  hosts:
+    devbox.server.home.brwyatt.net:
+      ansible_user: brwyatt
+iotradios:
+  children:
+    zwave:
+    zigbee:
+zwave:
+  hosts:
+    zwave-js-ui.iot.home.brwyatt.net:
+      ansible_user: root
+zigbee:
+  hosts:
+    zigbee2mqtt.iot.home.brwyatt.net:
+      ansible_user: root
+nutserver:
+  hosts:
+    nut-server.server.home.brwyatt.net:
+      ansible_user: root
+ansible:
+  hosts:
+    ansible.server.home.brwyatt.net:
+      ansible_user: root
