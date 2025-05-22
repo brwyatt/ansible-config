@@ -8,6 +8,6 @@ password = config.password
 actions = config.actions
 {% endif %}
 {% for cmd in config.instcmds %}
-instcmds = {% cmd %}
+instcmds = {{ cmd }}
 {% endfor %}
 {% endfor %}
