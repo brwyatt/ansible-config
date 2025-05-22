@@ -55,3 +55,10 @@ ansible:
   hosts:
     ansible.server.home.brwyatt.net:
       ansible_user: root
+proxmox:
+  vars:
+    ansible_user: root
+  hosts:
+    pve-ranier.proxmox.home.brwyatt.net:
+    pve-orca.proxmox.home.brwyatt.net:
+    pve-douglasfir.proxmox.home.brwyatt.net:
