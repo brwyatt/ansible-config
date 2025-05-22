@@ -32,6 +32,24 @@
     mode: '0640'
   become: true
   notify: Restart NUT Server
+- name: NUT UPSd config file
+  ansible.builtin.template:
+    src: upsd.conf.j2
+    dest: /etc/nut/upsd.conf
+    owner: root
+    group: nut
+    mode: '0640'
+  become: true
+  notify: Restart NUT Server
+- name: NUT UPSd Users config file
+  ansible.builtin.template:
+    src: upsd.users.j2
+    dest: /etc/nut/upsd.users
+    owner: root
+    group: nut
+    mode: '0640'
+  become: true
+  notify: Restart NUT Server
 - name: Ensure NUT Server is running and enabled
   ansible.builtin.service:
     name: nut-server

@@ -56,3 +56,8 @@ nutserver_ups_upss:
     authPassword: "{{ livingroomups_auth_password }}"
     privProtocol: "AES"
     privPassword: "{{ livingroomups_priv_password }}"
+nutserver_upsd_users:
+  homeassistant:
+    password: "{{ homeassistant_nut_password }}"
+    instcmds:
+      - "ALL"

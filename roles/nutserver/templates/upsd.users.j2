@@ -1,0 +1,13 @@
+{% for user, config in nut_server_upsd_users.items() %}
+{% if not loop.first %}
+
+{% endif %}
+[{{ user }}]
+password = config.password
+{% if config.actions is defined %}
+actions = config.actions
+{% endif %}
+{% for cmd in config.instcmds %}
+instcmds = {% cmd %}
+{% endfor %}
+{% endfor %}
