@@ -6,7 +6,7 @@
     password: >-
       {{ common_admin_password | string |
       password_hash('sha512', lookup(
-        'ansible.builtin.password', '/dev/null', chars=["ascii_letters", "digits"], seed=inventory_hostname, length=16
+        'ansible.builtin.password', '/dev/null', chars=["ascii_letters", "digits"], seed=common_admin_user+'@'+inventory_hostname, length=16
       )) }}
   become: true
 - name: Manage Admin SSH Keys
