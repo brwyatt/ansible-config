@@ -49,7 +49,7 @@ zigbee:
       ansible_user: root
 nutserver:
   hosts:
-    nut-server.server.home.brwyatt.net:
+    nut-server.ups.home.brwyatt.net:
       ansible_user: root
 ansible:
   hosts:
@@ -59,6 +59,6 @@ proxmox:
   vars:
     ansible_user: root
   hosts:
-    pve-ranier.proxmox.home.brwyatt.net:
+    pve-rainier.proxmox.home.brwyatt.net:
     pve-orca.proxmox.home.brwyatt.net:
     pve-douglasfir.proxmox.home.brwyatt.net:
