@@ -67,7 +67,7 @@ def main():
         if not module.check_mode:
             if not data['registered']:
                 try:
-                    ret = subprocess.run(['certbot', 'register', '--email', email], capture_output=True, text=True)
+                    ret = subprocess.run(['certbot', 'register', '--agree-tos', '--email', email], capture_output=True, text=True)
                 except Exception:
                     result['failed'] = True
             elif data['email'] != email:
