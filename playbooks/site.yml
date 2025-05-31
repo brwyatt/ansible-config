@@ -18,7 +18,7 @@
   roles:
     - role: nutserver
 - name: HomeBox Server
-  hosts: homeboxserver
+  hosts: homebox
   become: true
   roles:
     - role: aws_creds
