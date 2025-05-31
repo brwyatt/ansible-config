@@ -1,0 +1,5 @@
+---
+cert:
+  - homebox.server.home.brwyatt.net
+certbot_certs:
+  - "{{ cert }}"

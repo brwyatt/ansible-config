@@ -10,9 +10,6 @@
   roles:
     - role: aws_creds
     - role: certbot
-      vars:
-        certbot_certs:
-          - "{{ cert }}"
     - role: haproxy
     - role: keepalived
 - name: NUT Server
@@ -20,3 +17,9 @@
   become: true
   roles:
     - role: nutserver
+- name: HomeBox Server
+  hosts: homeboxserver
+  become: true
+  roles:
+    - role: aws_creds
+    - role: certbot
