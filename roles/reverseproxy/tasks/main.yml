@@ -33,6 +33,14 @@
   with_items: "{{ reverseproxy_sites }}"
   become: true
   notify: Restart Nginx
+- name: "Certbot Deploy Script"
+  ansible.builtin.copy:
+    src: certbot-deploy-hook.sh
+    dest: /etc/letsencrypt/renewal-hooks/deploy/nginx.sh
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
 - name: Ensure Nginx is running
   ansible.builtin.service:
     name: nginx
