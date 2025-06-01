@@ -23,10 +23,10 @@
   ansible.builtin.file:
     path: /etc/nginx/sites-enabled/default
     state: absent
-- name: "Nginx Reverse Proxy Config for {{ item['server_names'][0] }}"
+- name: "Nginx Reverse Proxy Config"
   ansible.builtin.template:
     src: reverseproxy.j2
-    dest: "/etc/nginx/sites-enabled/{{ item['server_names'][0] }}"
+    dest: "/etc/nginx/sites-enabled/{{ item['server_names'][0] }}.conf"
     owner: root
     group: root
     mode: '0644'
