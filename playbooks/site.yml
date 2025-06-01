@@ -23,3 +23,4 @@
   roles:
     - role: aws_creds
     - role: certbot
+    - role: reverseproxy

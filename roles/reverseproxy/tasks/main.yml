@@ -1,0 +1,42 @@
+---
+- name: Install Nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+  become: true
+- name: "Generate dhparams file"
+  ansible.builtin.command:
+    cmd: "openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048"
+    creates: "/etc/ssl/certs/dhparam.pem"
+  become: true
+  notify: Restart Nginx
+- name: "SSL Config"
+  ansible.builtin.copy:
+    src: ssl.conf
+    dest: /etc/nginx/snippets/ssl.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart Nginx
+- name: Delete Nginx default config
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+- name: "Nginx Reverse Proxy Config for {{ item['server_names'][0] }}"
+  ansible.builtin.template:
+    src: reverseproxy.j2
+    dest: "/etc/nginx/sites-enabled/{{ item['server_names'][0] }}"
+    owner: root
+    group: root
+    mode: '0644'
+    vars: "{{ item }}"
+  loop: "{{ reverseproxy_sites }}"
+  become: true
+  notify: Restart Nginx
+- name: Ensure Nginx is running
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+  become: true
