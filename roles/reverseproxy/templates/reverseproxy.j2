@@ -1,5 +1,5 @@
 server {
-  server_name {{ server_names.join(" ") }};
+  server_name {{ item.server_names.join(" ") }};
 
   listen 80;
 
@@ -7,17 +7,17 @@ server {
 }
 
 server {
-  server_name {{ server_names.join(" ") }};
+  server_name {{ item.server_names.join(" ") }};
 
   listen 443 ssl;
 
-  ssl_certificate /etc/letsencrypt/live/{{ server_names[0] }}/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/{{ server_names[0] }}/privkey.pem;
+  ssl_certificate /etc/letsencrypt/live/{{ item.server_names[0] }}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/{{ item.server_names[0] }}/privkey.pem;
 
   include snippets/ssl.conf;
 
   location / {
-    proxy_pass {{ destination }};
+    proxy_pass {{ item.destination }};
     proxy_redirect off;
     proxy_set_header Host $http_host;
     proxy_set_header X-Real-IP $remote_addr;

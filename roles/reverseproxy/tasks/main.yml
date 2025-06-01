@@ -30,8 +30,7 @@
     owner: root
     group: root
     mode: '0644'
-    vars: "{{ item }}"
-  loop: "{{ reverseproxy_sites }}"
+  with_items: "{{ reverseproxy_sites }}"
   become: true
   notify: Restart Nginx
 - name: Ensure Nginx is running
