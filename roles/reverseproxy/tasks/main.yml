@@ -33,6 +33,23 @@
   with_items: "{{ reverseproxy_sites }}"
   become: true
   notify: Restart Nginx
+- name: Define expected Nginx site config files
+  ansible.builtin.set_fact:
+    nginx_expected_site_files: |-
+      {{ reverseproxy_sites | map(attribute='server_names') | map('first') | map('regex_replace', '^(.*)$', '/etc/nginx/sites-enabled/\1.conf') | list }}
+- name: Get existing Nginx site config files in sites-enabled
+  ansible.builtin.find:
+    paths: /etc/nginx/sites-enabled
+    patterns: '*'
+    file_type: file
+  register: nginx_current_site_files
+- name: Delete unmanaged Nginx site configuration files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  become: true
+  loop: "{{ nginx_current_site_files.files | map(attribute='path') | reject('in', nginx_expected_site_files) }}"
+  notify: Restart Nginx
 - name: "Certbot Deploy Script"
   ansible.builtin.copy:
     src: certbot-deploy-hook.sh
