@@ -19,10 +19,6 @@
     mode: '0644'
   become: true
   notify: Restart Nginx
-- name: Delete Nginx default config
-  ansible.builtin.file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
 - name: "Nginx Reverse Proxy Config"
   ansible.builtin.template:
     src: reverseproxy.j2
