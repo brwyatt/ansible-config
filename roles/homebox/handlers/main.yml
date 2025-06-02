@@ -1,0 +1,6 @@
+---
+- name: Restart HomeBox
+  ansible.builtin.service:
+    name: homebox
+    state: restarted
+  become: true

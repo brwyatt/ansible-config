@@ -3,6 +3,7 @@ cert:
   - homebox.server.home.brwyatt.net
 certbot_certs:
   - "{{ cert }}"
+homebox_web_host: "127.0.0.1"
 reverseproxy_sites:
   - server_names: "{{ cert }}"
-    destination: "http://127.0.0.1:7745"
+    destination: "http://{{ homebox_web_host }}:{{ homebox_web_port }}"
