@@ -13,6 +13,8 @@ global_defs {
 vrrp_script {{ name|replace("-", "_") }} {
 {% if config.type == "haproxy" %}
   script "/usr/local/bin/haproxy_track.sh {{ config.backend_name|default(name) }}"
+{% elif config.type == "curl" %}
+  script "/usr/bin/curl {{ "-k " if config.insecure|default(false) else "" }}--connect-timeout {{ config.timeout|default(1) }} {{ config.url }}"
 {% endif %}
   timeout {{ config.timeout|default(1) }}
   interval {{ config.interval|default(1) }}

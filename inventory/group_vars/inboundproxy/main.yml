@@ -1,0 +1,24 @@
+---
+certbot_certs: "{{ reverseproxy_sites|map(attribute='server_names') }}"
+keepalived_check_scripts:
+  nginx:
+    insecure: true
+    url: "https://127.0.0.1/"
+    type: curl
+keepalived_instances:
+  inboundproxy:
+    virtual_ip: 172.17.30.201/24
+    auth_pass: "{{ keepalived_auth_pass }}"
+    check_script: nginx
+reverseproxy_sites:
+  - server_names:
+      - homeassistant.home.brwyatt.net
+      - homeassistant.iot.home.brwyatt.net
+    destination: "https://homeassistant.iot.home.brwyatt.net:443"
+  - server_names:
+      - jellyfin.home.brwyatt.net
+      - jellyfin.server.home.brwyatt.net
+    destination: "https://jellyfin.server.home.brwyatt.net:443"
+  - server_names:
+      - matrix.server.home.brwyatt.net
+    destination: "https://matrix.server.home.brwyatt.net:443"

@@ -25,3 +25,10 @@
     - role: certbot
     - role: homebox
     - role: reverseproxy
+- name: Inbound Proxies
+  hosts: inboundproxies
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: reverseproxy
+    - role: keepalived
