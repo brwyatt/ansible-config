@@ -42,7 +42,8 @@
 - name: Define expected Nginx site config files
   ansible.builtin.set_fact:
     nginx_expected_site_files: |-
-      {{ reverseproxy_sites | map(attribute='server_names') | map('first') | map('regex_replace', '^(.*)$', '/etc/nginx/sites-enabled/\1.conf') | list }}
+      {{ ((reverseproxy_sites | map(attribute='server_names') | map('first')) + (["default"] if reverseproxy_include_default else []) ) |
+      map('regex_replace', '^(.*)$', '/etc/nginx/sites-enabled/\1.conf') | list }}
 - name: Get existing Nginx site config files in sites-enabled
   ansible.builtin.find:
     paths: /etc/nginx/sites-enabled
