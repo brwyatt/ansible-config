@@ -19,6 +19,16 @@
     mode: '0644'
   become: true
   notify: Restart Nginx
+- name: "Nginx default config"
+  ansible.builtin.copy:
+    src: default.conf
+    dest: "/etc/nginx/sites-enabled/default.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  when: reverseproxy_include_default
+  notify: Restart Nginx
 - name: "Nginx Reverse Proxy Config"
   ansible.builtin.template:
     src: reverseproxy.j2
