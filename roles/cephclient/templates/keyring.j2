@@ -1,0 +1,4 @@
+{% for user, key in cephclient_users.items() %}
+[client.{{ user }}]
+    key = {{ key }}
+{% endfor %}

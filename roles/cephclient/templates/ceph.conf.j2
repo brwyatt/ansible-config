@@ -1,0 +1,7 @@
+[global]
+{% if cephclient_mon_hosts %}
+    mon_host = {{ ",".join(cephclient_mon_hosts) }}
+{% endif %}
+{% if cephclient_mon_dns_srv_name.domain %}
+    mon_dns_srv_name = {{ cephclient_mon_dns_srv_name.srv | default("ceph-mon") }}_{{cephclient_mon_dns_srv_name.domain }}
+{% endif %}

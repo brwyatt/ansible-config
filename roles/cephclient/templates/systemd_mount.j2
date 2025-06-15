@@ -1,0 +1,13 @@
+[Unit]
+Description=CephFS Mount for {{ item.mount_path }} from {{ item.fs_name }}
+After=network-online.target remote-fs.target
+Wants=network-online.target
+
+[Mount]
+What={{ item.user }}@{{ item.cluster_name|default("") }}.{{ item.fs_name }}:{{ item.remote_path|default("/") }}
+Where={{ item.mount_path }}
+Type=ceph
+Options={{ "noexec" if item.noexec|default(False) else "exec" }}
+
+[Install]
+WantedBy=multi-user.target

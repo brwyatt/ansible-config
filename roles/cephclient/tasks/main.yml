@@ -1,0 +1,45 @@
+---
+- name: Install Ceph Common
+  ansible.builtin.package:
+    name: ceph-common
+    state: present
+  become: true
+- name: Create Ceph Config file
+  ansible.builtin.template:
+    src: ceph.conf.j2
+    dest: /etc/ceph/ceph.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Remount
+- name: Create Ceph Keyring
+  ansible.builtin.template:
+    src: keyring.j2
+    dest: /etc/ceph/keyring
+    owner: root
+    group: root
+    mode: '0600'
+  become: true
+  notify: Remount
+- name: Create Mounts
+  loop: "{{ cephclient_mounts }}"
+  loop_control:
+    loop_var: item
+  become: true
+  block:
+    - name: Create Mount Dir
+      ansible.builtin.file:
+        path: "{{ item.mount_path }}"
+        state: directory
+        mode: '0755'
+    - name: Create systemd mount unit
+      ansible.builtin.template:
+        src: systemd_mount.j2
+        dest: "/etc/systemd/system/{{ item.mount_path[1:].replace('/', '_') }}.mount"
+        mode: '0644'
+    - name: Mount CephFS
+      ansible.builtin.service:
+        name: "{{ item.mount_path[1:].replace('/', '_') }}.mount"
+        state: started
+        enabled: true

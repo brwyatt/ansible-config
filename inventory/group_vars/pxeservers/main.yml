@@ -1,0 +1,8 @@
+---
+cephclient_mon_dns_srv_name:
+  domain: "home.brwyatt.net"
+cephclient_mounts:
+  - user: pxe
+    fs_name: "DisklessFS"
+    remote_path: "/boot"
+    mount_path: "/mnt/diskless_boot"
