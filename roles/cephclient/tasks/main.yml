@@ -26,6 +26,5 @@
   loop: "{{ cephclient_mounts }}"
   loop_control:
     loop_var: item
-  become: true
   ansible.builtin.include_tasks:
     file: mount.yml
