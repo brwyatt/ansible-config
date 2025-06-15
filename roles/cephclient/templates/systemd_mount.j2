@@ -4,7 +4,7 @@ After=network-online.target remote-fs.target
 Wants=network-online.target
 
 [Mount]
-What={{ item.user }}@{{ item.cluster_name|default("") }}.{{ item.fs_name }}:{{ item.remote_path|default("/") }}
+What={{ item.user }}@{{ item.cluster_name|default("") }}.{{ item.fs_name }}={{ item.remote_path|default("/") }}
 Where={{ item.mount_path }}
 Type=ceph
 Options={{ "noexec" if item.noexec|default(False) else "exec" }}
