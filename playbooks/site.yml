@@ -35,4 +35,4 @@
 - name: PXE Servers
   hosts: pxeservers
   roles:
-    - role: cephmount
+    - role: cephclient
