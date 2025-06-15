@@ -1,0 +1,15 @@
+- name: Create Mount Dir
+  ansible.builtin.file:
+    path: "{{ item.mount_path }}"
+    state: directory
+    mode: '0755'
+- name: Create systemd mount unit
+  ansible.builtin.template:
+    src: systemd_mount.j2
+    dest: "/etc/systemd/system/{{ item.mount_path[1:].replace('/', '_') }}.mount"
+    mode: '0644'
+- name: Mount CephFS
+  ansible.builtin.service:
+    name: "{{ item.mount_path[1:].replace('/', '_') }}.mount"
+    state: started
+    enabled: true
