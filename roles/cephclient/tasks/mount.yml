@@ -7,12 +7,12 @@
 - name: Create systemd mount unit
   ansible.builtin.template:
     src: systemd_mount.j2
-    dest: "/etc/systemd/system/{{ item.mount_path[1:].replace('/', '_') }}.mount"
+    dest: "/etc/systemd/system/{{ item.mount_path[1:].replace('/', '-') }}.mount"
     mode: '0644'
   become: true
 - name: Mount CephFS
   ansible.builtin.service:
-    name: "{{ item.mount_path[1:].replace('/', '_') }}.mount"
+    name: "{{ item.mount_path[1:].replace('/', '-') }}.mount"
     state: started
     enabled: true
   become: true
