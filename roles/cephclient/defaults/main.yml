@@ -1,3 +1,4 @@
+cephclient_mon_hosts: []
 cephclient_mon_dns_srv_name: {}
 cephclient_users: {}
 cephclient_mounts: []
