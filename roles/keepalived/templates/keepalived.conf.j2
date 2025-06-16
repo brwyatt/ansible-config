@@ -16,7 +16,7 @@ vrrp_script {{ name|replace("-", "_") }} {
 {% elif config.type == "curl" %}
   script "/usr/bin/curl {{ "-k " if config.insecure|default(false) else "" }}--connect-timeout {{ config.timeout|default(1) }} {{ config.url }}"
 {% elif config.type == "mount" %}
-  script "/usr/bin/mountpoint -q '{{ config.path }}'
+  script "/usr/bin/mountpoint -q '{{ config.path }}'"
 {% endif %}
   timeout {{ config.timeout|default(1) }}
   interval {{ config.interval|default(1) }}
