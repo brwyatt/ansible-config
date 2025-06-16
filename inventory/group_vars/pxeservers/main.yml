@@ -27,7 +27,7 @@ keepalived_check_scripts:
     type: curl
   pxemount:
     type: mount
-    path: "{{ pxeserver_mount_dir }}"
+    path: "{{ pxeserver_boot_dir }}"
 keepalived_instances:
   pxe:
     virtual_ip: "{{ pxe_vip }}/24"
