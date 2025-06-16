@@ -1,4 +1,5 @@
 ---
+pxe_vip: "172.17.30.202"
 cephclient_mon_dns_srv_name:
   domain: "home.brwyatt.net"
 cephclient_mounts:
@@ -6,3 +7,20 @@ cephclient_mounts:
     fs_name: "DisklessFS"
     remote_path: "/boot"
     mount_path: "/mnt/diskless_boot"
+pxeserver_ip: "{{ pxe_vip }}"
+keepalived_check_scripts:
+  nginx:
+    insecure: true
+    url: "http://127.0.0.1/check"
+    type: curl
+  tftp:
+    insecure: true
+    url: "tftp://127.0.0.1/boot.ipxe"
+    type: curl
+keepalived_instances:
+  pxe:
+    virtual_ip: "{{ pxe_vip }}/24"
+    auth_pass: "{{ keepalived_auth_pass }}"
+    check_scripts:
+      - nginx
+      - tftp

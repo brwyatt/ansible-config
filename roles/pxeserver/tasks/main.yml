@@ -1,0 +1,4 @@
+---
+- name: "TPTPd tasks"
+  ansible.builtin.include_tasks:
+    file: tftpd.yml

@@ -1,0 +1,29 @@
+---
+- name: Install TFTPd
+  ansible.builtin.package:
+    name: tftpd-hpa
+    state: present
+  become: true
+- name: Create TFTPd Config file
+  ansible.builtin.template:
+    src: tftpd_defaults.j2
+    dest: /etc/default/tftpd-hpa
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart TFTPd
+- name: Start TFTPd
+  ansible.builtin.service:
+    name: tftpd-hpa
+    state: started
+    enabled: true
+  become: true
+- name: iPXE chain boot file
+  ansible.builtin.template:
+    src: boot.ipxe.j2
+    dest: "{{ pxeserver_tftp_directory }}/boot.ipxe"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true

@@ -1,0 +1,6 @@
+---
+- name: Restart TFTPd
+  ansible.builtin.service:
+    name: tftpd-hpa
+    state: restarted
+  become: true

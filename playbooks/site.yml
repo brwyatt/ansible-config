@@ -36,3 +36,5 @@
   hosts: pxeservers
   roles:
     - role: cephclient
+    - role: pxeserver
+    - role: keepalived
