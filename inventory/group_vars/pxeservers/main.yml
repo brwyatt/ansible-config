@@ -6,8 +6,16 @@ cephclient_mounts:
   - user: pxe
     fs_name: "DisklessFS"
     remote_path: "/boot"
-    mount_path: "/mnt/diskless_boot"
+    mount_path: "{{ pxeserver_boot_dir }}"
+pxeserver_boot_dir: "/mnt/diskless_boot"
 pxeserver_ip: "{{ pxe_vip }}"
+pxeserver_hostname: "pxe.home.brwyatt.net"
+pxeserver_pxe_hosts:
+  - name: Zephyr
+    uuid: "12345678-ABCD-EFGH-IJKL-0123456789AB"
+    ipxe_path: "/_iPXE/ubuntu/noble.ipxe"
+    kernel_path: "/Zephyr/vmlinuz"
+    initrd_path: "/Zephyr/initrd.img"
 keepalived_check_scripts:
   nginx:
     insecure: true

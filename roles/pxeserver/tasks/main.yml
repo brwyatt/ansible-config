@@ -2,3 +2,6 @@
 - name: "TPTPd tasks"
   ansible.builtin.include_tasks:
     file: tftpd.yml
+- name: "Nginx tasks"
+  ansible.builtin.include_tasks:
+    file: nginx.yml

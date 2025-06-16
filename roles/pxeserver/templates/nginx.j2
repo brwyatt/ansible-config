@@ -1,0 +1,80 @@
+server {
+    listen 80;
+    server_name {{ pxeserver_hostname }}; # Or hostname
+
+    root {{ pxeserver_boot_dir }};
+
+    map $arg_uuid $ipxe_path_uuid {
+        default "";
+{% for host in pxeserver_pxe_hosts %}
+{% if host.uuid %}
+        "{{ host.uuid }}" "{{ host.ipxe_path | default('/_iPXE/default.ipxe') }}";
+{% endif %}
+{% endfor %}
+    }
+    map $arg_uuid $ipxe_path_mac {
+        default "";
+{% for host in pxeserver_pxe_hosts %}
+{% if host.mac %}
+        "{{ host.mac }}" "{{ host.ipxe_path | default('/_iPXE/default.ipxe') }}";
+{% endif %}
+{% endfor %}
+    }
+
+    map $arg_uuid $kernel_path_uuid {
+        default "";
+{% for host in pxeserver_pxe_hosts %}
+{% if host.uuid %}
+        "{{ host.uuid }}" "{{ host.kernel_path }}";
+{% endif %}
+{% endfor %}
+    }
+    map $arg_uuid $kernel_path_mac {
+        default "";
+{% for host in pxeserver_pxe_hosts %}
+{% if host.mac %}
+        "{{ host.mac }}" "{{ host.kernel_path }}";
+{% endif %}
+{% endfor %}
+    }
+
+    map $arg_uuid $initrd_path_uuid {
+        default "";
+{% for host in pxeserver_pxe_hosts %}
+{% if host.uuid %}
+        "{{ host.uuid }}" "{{ host.initrd_path }}";
+{% endif %}
+{% endfor %}
+    }
+    map $arg_uuid $initrd_path_mac {
+        default "";
+{% for host in pxeserver_pxe_hosts %}
+{% if host.mac %}
+        "{{ host.mac }}" "{{ host.initrd_path }}";
+{% endif %}
+{% endfor %}
+    }
+
+    location / {
+      return 404;
+    }
+
+    location /check {
+      return 200 "OK\n";
+    }
+
+    location /boot {
+        try_files $ipxe_path_uuid $ipxe_path_mac =404;
+        default_type text/plain;
+    }
+
+    location /kernel {
+        try_files $kernel_path_uuid $kernel_path_mac =404;
+        default_type application/octet-stream;
+    }
+
+    location /initrd {
+        try_files $initrd_path_uuid $kernel_path_mac =404;
+        default_type application/octet-stream;
+    }
+}

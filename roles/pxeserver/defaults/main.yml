@@ -4,3 +4,5 @@ pxeserver_tftp_directory: "/srv/tftp"
 pxeserver_tftp_address: ":69"
 pxeserver_tftp_options: "--secure"
 pxeserver_ip: "{{ ansible_default_ipv4.address }}"
+pxeserver_hostname: "{{ pxeserver_ip }}"
+pxeserver_pxe_hosts: []

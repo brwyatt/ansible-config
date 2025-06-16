@@ -4,3 +4,8 @@
     name: tftpd-hpa
     state: restarted
   become: true
+- name: Restart Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+  become: true

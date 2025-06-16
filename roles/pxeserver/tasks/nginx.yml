@@ -1,0 +1,21 @@
+---
+- name: Install Nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+  become: true
+- name: Create Nginx Config file
+  ansible.builtin.template:
+    src: nginx.j2
+    dest: /etc/nginx/sites-enabled/default
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart Nginx
+- name: Start Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+  become: true
