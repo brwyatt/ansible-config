@@ -25,6 +25,9 @@ keepalived_check_scripts:
     insecure: true
     url: "tftp://127.0.0.1/boot.ipxe"
     type: curl
+  pxemount:
+    type: mount
+    path: "{{ pxeserver_mount_dir }}"
 keepalived_instances:
   pxe:
     virtual_ip: "{{ pxe_vip }}/24"
@@ -32,3 +35,4 @@ keepalived_instances:
     check_scripts:
       - nginx
       - tftp
+      - pxemount
