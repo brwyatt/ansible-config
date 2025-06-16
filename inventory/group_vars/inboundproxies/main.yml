@@ -9,7 +9,8 @@ keepalived_instances:
   inboundproxy:
     virtual_ip: 172.17.30.201/24
     auth_pass: "{{ keepalived_auth_pass }}"
-    check_script: nginx
+    check_scripts:
+      - nginx
 reverseproxy_include_default: true
 reverseproxy_sites:
   - server_names:

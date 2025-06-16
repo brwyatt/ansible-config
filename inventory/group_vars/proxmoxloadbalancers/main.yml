@@ -50,4 +50,5 @@ keepalived_instances:
   proxmox:
     virtual_ip: 172.17.30.20/24
     auth_pass: "{{ keepalived_auth_pass }}"
-    check_script: proxmox
+    check_scripts:
+      - proxmox

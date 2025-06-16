@@ -70,4 +70,5 @@ keepalived_instances:
   mqtts:
     virtual_ip: 172.17.20.243/24
     auth_pass: "{{ keepalived_auth_pass }}"
-    check_script: mqtts
+    check_scripts:
+      - mqtts

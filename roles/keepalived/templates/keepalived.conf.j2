@@ -43,9 +43,11 @@ vrrp_instance {{ name|replace("-", "_") }} {
   virtual_ipaddress {
     {{ config.virtual_ip }}
   }
-{% if config.check_script is defined %}
+{% if config.check_scripts is defined %}
   track_script {
-    {{ config.check_script|replace("-", "_") }}
+{% for check_script in config.check_scripts %}
+    {{ check_script|replace("-", "_") }}
+{% endfor %}
   }
 {% endif %}
 }
