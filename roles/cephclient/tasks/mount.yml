@@ -19,7 +19,7 @@
     mode: '0644'
   become: true
   register: mount_unit
-- name: "Reload CephFS Mount {{ item.mount_path }} if changed"
+- name: "Reload CephFS Mount if changed {{ item.mount_path }}"
   ansible.builtin.service:
     name: "{{ systemd_mount_unit }}"
     state: reloaded
