@@ -1,10 +1,10 @@
 #!ipxe
 
-set http_server_url http://{{ pxeserver_ip }}/boot
+set http_server_url http://${next-server}/boot
 
-echo "Chainloading to ${http_server_url} with mac=${mac}, uuid=${uuid}, arch=${arch}"
-chain ${http_server_url}?mac=${mac}&uuid=${uuid}&arch=${arch} || goto failed_chain
+echo Chainloading to ${http_server_url} with mac=${mac}, uuid=${uuid}, arch=${buildarch}
+chain ${http_server_url}?mac=${mac}&uuid=${uuid}&arch=${buildarch} || goto failed_chain
 
 :failed_chain
-echo "Chainload failed, dropping to shell..."
+echo Chainload failed, dropping to shell...
 shell
