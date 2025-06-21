@@ -64,7 +64,7 @@ server {
     }
 
     location /boot {
-        try_files $ipxe_path_uuid $ipxe_path_mac /srv/ipxe_web/default.ipxe =404;
+        try_files $ipxe_path_uuid $ipxe_path_mac /_iPXE/default.ipxe =404;
         default_type text/plain;
     }
 
