@@ -13,6 +13,20 @@
     mode: '0644'
   become: true
   notify: Restart Nginx
+- name: Create Web Directory
+  ansible.builtin.file:
+    path: /srv/ipxe_web/
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+- name: Default boot file
+  ansible.builtin.copy:
+    src: default.ipxe
+    dest: /srv/ipxe_web/default.ipxe
+    owner: www-data
+    group: www-data
+    mode: '0644'
 - name: Start Nginx
   ansible.builtin.service:
     name: nginx
