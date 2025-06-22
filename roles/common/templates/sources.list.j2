@@ -1,4 +1,10 @@
 deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}
-{% if common_apt_repo_updates %}deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-updates main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{% endif %}
-{% if common_apt_repo_security %}deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-security main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{% endif %}
-{% if common_apt_repo_backports %}deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-backports main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{% endif %}
+{% if common_apt_repo_updates %}
+deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-updates main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}
+{% endif %}
+{% if common_apt_repo_security %}
+deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-security main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}
+{% endif %}
+{% if common_apt_repo_backports %}
+deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-backports main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}
+{% endif %}
