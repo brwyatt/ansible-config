@@ -26,5 +26,5 @@ common_apt_repo_url_distros:
   Debian: http://deb.debian.org/debian
   Ubuntu: http://archive.ubuntu.com/ubuntu
 common_apt_repo_security_url_distros:
-  Debian: http://security.debian.org/debian-security
+  Debian: http://security.debian.org/
   Ubuntu: http://archive.ubuntu.com/ubuntu

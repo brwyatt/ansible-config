@@ -73,6 +73,10 @@
           default("http://localhost/null")
         )
       }}
+- name: Check if newer ubuntu.sources file exists
+  ansible.builtin.stat:
+    path: /etc/apt/sources.list.d/ubuntu.sources
+  register: ubuntu_sources_file_stat
 - name: Apt Sources
   ansible.builtin.template:
     src: sources.list.j2
@@ -82,10 +86,11 @@
     mode: '0644'
   become: true
   register: sources_list_status
+  when: not ubuntu_sources_file_stat.stat.exists
 - name: Force apt cache update if sources.list changed
   ansible.builtin.set_fact:
     common_apt_cache_validity: 0
-  when: sources_list_status.changed
+  when: sources_list_status.changed | default(false)
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: true
