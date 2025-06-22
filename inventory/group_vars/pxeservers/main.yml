@@ -13,12 +13,12 @@ pxeserver_hostname: "pxe.home.brwyatt.net"
 pxeserver_pxe_hosts:
   - name: pxe-boot-test
     uuid: "{{ pxe_boot_test_uuid }}"
-    ipxe_path: "/_iPXE/test.ipxe"
+    ipxe_path: "/_iPXE/Zephyr/boot.ipxe"
     kernel_path: "/Zephyr/vmlinuz"
     initrd_path: "/Zephyr/initrd.img"
   - name: Zephyr
     uuid: "{{ zephyr_uuid }}"
-    ipxe_path: "/_iPXE/ubuntu/noble.ipxe"
+    ipxe_path: "/_iPXE/Zephyr/boot.ipxe"
     kernel_path: "/Zephyr/vmlinuz"
     initrd_path: "/Zephyr/initrd.img"
 keepalived_check_scripts:
