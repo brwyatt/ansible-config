@@ -1,0 +1,4 @@
+---
+- name: Desktop Environment
+  ansible.builtin.include_tasks:
+    file: desktop_environment.yml

@@ -1,0 +1,6 @@
+---
+- name: Install Ubuntu Desktop
+  ansible.builtin.package:
+    name: ubuntu-desktop
+    state: present
+  become: true

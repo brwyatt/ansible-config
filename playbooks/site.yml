@@ -38,3 +38,7 @@
     - role: cephclient
     - role: pxeserver
     - role: keepalived
+- name: Desktops
+  hosts: desktops
+  roles:
+    - role: desktop

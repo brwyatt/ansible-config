@@ -74,3 +74,7 @@ pxeservers:
   hosts:
     pxe-boot[01:02].server.home.brwyatt.net:
       ansible_user: brwyatt
+desktops:
+  hosts:
+    zephyr.user.home.brwyatt.net:
+      ansible_user: brwyatt
