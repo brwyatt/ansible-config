@@ -1,2 +1,9 @@
 ---
 common_admin_user: "{{ ansible_user }}"
+common_apt_cache_validity: 86400
+common_apt_repo_updates: true
+common_apt_repo_security: true
+common_apt_repo_backports: true
+common_apt_repo_restricted: true
+common_apt_repo_universe: true
+common_apt_repo_multiverse: true

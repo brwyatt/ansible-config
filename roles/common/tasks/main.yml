@@ -16,18 +16,19 @@
     exclusive: true
     manage_dir: true
   become: true
-- name: Update apt cache
-  ansible.builtin.apt:
-    update_cache: true
-    cache_valid_time: 86400 # Check cache at most once per day (in seconds)
+- name: Manage Apt
+  ansible.builtin.include_tasks:
+    file: apt.yml
 - name: Ensure vim is installed
   ansible.builtin.apt:
     name: vim
     state: present
+  become: true
 - name: Ensure htop is installed
   ansible.builtin.apt:
     name: htop
     state: present
+  become: true
 - name: Install qemu-guest-agent on Qemu VMs
   ansible.builtin.apt:
     name: qemu-guest-agent

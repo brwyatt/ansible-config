@@ -1,0 +1,19 @@
+---
+- name: Apt Sources
+  ansible.builtin.template:
+    src: sources.list.j2
+    dest: /etc/apt/sources.list
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  register: sources_list_status
+- name: Force apt cache update if sources.list changed
+  ansible.builtin.set_fact:
+    common_apt_cache_validity: 0
+  when: sources_list_status.changed
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: "{{ common_apt_cache_validity }}"
+  become: true
