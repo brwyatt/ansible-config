@@ -19,6 +19,9 @@
 - name: Manage Apt
   ansible.builtin.include_tasks:
     file: apt.yml
+- name: Manage SSH service
+  ansible.builtin.include_tasks:
+    file: sshd.yml
 - name: Ensure vim is installed
   ansible.builtin.apt:
     name: vim
