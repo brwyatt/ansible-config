@@ -1,4 +1,78 @@
 ---
+- name: Set Repo variables
+  ansible.builtin.set_fact:
+    common_apt_repo_updates: |-
+      {{
+        common_apt_repo_updates |
+        default(
+          common_apt_repo_updates_distros[ansible_distribution] |
+          default(false)
+        )
+      }}
+    common_apt_repo_security: |-
+      {{
+        common_apt_repo_security |
+        default(
+          common_apt_repo_security_distros[ansible_distribution] |
+          default(false)
+        )
+      }}
+    common_apt_repo_backports: |-
+      {{
+        common_apt_repo_backports |
+        default(
+          common_apt_repo_backports_distros[ansible_distribution] |
+          default(false)
+        )
+      }}
+    common_apt_repo_restricted: |-
+      {{
+        common_apt_repo_restricted |
+        default(
+          common_apt_repo_restricted_distros[ansible_distribution] |
+          default(false)
+        )
+      }}
+    common_apt_repo_universe: |-
+      {{
+        common_apt_repo_universe |
+        default(
+          common_apt_repo_universe_distros[ansible_distribution] |
+          default(false)
+        )
+      }}
+    common_apt_repo_multiverse: |-
+      {{
+        common_apt_repo_multiverse |
+        default(
+          common_apt_repo_multiverse_distros[ansible_distribution] |
+          default(false)
+        )
+      }}
+    common_apt_repo_contrib: |-
+      {{
+        common_apt_repo_contrib |
+        default(
+          common_apt_repo_contrib_distros[ansible_distribution] |
+          default(false)
+        )
+      }}
+    common_apt_repo_url: |-
+      {{
+        common_apt_repo_url |
+        default(
+          common_apt_repo_url_distros[ansible_distribution] |
+          default("http://localhost/null")
+        )
+      }}
+    common_apt_repo_security_url: |-
+      {{
+        common_apt_repo_security_url |
+        default(
+          common_apt_repo_security_url_distros[ansible_distribution] |
+          default("http://localhost/null")
+        )
+      }}
 - name: Apt Sources
   ansible.builtin.template:
     src: sources.list.j2

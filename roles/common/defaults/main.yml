@@ -1,9 +1,30 @@
 ---
 common_admin_user: "{{ ansible_user }}"
 common_apt_cache_validity: 86400
-common_apt_repo_updates: true
-common_apt_repo_security: true
-common_apt_repo_backports: true
-common_apt_repo_restricted: true
-common_apt_repo_universe: true
-common_apt_repo_multiverse: true
+common_apt_repo_updates_distros:
+  Debian: true
+  Ubuntu: true
+common_apt_repo_security_distros:
+  Debian: true
+  Ubuntu: true
+common_apt_repo_backports_distros:
+  Debian: false
+  Ubuntu: true
+common_apt_repo_restricted_distros:
+  Debian: false
+  Ubuntu: true
+common_apt_repo_universe_distros:
+  Debian: false
+  Ubuntu: true
+common_apt_repo_multiverse_distros:
+  Debian: false
+  Ubuntu: true
+common_apt_repo_contrib_distros:
+  Debian: true
+  Ubuntu: false
+common_apt_repo_url_distros:
+  Debian: http://deb.debian.org/debian
+  Ubuntu: http://archive.ubuntu.com/ubuntu
+common_apt_repo_security_url_distros:
+  Debian: http://security.debian.org/debian-security
+  Ubuntu: http://archive.ubuntu.com/ubuntu
