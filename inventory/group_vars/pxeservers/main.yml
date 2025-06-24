@@ -18,7 +18,7 @@ pxeserver_pxe_hosts:
     initrd_path: "/Zephyr/initrd.img"
   - name: Zephyr
     uuid: "{{ zephyr_uuid }}"
-    ipxe_path: "/_iPXE/Zephyr/boot.ipxe"
+    ipxe_path: "/Zephyr/boot.ipxe"
     kernel_path: "/Zephyr/vmlinuz"
     initrd_path: "/Zephyr/initrd.img"
 keepalived_check_scripts:
