@@ -6,3 +6,4 @@ pxeserver_tftp_options: "--secure"
 pxeserver_ip: "{{ ansible_default_ipv4.address }}"
 pxeserver_hostname: "{{ pxeserver_ip }}"
 pxeserver_pxe_hosts: []
+pxeserver_default_ipxe: "/default.ipxe"

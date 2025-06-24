@@ -13,7 +13,7 @@ pxeserver_hostname: "pxe.home.brwyatt.net"
 pxeserver_pxe_hosts:
   - name: pxe-boot-test
     uuid: "{{ pxe_boot_test_uuid }}"
-    ipxe_path: "/_iPXE/Zephyr/boot.ipxe"
+    ipxe_path: "/Zephyr/boot.ipxe"
     kernel_path: "/Zephyr/vmlinuz"
     initrd_path: "/Zephyr/initrd.img"
   - name: Zephyr
