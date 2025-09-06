@@ -11,6 +11,7 @@
     owner: root
     group: root
     mode: '0644'
+  notify: Restart Chrony
 - name: Chrony keys file
   ansible.builtin.template:
     src: chrony.keys.j2
@@ -18,6 +19,7 @@
     owner: root
     group: "_chrony"
     mode: '0640'
+  notify: Restart Chrony
 - name: Ensure Chrony is running and enabled
   ansible.builtin.service:
     name: chrony
