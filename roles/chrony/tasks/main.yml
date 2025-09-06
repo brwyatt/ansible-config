@@ -1,0 +1,26 @@
+---
+- name: Install Chrony
+  ansible.builtin.package:
+    name: chrony
+    state: present
+  become: true
+- name: Chrony config file
+  ansible.builtin.template:
+    src: chrony.conf.j2
+    dest: /etc/chrony/chrony.conf
+    owner: root
+    group: root
+    mode: '0644'
+- name: Chrony keys file
+  ansible.builtin.template:
+    src: chrony.keys.j2
+    dest: "{{ chrony_keyfile }}"
+    owner: root
+    group: "_chrony"
+    mode: '0640'
+- name: Ensure Chrony is running and enabled
+  ansible.builtin.service:
+    name: chrony
+    state: started
+    enabled: true
+  become: true

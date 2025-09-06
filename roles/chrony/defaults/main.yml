@@ -1,0 +1,23 @@
+---
+chrony_confdir: /etc/chrony/conf.d
+chrony_sourcedir: /etc/chrony/sources.d
+chrony_keyfile: /etc/chrony/chrony.keys
+chrony_keys: {}
+chrony_sources:
+  - type: "pool"
+    location: "pool.ntp.org"
+    iburst: true
+    trust: true
+    prefer: false
+chrony_driftfile: /var/lib/chrony/chrony.drift
+chrony_ntsdumpdir: /var/lib/chrony
+chrony_logdir: /var/og/chrony
+chrony_maxupdateskew: "100.0"
+chrony_rtcsync: true
+chrony_makestep:
+  max_slew: 1
+  update_limit: 3
+chrony_leapsectz: "right/UTC"
+chrony_bindaddress: "127.0.0.1"
+chrony_allow:
+  - "127.0.0.0/8"

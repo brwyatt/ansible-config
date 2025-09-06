@@ -1,0 +1,28 @@
+---
+chrony_sources:
+  - type: "pool"
+    location: "us.pool.ntp.org"
+    iburst: true
+    trust: true
+  - type: "server"
+    location: ntp-gps.server.home.brwyatt.net
+    prefer: true
+    iburst: true
+    trust: true
+    minpoll: 4
+    maxpoll: 4
+  - type: "peer"
+    location: ntp01.server.home.brwyatt.net
+    key: "1"
+  - type: "peer"
+    location: ntp02.server.home.brwyatt.net
+    key: "1"
+  - type: "peer"
+    location: ntp03.server.home.brwyatt.net
+    key: "1"
+  - type: "peer"
+    location: ntp04.server.home.brwyatt.net
+    key: "1"
+chrony_bindaddress: "0.0.0.0"
+chrony_allow:
+  - "172.16.0.0/12"

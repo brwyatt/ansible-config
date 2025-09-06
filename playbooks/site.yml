@@ -42,3 +42,7 @@
   hosts: desktops
   roles:
     - role: desktop
+- name: NTP Servers
+  hosts: ntpservers
+  roles:
+    - role: chrony

@@ -1,0 +1,3 @@
+{% for id, data in (chrony_keys|default({})).items() %}
+{{ id }} {{ data.type }} {{ data.key }}
+{% endfor %}
