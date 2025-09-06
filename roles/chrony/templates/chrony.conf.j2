@@ -3,6 +3,7 @@ confdir {{ chrony_confdir }}
 {% for source in chrony_sources %}
 {% if source.location not in [ansible_hostname, ansible_fqdn] and source.location not in ansible_all_ipv4_addresses%}
 {{ source.type }} {{ source.location }}{% if "key" in source %} key {{ source.key }}{% endif %}{% if source.prefer|default(false) %} prefer{% endif %}{% if source.iburst|default(false) %} iburst{% endif %}{% if source.trust|default(false) %} trust{% endif %}{% if "minpoll" in source %} minpoll {{ source.minpoll }}{% endif %}{% if "maxpoll" in source %} maxpoll {{ source.maxpoll }}{% endif %}
+
 {% endif %}
 {% endfor %}
 

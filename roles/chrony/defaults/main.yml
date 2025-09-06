@@ -11,7 +11,7 @@ chrony_sources:
     prefer: false
 chrony_driftfile: /var/lib/chrony/chrony.drift
 chrony_ntsdumpdir: /var/lib/chrony
-chrony_logdir: /var/og/chrony
+chrony_logdir: /var/log/chrony
 chrony_maxupdateskew: "100.0"
 chrony_rtcsync: true
 chrony_makestep:
