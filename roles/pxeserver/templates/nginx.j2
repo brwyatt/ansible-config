@@ -77,4 +77,14 @@ server {
         try_files $initrd_path_uuid $kernel_path_mac =404;
         default_type application/octet-stream;
     }
+
+    location /kernel.old {
+        try_files $kernel_path_uuid.old $kernel_path_mac.old =404;
+        default_type application/octet-stream;
+    }
+
+    location /initrd.old {
+        try_files $initrd_path_uuid.old $kernel_path_mac.old =404;
+        default_type application/octet-stream;
+    }
 }
