@@ -27,12 +27,12 @@ chrony_bindaddress: "0.0.0.0"
 chrony_allow:
   - "172.16.0.0/12"
 keepalived_check_scripts:
-  vip203:
-    type: vip
+  vip203_absent:
+    type: vip_absent
     vip: 172.17.30.203
     weight: "-10"
-  vip204:
-    type: vip
+  vip204_absent:
+    type: vip_absent
     vip: 172.17.30.204
     weight: "-10"
   chrony:
@@ -42,11 +42,11 @@ keepalived_instances:
     virtual_ip: 172.17.30.203/24
     auth_pass: "{{ keepalived_auth_pass_203 }}"
     check_scripts:
-      - vip204
+      - vip204_absent
       - chrony
   vip204:
     virtual_ip: 172.17.30.204/24
     auth_pass: "{{ keepalived_auth_pass_204 }}"
     check_scripts:
-      - vip203
+      - vip203_absent
       - chrony

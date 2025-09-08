@@ -22,6 +22,21 @@
     state: absent
   become: true
   when: "'haproxy' not in keepalived_check_scripts_needed"
+- name: VIP Absent Script
+  ansible.builtin.copy:
+    src: vip_check_absent.sh
+    dest: /usr/local/bin/vip_check_absent.sh
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+  when: "'vip_absent' in keepalived_check_scripts_needed"
+- name: Remove VIP Absent Script if not used
+  ansible.builtin.file:
+    path: /usr/local/bin/vip_check_absent.sh
+    state: absent
+  become: true
+  when: "'vip_absent' not in keepalived_check_scripts_needed"
 - name: Create Keepalived configuration file from template
   ansible.builtin.template:
     src: keepalived.conf.j2

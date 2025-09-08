@@ -17,8 +17,8 @@ vrrp_script {{ name|replace("-", "_") }} {
   script "/usr/bin/curl {{ "-k " if config.insecure|default(false) else "" }}--connect-timeout {{ config.timeout|default(1) }} {{ config.url }}"
 {% elif config.type == "mount" %}
   script "/usr/bin/mountpoint -q '{{ config.path }}'"
-{% elif config.type == "vip" %}
-  script "/bin/ip -br addr show | /usr/bin/grep '{{ config.vip }}'"
+{% elif config.type == "vip_absent" %}
+  script "/usr/local/bin/vip_check_absent.sh {{ config.vip }}"
 {% elif config.type == "chrony" %}
   script "/usr/bin/chronyc tracking | /usr/bin/grep -E '^Leap status\s+:\s+Normal$'"
 {% endif %}
