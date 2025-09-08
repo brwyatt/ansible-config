@@ -46,3 +46,4 @@
   hosts: ntpservers
   roles:
     - role: chrony
+    - role: keepalived
