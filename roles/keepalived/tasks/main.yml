@@ -4,6 +4,9 @@
     name: keepalived
     state: present
   become: true
+- name: Needed scripts
+  ansible.builtin.set_fact:
+    keepalived_check_scripts_needed: "{{ keepalived_check_scripts | dict2items | json_query('[].value.type') | list | unique }}"
 - name: HAProxy Backend Tracking Script
   ansible.builtin.copy:
     src: haproxy_track.sh
@@ -12,6 +15,13 @@
     group: root
     mode: '0755'
   become: true
+  when: "'haproxy' in keepalived_check_scripts_needed"
+- name: Remove HAProxy Backend Tracking Script if not used
+  ansible.builtin.file:
+    path: /usr/local/bin/haproxy_track.sh
+    state: absent
+  become: true
+  when: "'haproxy' not in keepalived_check_scripts_needed"
 - name: Create Keepalived configuration file from template
   ansible.builtin.template:
     src: keepalived.conf.j2
