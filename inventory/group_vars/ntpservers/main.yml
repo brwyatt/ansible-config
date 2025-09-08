@@ -41,12 +41,14 @@ keepalived_instances:
   vip203:
     virtual_ip: 172.17.30.203/24
     auth_pass: "{{ keepalived_auth_pass_203 }}"
+    nopreempt: false
     check_scripts:
       - vip204_absent
       - chrony
   vip204:
     virtual_ip: 172.17.30.204/24
     auth_pass: "{{ keepalived_auth_pass_204 }}"
+    nopreempt: false
     check_scripts:
       - vip203_absent
       - chrony
