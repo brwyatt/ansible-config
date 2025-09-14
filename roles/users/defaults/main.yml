@@ -5,6 +5,7 @@ users_manage_root: "{{ ansible_user == 'root' }}"
 # default we don't manage the root user, so this would only apply
 # if users_manage_root is explicitly set to `true`)
 users_disable_root_login: "{{ ansible_user != 'root' }}"
+users_delete_cloud_init_sudoers: false
 users_admins: []
 users_list: {}
 users_include: "all"
