@@ -74,7 +74,7 @@
 - name: Manage sudoers for admins
   ansible.builtin.template:
     src: admin_sudoers_d.j2
-    dest: "/etc/sudoers.d/admin.{{ item }}"
+    dest: "/etc/sudoers.d/admin_{{ item }}"
     owner: root
     group: root
     mode: '0440'
@@ -87,7 +87,7 @@
   become: true
 - name: Delete non-admin sudoers files
   ansible.builtin.file:
-    path: "/etc/suders.d/admin.{{ item }}"
+    path: "/etc/suders.d/admin_{{ item }}"
     state: absent
   when: "item not in users_admins"
   loop: "{{ users_list.keys() }}"
