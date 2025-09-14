@@ -87,7 +87,7 @@
   become: true
 - name: Delete non-admin users sudoer files
   ansible.builtin.file:
-    path: "/etc/suders.d/admin_{{ item }}"
+    path: "/etc/sudoers.d/admin_{{ item }}"
     state: absent
   when: "item not in users_admins"
   loop: "{{ users_list.keys() }}"
@@ -96,7 +96,7 @@
   become: true
 - name: Delete Cloud Init Sudoers
   ansible.builtin.file:
-    path: "/etc/suders.d/90-cloud-init-users"
+    path: "/etc/sudoers.d/90-cloud-init-users"
     state: absent
   when: "users_delete_cloud_init_sudoers"
   become: true
