@@ -53,6 +53,7 @@
         else "*"
       }}
     state: "{{ 'present' if (users_include == 'all' or item in users_include) and item not in users_exclude else 'absent' }}"
+    shell: "{{ users_list[item].shell | default(users_default_shell) }}"
     groups: "{{ users_list[item].groups | default([]) | join(',') }}"
     append: true
   loop: "{{ users_list.keys() }}"
