@@ -37,61 +37,61 @@
   become: true
 - name: Manage Users
   ansible.builtin.user:
-    name: "{{ item.name }}"
+    name: "{{ item }}"
     password: >-
       {{
-        item.data.password | string | password_hash(
+        users_list[item].password | string | password_hash(
           'sha512',
           lookup(
             'ansible.builtin.password',
             '/dev/null',
             chars=["ascii_letters", "digits"],
-            seed=item.name+'@'+inventory_hostname,
+            seed=item+'@'+inventory_hostname,
             length=16,
           ),
-        ) if item.data.password is defined
+        ) if users_list[item].password is defined
         else "*"
       }}
-    state: "{{ 'present' if (users_include == 'all' or item.name in users_include) and item.name not in users_exclude else 'absent' }}"
-    groups: "{{ item.data.groups | default([]) | join(',') }}"
+    state: "{{ 'present' if (users_include == 'all' or item in users_include) and item not in users_exclude else 'absent' }}"
+    groups: "{{ users_list[item].groups | default([]) | join(',') }}"
     append: true
-  loop: "{{ users_list | dict2items('name', 'data') }}"
+  loop: "{{ users_list | keys }}"
   loop_control:
-    label: "User {{ item.name }}"
+    label: "User {{ item }}"
   become: true
 - name: Manage User SSH Keys
   ansible.builtin.authorized_key:
-    user: "{{ item.name }}"
-    key: "{{ item.data.ssh_pub_keys | default([]) | join('\n') }}"
-    state: "{{ 'present' if (users_include == 'all' or item.name in users_include) and item.name not in users_exclude else 'absent' }}"
+    user: "{{ item }}"
+    key: "{{ users_list[item].ssh_pub_keys | default([]) | join('\n') }}"
+    state: "{{ 'present' if (users_include == 'all' or item in users_include) and item not in users_exclude else 'absent' }}"
     exclusive: true
     manage_dir: true
-  loop: "{{ users_list | dict2items('name', 'data') }}"
+  loop: "{{ users_list | keys }}"
   loop_control:
-    label: "User {{ item.name }}"
+    label: "User {{ item }}"
   become: true
 - name: Manage sudoers for admins
   ansible.builtin.template:
     src: admin_sudoers_d.j2
-    dest: "/etc/sudoers.d/admin.{{ item.name }}"
+    dest: "/etc/sudoers.d/admin.{{ item }}"
     owner: root
     group: root
     mode: '0440'
   vars:
-    user_name: "{{ item.name }}"
-  when: "item.name in users_admins and (users_include == 'all' or item.name in users_include) and item.name not in users_exclude"
-  loop: "{{ users_list | dict2items('name', 'data') }}"
+    user_name: "{{ item }}"
+  when: "item in users_admins and (users_include == 'all' or item in users_include) and item not in users_exclude"
+  loop: "{{ users_list | keys }}"
   loop_control:
-    label: "User {{ item.name }}"
+    label: "User {{ item }}"
   become: true
 - name: Delete non-admin sudoers files
   ansible.builtin.file:
-    path: "/etc/suders.d/admin.{{ item.name }}"
+    path: "/etc/suders.d/admin.{{ item }}"
     state: absent
-  when: "item.name not in users_admins"
-  loop: "{{ users_list | dict2items('name', 'data') }}"
+  when: "item not in users_admins"
+  loop: "{{ users_list | keys }}"
   loop_control:
-    label: "User {{ item.name }}"
+    label: "User {{ item }}"
   become: true
 - name: Delete Cloud Init Sudoers
   ansible.builtin.file:
