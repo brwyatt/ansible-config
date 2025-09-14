@@ -1,5 +1,4 @@
 ---
-common_admin_user: "{{ ansible_user }}"
 common_apt_cache_validity: 86400
 common_apt_repo_updates_distros:
   Debian: true

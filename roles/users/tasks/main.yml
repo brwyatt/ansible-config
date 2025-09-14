@@ -1,0 +1,93 @@
+---
+- name: Manage root User
+  ansible.builtin.user:
+    name: "root"
+    password: >-
+      {{
+        users_root_password | string | password_hash(
+          'sha512',
+          lookup(
+            'ansible.builtin.password',
+            '/dev/null',
+            chars=["ascii_letters", "digits"],
+            seed='root@'+inventory_hostname,
+            length=16,
+          ),
+        ) if users_root_password
+        and not users_disable_root_login
+        else "!"
+      }}
+  when: users_manage_root
+  become: true
+- name: Manage root SSH Keys
+  ansible.builtin.authorized_key:
+    user: "root"
+    key: >-
+      {{
+        users_admins |
+          map('extract', users_list) |
+          map(attribute='ssh_pub_keys') |
+          flatten |
+          join('\n')
+      }}
+    state: "{{ 'absent' if users_disable_root_login else 'present' }}"
+    exclusive: true
+    manage_dir: true
+  when: users_manage_root
+  become: true
+- name: Manage Users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    password: >-
+      {{
+        item.data.password | string | password_hash(
+          'sha512',
+          lookup(
+            'ansible.builtin.password',
+            '/dev/null',
+            chars=["ascii_letters", "digits"],
+            seed=item.name+'@'+inventory_hostname,
+            length=16,
+          ),
+        ) if item.data.password is defined
+        else "!"
+      }}
+    state: "{{ 'present' if (users_include == 'all' or item.name in users_include) and item.name not in users_exclude else 'absent' }}"
+    groups: "{{ item.data.groups | default([]) | join(',') }}"
+    append: true
+  loop: "{{ users_list | dict2items('name', 'data') }}"
+  loop_control:
+    label: "User {{ item.name }}"
+  become: true
+- name: Manage User SSH Keys
+  ansible.builtin.authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.data.ssh_pub_keys | default([]) | join('\n') }}"
+    state: "{{ 'present' if (users_include == 'all' or item.name in users_include) and item.name not in users_exclude else 'absent' }}"
+    exclusive: true
+    manage_dir: true
+  loop: "{{ users_list | dict2items('name', 'data') }}"
+  loop_control:
+    label: "User {{ item.name }}"
+  become: true
+- name: Manage sudoers for admins
+  ansible.builtin.template:
+    src: sudoers_d.j2
+    dest: "/etc/sudoers.d/admin.{{ item.name }}"
+    owner: root
+    group: root
+    mode: '0440'
+  when: "item.name in users_admins and (users_include == 'all' or item.name in users_include) and item.name not in users_exclude"
+  loop: "{{ users_list | dict2items('name', 'data') }}"
+  loop_control:
+    label: "User {{ item.name }}"
+  become: true
+- name: Delete non-admin sudoers files
+  ansible.builtin.file:
+    path: "/etc/suders.d/admin.{{ item.name }}"
+    state: absent
+  when: "item.name not in users_admins"
+  loop: "{{ users_list | dict2items('name', 'data') }}"
+  loop_control:
+    label: "User {{ item.name }}"
+  become: true

@@ -1,0 +1,11 @@
+---
+# Manage root user if it is the Ansible user (set password, etc)
+users_manage_root: "{{ ansible_user == 'root' }}"
+# Don't disable root login if Ansible user is root (though, by
+# default we don't manage the root user, so this would only apply
+# if users_manage_root is explicitly set to `true`)
+users_disable_root_login: "{{ ansible_user != 'root' }}"
+users_admins: []
+users_list: {}
+users_include: "all"
+users_exclude: []

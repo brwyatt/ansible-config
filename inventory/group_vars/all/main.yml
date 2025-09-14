@@ -1,6 +1,15 @@
 ---
 aws_creds_file_path: "/root/.aws/config"
-brwyatt_ssh_pub_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDA3zFRckFN4FwVLOQOMzzW/VEquBskxUHj7olTrfRg2On8rCjURbvZXxofXzizuPC6v9hSc3qQhB4jJiVv67NJ3jzKNI7QuxwxNw0mPUknZvpF0tFepnIRJvUDLheXUO+UUM0EtX6Oi2f+C2b5+QRXufgFbjCB9JJIH3idDmesL1H+lRvwIBh2LWHn8OPh6ZmtmNhgWTMjtE8pueKSlBOS/QdzbWKqFFVU8xLJn8aNhgC7iTqygexYaW+ZdhGtzUikJy06lxzUqWq42dazLM9FJ107amZ0xA3tmdvVZIiuPbkqV1+gmFxfzzETLADOHOyX/swP12nwqwq/adv9663WgYUb5tWAU0SptRh8guVYGbB5elRfTPr0NglZrQPXotxc3PKRv8lmY9DRdv3VIwMKt1zFOqxX9CwJ+rRKhSGUy+Va8YHSc6Cbk4qhUygFJKkfWBdRdMkOsVVj3omSYANAdQeyYkBFVPk1WW+tgqGW/nTpsRnvknewjnuM0S+kaBRb0QvrYCzyAQmInkn4naWdDKjux1BbEaL3il+ZWeG53Sh/xXJcTUUxgBgw0lALrXYYyG8wheGu9ic2hiC6ubab2BZ67AJvknrjW7cm17jVVtmh9MFrhM37fXvnUnN91uTk31tzIo/v3qhuYizOzfe5CCqA1BQ9Yoqrdus7jw1YBQ== brwyatt"
-common_admin_keys:
-  - "{{ brwyatt_ssh_pub_key }}"
-ansible_password: "{{ common_admin_password }}"
+users_admins:
+  - "brwyatt"
+users_list:
+  brwyatt:
+    password: "{{ brwyatt_password }}"
+    ssh_pub_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDA3zFRckFN4FwVLOQOMzzW/VEquBskxUHj7olTrfRg2On8rCjURbvZXxofXzizuPC6v9hSc3qQhB4jJiVv67NJ3jzKNI7QuxwxNw0mPUknZvpF0tFepnIRJvUDLheXUO+UUM0EtX6Oi2f+C2b5+QRXufgFbjCB9JJIH3idDmesL1H+lRvwIBh2LWHn8OPh6ZmtmNhgWTMjtE8pueKSlBOS/QdzbWKqFFVU8xLJn8aNhgC7iTqygexYaW+ZdhGtzUikJy06lxzUqWq42dazLM9FJ107amZ0xA3tmdvVZIiuPbkqV1+gmFxfzzETLADOHOyX/swP12nwqwq/adv9663WgYUb5tWAU0SptRh8guVYGbB5elRfTPr0NglZrQPXotxc3PKRv8lmY9DRdv3VIwMKt1zFOqxX9CwJ+rRKhSGUy+Va8YHSc6Cbk4qhUygFJKkfWBdRdMkOsVVj3omSYANAdQeyYkBFVPk1WW+tgqGW/nTpsRnvknewjnuM0S+kaBRb0QvrYCzyAQmInkn4naWdDKjux1BbEaL3il+ZWeG53Sh/xXJcTUUxgBgw0lALrXYYyG8wheGu9ic2hiC6ubab2BZ67AJvknrjW7cm17jVVtmh9MFrhM37fXvnUnN91uTk31tzIo/v3qhuYizOzfe5CCqA1BQ9Yoqrdus7jw1YBQ== brwyatt"
+ansible_password: >-
+  {{
+    users_root_password
+    if ansible_user == 'root'
+    else users_list[ansible_user].password
+  }}

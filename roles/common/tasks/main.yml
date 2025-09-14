@@ -1,21 +1,7 @@
 ---
-- name: Set Admin Password
-  ansible.builtin.user:
-    name: "{{ common_admin_user }}"
-    # generate the password hash using the hostname to generate the salt
-    password: >-
-      {{ common_admin_password | string |
-      password_hash('sha512', lookup(
-        'ansible.builtin.password', '/dev/null', chars=["ascii_letters", "digits"], seed=common_admin_user+'@'+inventory_hostname, length=16
-      )) }}
-  become: true
-- name: Manage Admin SSH Keys
-  ansible.builtin.authorized_key:
-    user: "{{ common_admin_user }}"
-    key: "{{ (common_admin_keys|default([]))|join('\n') }}"
-    exclusive: true
-    manage_dir: true
-  become: true
+- name: Users
+  ansible.builtin.include_role:
+    role: users
 - name: Manage Apt
   ansible.builtin.include_tasks:
     file: apt.yml
