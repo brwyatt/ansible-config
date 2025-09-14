@@ -55,7 +55,7 @@
     state: "{{ 'present' if (users_include == 'all' or item in users_include) and item not in users_exclude else 'absent' }}"
     groups: "{{ users_list[item].groups | default([]) | join(',') }}"
     append: true
-  loop: "{{ users_list | keys }}"
+  loop: "{{ users_list.keys() }}"
   loop_control:
     label: "User {{ item }}"
   become: true
@@ -66,7 +66,7 @@
     state: "{{ 'present' if (users_include == 'all' or item in users_include) and item not in users_exclude else 'absent' }}"
     exclusive: true
     manage_dir: true
-  loop: "{{ users_list | keys }}"
+  loop: "{{ users_list.keys() }}"
   loop_control:
     label: "User {{ item }}"
   become: true
@@ -80,7 +80,7 @@
   vars:
     user_name: "{{ item }}"
   when: "item in users_admins and (users_include == 'all' or item in users_include) and item not in users_exclude"
-  loop: "{{ users_list | keys }}"
+  loop: "{{ users_list.keys() }}"
   loop_control:
     label: "User {{ item }}"
   become: true
@@ -89,7 +89,7 @@
     path: "/etc/suders.d/admin.{{ item }}"
     state: absent
   when: "item not in users_admins"
-  loop: "{{ users_list | keys }}"
+  loop: "{{ users_list.keys() }}"
   loop_control:
     label: "User {{ item }}"
   become: true
