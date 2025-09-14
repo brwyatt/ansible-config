@@ -1,10 +1,10 @@
-deb {{ common_apt_repo_url }} {{ ansible_distribution_release }} main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{{ " contrib" if common_apt_repo_contrib else "" }}
+deb {{ common_apt_repo_url }} {{ ansible_distribution_release }} main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{{ " contrib" if common_apt_repo_contrib else "" }}{{ " non-free-firmware" if common_apt_repo_nonfreefirmware else "" }}
 {% if common_apt_repo_updates %}
-deb {{ common_apt_repo_url }} {{ ansible_distribution_release }}-updates main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{{ " contrib" if common_apt_repo_contrib else "" }}
+deb {{ common_apt_repo_url }} {{ ansible_distribution_release }}-updates main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{{ " contrib" if common_apt_repo_contrib else "" }}{{ " non-free-firmware" if common_apt_repo_nonfreefirmware else "" }}
 {% endif %}
 {% if common_apt_repo_security %}
-deb {{ common_apt_repo_security_url }} {{ ansible_distribution_release }}-security main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{{ " contrib" if common_apt_repo_contrib else "" }}
+deb {{ common_apt_repo_security_url }} {{ ansible_distribution_release }}-security main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{{ " contrib" if common_apt_repo_contrib else "" }}{{ " non-free-firmware" if common_apt_repo_nonfreefirmware else "" }}
 {% endif %}
 {% if common_apt_repo_backports %}
-deb {{ common_apt_repo_url }} {{ ansible_distribution_release }}-backports main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{{ " contrib" if common_apt_repo_contrib else "" }}
+deb {{ common_apt_repo_url }} {{ ansible_distribution_release }}-backports main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{{ " contrib" if common_apt_repo_contrib else "" }}{{ " non-free-firmware" if common_apt_repo_nonfreefirmware else "" }}
 {% endif %}

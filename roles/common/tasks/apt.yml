@@ -57,6 +57,14 @@
           default(false)
         )
       }}
+    common_apt_repo_nonfreefirmware: |-
+      {{
+        common_apt_repo_nonfreefirmware |
+        default(
+          common_apt_repo_nonfreefirmware_distros[ansible_distribution] |
+          default(false)
+        )
+      }}
     common_apt_repo_url: |-
       {{
         common_apt_repo_url |

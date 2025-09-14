@@ -21,6 +21,9 @@ common_apt_repo_multiverse_distros:
 common_apt_repo_contrib_distros:
   Debian: true
   Ubuntu: false
+common_apt_repo_nonfreefirmware_distros:
+  Debian: false
+  Ubuntu: false
 common_apt_repo_url_distros:
   Debian: http://deb.debian.org/debian
   Ubuntu: http://archive.ubuntu.com/ubuntu
