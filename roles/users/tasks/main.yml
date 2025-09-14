@@ -71,7 +71,7 @@
   loop_control:
     label: "User {{ item }}"
   become: true
-- name: Manage sudoers for admins
+- name: Manage sudoers files for admin users
   ansible.builtin.template:
     src: admin_sudoers_d.j2
     dest: "/etc/sudoers.d/admin_{{ item }}"
@@ -85,7 +85,7 @@
   loop_control:
     label: "User {{ item }}"
   become: true
-- name: Delete non-admin sudoers files
+- name: Delete non-admin users sudoer files
   ansible.builtin.file:
     path: "/etc/suders.d/admin_{{ item }}"
     state: absent
