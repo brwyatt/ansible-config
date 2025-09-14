@@ -24,10 +24,10 @@
     user: "root"
     key: >-
       {{
-        users_admins |
+        ((users_admins |
           map('extract', users_list) |
           map(attribute='ssh_pub_keys') |
-          flatten |
+          flatten) + (users_extra_root_keys | default([]))) |
           join('\n')
       }}
     state: "{{ 'absent' if users_disable_root_login else 'present' }}"
