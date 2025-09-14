@@ -22,14 +22,7 @@
 - name: Manage root SSH Keys
   ansible.builtin.authorized_key:
     user: "root"
-    key: >-
-      {{
-        ((users_admins |
-          map('extract', users_list) |
-          map(attribute='ssh_pub_keys') |
-          flatten) + (users_extra_root_keys | default([]))) |
-          join('\n')
-      }}
+    key: "{{ ((users_admins | map('extract', users_list) | map(attribute='ssh_pub_keys') | flatten) + (users_extra_root_keys | default([]))) | join('\n') }}"
     state: "{{ 'absent' if users_disable_root_login else 'present' }}"
     exclusive: true
     manage_dir: true
