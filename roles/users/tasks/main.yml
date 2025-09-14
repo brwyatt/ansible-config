@@ -72,11 +72,13 @@
   become: true
 - name: Manage sudoers for admins
   ansible.builtin.template:
-    src: sudoers_d.j2
+    src: admin_sudoers_d.j2
     dest: "/etc/sudoers.d/admin.{{ item.name }}"
     owner: root
     group: root
     mode: '0440'
+  vars:
+    user_name: "{{ item.name }}"
   when: "item.name in users_admins and (users_include == 'all' or item.name in users_include) and item.name not in users_exclude"
   loop: "{{ users_list | dict2items('name', 'data') }}"
   loop_control:
