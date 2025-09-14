@@ -1,5 +1,6 @@
 ---
 aws_creds_file_path: "/root/.aws/config"
+users_manage_root: true
 users_admins:
   - "brwyatt"
 users_list:
