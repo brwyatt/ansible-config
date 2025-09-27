@@ -95,12 +95,8 @@
   become: true
   register: sources_list_status
   when: not ubuntu_sources_file_stat.stat.exists
-- name: Force apt cache update if sources.list changed
-  ansible.builtin.set_fact:
-    common_apt_cache_validity: 0
-  when: sources_list_status.changed | default(false)
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: true
-    cache_valid_time: "{{ common_apt_cache_validity }}"
+    cache_valid_time: "{{ 0 if (sources_list_status.changed | default(false)) else None }}"
   become: true
