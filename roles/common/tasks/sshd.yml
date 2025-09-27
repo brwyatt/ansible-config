@@ -1,12 +1,26 @@
 ---
-- name: Ensure ssh is installed
+- name: Ensure ssh server is installed (apt)
   ansible.builtin.apt:
     name: ssh
     state: present
   become: true
+  when: ansible_os_family == "Debian"
+- name: Ensure ssh server is installed (dnf)
+  ansible.builtin.dnf:
+    name: openssh-server
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
 - name: Start sshd
   ansible.builtin.service:
-    name: ssh
+    name: |-
+      {{
+        common_sshd_service_name |
+        default(
+          common_sshd_service_name_families[ansible_os_family] |
+          default('sshd')
+        )
+      }}
     state: started
     enabled: true
   become: true

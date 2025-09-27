@@ -5,22 +5,29 @@
 - name: Manage Apt
   ansible.builtin.include_tasks:
     file: apt.yml
+  when: ansible_os_family == "Debian"
 - name: Manage SSH service
   ansible.builtin.include_tasks:
     file: sshd.yml
-- name: Ensure vim is installed
+- name: Install common packages (apt)
   ansible.builtin.apt:
-    name: vim
+    name: "{{ item }}"
     state: present
   become: true
-- name: Ensure htop is installed
-  ansible.builtin.apt:
-    name: htop
+  when: ansible_os_family == "Debian"
+  loop:
+    - vim
+    - htop
+- name: Install common packages (dnf)
+  ansible.builtin.dnf:
+    name: "{{ item }}"
     state: present
   become: true
-- name: Install qemu-guest-agent on Qemu VMs
-  ansible.builtin.apt:
-    name: qemu-guest-agent
-    state: present
-  become: true
+  when: ansible_os_family == "RedHat"
+  loop:
+    - vim
+    - htop
+- name: Qemu guest agent
+  ansible.builtin.include_tasks:
+    file: qemu-guest-agent.yml
   when: ansible_virtualization_role == "guest" and ansible_system_vendor == "QEMU"
