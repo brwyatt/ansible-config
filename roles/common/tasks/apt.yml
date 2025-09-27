@@ -98,5 +98,5 @@
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: true
-    cache_valid_time: "{{ 0 if (sources_list_status.changed | default(false)) else None }}"
+    cache_valid_time: "{{ 0 if (sources_list_status.changed | default(false)) else common_apt_cache_validity }}"
   become: true
