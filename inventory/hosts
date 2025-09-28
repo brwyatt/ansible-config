@@ -78,3 +78,7 @@ desktops:
   hosts:
     zephyr.user.home.brwyatt.net:
       ansible_user: brwyatt
+ipatest:
+  hosts:
+    ipa-test[01:03].server.home.brwyatt.net:
+      ansible_user: brwyatt
