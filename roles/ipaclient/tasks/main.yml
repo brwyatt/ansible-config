@@ -11,3 +11,9 @@
     state: "present"
   become: true
   when: ansible_os_family == "RedHat"
+- name: Check domains
+  ansible.builtin.command:
+    cmd: "sssctl domain-list"
+  changed_when: false
+  become: true
+  register: domain_list
