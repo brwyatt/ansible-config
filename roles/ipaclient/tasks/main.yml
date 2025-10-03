@@ -1,0 +1,13 @@
+---
+- name: Install IPA Client (apt)
+  ansible.builtin.apt:
+    name: "ipa-client"
+    state: "present"
+  become: true
+  when: ansible_os_family == "Debian"
+- name: Install IPA Client (dnf)
+  ansible.builtin.dnf:
+    name: "ipa-client"
+    state: "present"
+  become: true
+  when: ansible_os_family == "RedHat"
