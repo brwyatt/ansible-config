@@ -1,2 +1,3 @@
-passlib
+dnspython
 jmespath
+passlib
