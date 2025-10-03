@@ -15,3 +15,7 @@ ansible_password: >-
     if ansible_user == 'root'
     else users_list[ansible_user].password
   }}
+ipa_domain: "home.brwyatt.net"
+ipa_realm: "{{ ipa_domain | upper }}"
+ipaserver_domain: "{{ ipa_domain }}"
+ipaserver_realm: "{{ ipa_realm }}"

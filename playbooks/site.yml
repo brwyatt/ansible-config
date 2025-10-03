@@ -47,3 +47,7 @@
   roles:
     - role: chrony
     - role: keepalived
+- name: IPA Servers
+  hosts: ipaservers:ipatest
+  roles:
+    - role: ipaserver

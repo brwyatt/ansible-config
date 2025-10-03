@@ -1,0 +1,13 @@
+---
+- name: Find existing FreeIPA server via SRV record
+  ansible.builtin.set_fact:
+    ipaserver_host: "{{ query('community.dns.lookup', '_ldap._tcp.' + ipaserver_domain + '.', type='SRV') | first }}"
+  delegate_to: localhost
+  run_once: true
+- name: FreeIPA server
+  ansible.builtin.debug:
+    msg: "FreeIPA Server: {{ ipaserver_host }}"
+- name: Verify server found
+  ansible.builtin.assert:
+    that: ipaserver_host is defined and ipaserver_host | length > 0
+    fail_msg: "ERROR: Could not resolve a FreeIPA host from SRV record."
