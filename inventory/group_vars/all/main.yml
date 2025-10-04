@@ -20,7 +20,6 @@ ipa_domain: "home.brwyatt.net"
 ipa_realm: "{{ ipa_domain | upper }}"
 
 ipaclient_mkhomedir: true
-ipaclient_ntp_pool: "ntp.home.brwyatt.net"
 
 ipaadmin_principal: "admin"
 

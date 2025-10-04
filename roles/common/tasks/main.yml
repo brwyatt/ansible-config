@@ -31,3 +31,7 @@
   ansible.builtin.include_tasks:
     file: qemu-guest-agent.yml
   when: ansible_virtualization_role == "guest" and ansible_system_vendor == "QEMU"
+- name: Manage /etc/hosts
+  ansible.builtin.include_tasks:
+    file: etc_hosts.yml
+  when: common_manage_etc_hosts

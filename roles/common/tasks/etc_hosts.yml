@@ -1,0 +1,17 @@
+---
+- name: Disable Cloud Init /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/cloud/cloud.cfg
+    line: "  - update_etc_hosts"
+    state: absent
+    create: false
+    backup: false
+  become: true
+- name: Set /etc/hosts
+  ansible.builtin.template:
+    src: etc_hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
