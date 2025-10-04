@@ -30,4 +30,4 @@ ipareplica_domain: "{{ ipa_domain }}"
 ipareplica_setup_ca: true
 ipareplica_setup_dns: false
 ipareplica_setup_firewalld: false
-ipareplica_setup_kra: true
+ipareplica_setup_kra: false
