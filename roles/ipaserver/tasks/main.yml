@@ -1,9 +1,0 @@
----
-- name: Install IPA Server
-  ansible.builtin.dnf:
-    name: "ipa-server"
-    state: "present"
-  become: true
-- name: Setup IPA Client
-  ansible.builtin.include_role:
-    role: ipaclient

@@ -18,17 +18,16 @@ ansible_password: >-
 
 ipa_domain: "home.brwyatt.net"
 ipa_realm: "{{ ipa_domain | upper }}"
-ipa_ansible_admin: "admin"
-ipa_servers: "{{ query('community.dns.lookup', '_ldap._tcp.' + ipaserver_domain + '.', type='SRV') | map('split') | map('last') | trim('.') }}"
 
-ipaclient_domain: "{{ ipa_domain }}"
-ipaclient_realm: "{{ ipa_realm }}"
-ipaclient_ansible_admin: "{{ ipa_ansible_admin }}"
-ipaclient_ansible_admin_password: "{{ ipa_ansible_admin_password }}"
-ipaclient_server: "{{ ipa_servers | first }}"
+ipaclient_mkhomedir: true
+ipaclient_ntp_pool: "ntp.home.brwyatt.net"
 
-ipaserver_domain: "{{ ipa_domain }}"
+ipaadmin_principal: "admin"
+
 ipaserver_realm: "{{ ipa_realm }}"
-ipaserver_ansible_admin: "{{ ipa_ansible_admin }}"
-ipaserver_ansible_admin_password: "{{ ipa_ansible_admin_password }}"
-ipaserver_server: "{{ ipa_servers | first }}"
+ipaservers: "{{ query('community.dns.lookup', '_ldap._tcp.' + ipaserver_domain + '.', type='SRV') | map('split') | map('last') | trim('.') }}"
+
+ipareplica_domain: "{{ ipa_domain }}"
+ipareplica_setup_ca: true
+ipareplica_setup_dns: false
+ipareplica_setup_kra: true
