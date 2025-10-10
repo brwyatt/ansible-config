@@ -19,7 +19,7 @@
     state: started
     enabled: true
   become: true
-- name: iPXE chain boot file
+- name: Manage iPXE chain boot file
   ansible.builtin.template:
     src: boot.ipxe.j2
     dest: "{{ pxeserver_tftp_directory }}/boot.ipxe"
