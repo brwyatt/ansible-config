@@ -27,3 +27,5 @@
     state: started
     enabled: true
   become: true
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
