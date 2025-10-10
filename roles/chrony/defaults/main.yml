@@ -1,8 +1,23 @@
 ---
-chrony_confdir: /etc/chrony/conf.d
-chrony_sourcedir: /etc/chrony/sources.d
-chrony_keyfile: /etc/chrony/chrony.keys
+chrony_os_family_config:
+  Debian:
+    conffile: /etc/chony/chrony.conf
+    confdir: /etc/chrony/conf.d
+    sourcedir: /etc/chrony/sources.d
+    keyfile: /etc/chrony/chrony.keys
+    service_name: chrony
+  RedHat:
+    conffile: /etc/chrony.conf
+    confdir: null
+    sourcedir: null
+    keyfile: /etc/chrony.keys
+    service_name: chronyd
+chrony_conffile: "{{ chrony_os_family_config[ansible_os_family]['conffile'] }}"
+chrony_confdir: "{{ chrony_os_family_config[ansible_os_family]['confdir'] }}"
+chrony_sourcedir: "{{ chrony_os_family_config[ansible_os_family]['sourcedir'] }}"
+chrony_keyfile: "{{ chrony_os_family_config[ansible_os_family]['keyfile'] }}"
 chrony_keys: {}
+chrony_service_name: "{{ chrony_os_family_config[ansible_os_family]['service_name'] }}"
 chrony_sources:
   - type: "pool"
     location: "pool.ntp.org"
@@ -18,6 +33,5 @@ chrony_makestep:
   max_slew: 1
   update_limit: 3
 chrony_leapsectz: "right/UTC"
-chrony_bindaddress: "127.0.0.1"
-chrony_allow:
-  - "127.0.0.0/8"
+chrony_bindaddress: null
+chrony_allow: []

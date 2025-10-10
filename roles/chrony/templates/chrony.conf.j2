@@ -1,5 +1,7 @@
+{% if chrony_confdir %}
 confdir {{ chrony_confdir }}
 
+{% endif %}
 {% for source in chrony_sources %}
 {% if source.location.lower() not in [ansible_hostname.lower(), ansible_fqdn.lower(), inventory_hostname.lower()] and source.location.lower() not in ansible_all_ipv4_addresses%}
 {{ source.type }} {{ source.location }}{% if "key" in source %} key {{ source.key }}{% endif %}{% if source.prefer|default(false) %} prefer{% endif %}{% if source.iburst|default(false) %} iburst{% endif %}{% if source.trust|default(false) %} trust{% endif %}{% if "minpoll" in source %} minpoll {{ source.minpoll }}{% endif %}{% if "maxpoll" in source %} maxpoll {{ source.maxpoll }}{% endif %}
@@ -7,10 +9,14 @@ confdir {{ chrony_confdir }}
 {% endif %}
 {% endfor %}
 
+{% if chrony_sourcedir %}
 sourcedir {{ chrony_sourcedir }}
 
+{% endif %}
+{% if chrony_keys %}
 keyfile {{ chrony_keyfile }}
 
+{% endif %}
 driftfile {{ chrony_driftfile }}
 
 ntsdumpdir {{ chrony_ntsdumpdir }}
@@ -27,7 +33,9 @@ makestep {{ chrony_makestep.max_slew }} {{ chrony_makestep.update_limit }}
 
 leapsectz {{ chrony_leapsectz }}
 
+{% if chrony_bindaddress %}
 bindaddress {{ chrony_bindaddress }}
+{% endif %}
 {% for allow in chrony_allow %}
 allow {{ allow }}
 {% endfor %}

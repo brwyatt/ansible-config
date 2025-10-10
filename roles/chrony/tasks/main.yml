@@ -7,7 +7,7 @@
 - name: Chrony config file
   ansible.builtin.template:
     src: chrony.conf.j2
-    dest: /etc/chrony/chrony.conf
+    dest: "{{ chrony_conffile }}"
     owner: root
     group: root
     mode: '0644'
@@ -20,9 +20,10 @@
     group: "_chrony"
     mode: '0640'
   notify: Restart Chrony
+  when: chrony_keys
 - name: Ensure Chrony is running and enabled
   ansible.builtin.service:
-    name: chrony
+    name: "{{ chrony_service_name }}"
     state: started
     enabled: true
   become: true

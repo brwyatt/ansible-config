@@ -16,6 +16,13 @@ ansible_password: >-
     else users_list[ansible_user].password
   }}
 
+chrony_sources:
+  - type: "pool"
+    location: "pool.ntp.org"
+    iburst: true
+    trust: true
+    prefer: false
+
 ipa_domain: "home.brwyatt.net"
 ipa_realm: "{{ ipa_domain | upper }}"
 
