@@ -13,7 +13,11 @@ ansible_password: >-
   {{
     users_root_password
     if ansible_user == 'root'
-    else users_list[ansible_user].password
+    else (
+      users_list[ansible_user].password
+      if ansible_user in users_list
+      else None
+    )
   }}
 
 chrony_sources:
