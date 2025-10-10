@@ -18,10 +18,10 @@ ansible_password: >-
 
 chrony_sources:
   - type: "pool"
-    location: "pool.ntp.org"
+    location: "ntp.home.brwyatt.net"
     iburst: true
     trust: true
-    prefer: false
+    prefer: true
 
 ipa_domain: "home.brwyatt.net"
 ipa_realm: "{{ ipa_domain | upper }}"

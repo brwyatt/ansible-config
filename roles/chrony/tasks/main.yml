@@ -20,7 +20,7 @@
     group: "_chrony"
     mode: '0640'
   notify: Restart Chrony
-  when: chrony_keys
+  when: chrony_keys | length > 0
 - name: Ensure Chrony is running and enabled
   ansible.builtin.service:
     name: "{{ chrony_service_name }}"

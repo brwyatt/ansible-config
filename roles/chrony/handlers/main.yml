@@ -1,6 +1,6 @@
 ---
 - name: Restart Chrony
   ansible.builtin.service:
-    name: chrony
+    name: "{{ chrony_service_name }}"
     state: restarted
   become: true

@@ -1,7 +1,7 @@
 ---
 chrony_os_family_config:
   Debian:
-    conffile: /etc/chony/chrony.conf
+    conffile: /etc/chrony/chrony.conf
     confdir: /etc/chrony/conf.d
     sourcedir: /etc/chrony/sources.d
     keyfile: /etc/chrony/chrony.keys
