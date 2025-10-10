@@ -50,4 +50,5 @@
 - name: IPA Servers
   hosts: ipaservers:ipatest
   roles:
+    - role: chrony
     - role: freeipa.ansible_freeipa.ipareplica
