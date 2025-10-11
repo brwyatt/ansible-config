@@ -1,7 +1,10 @@
 # Managed by Ansible
 
 # IPv4
-{{ ansible_default_ipv4.address }} {{ ansible_fqdn }} {{ ansible_hostname }}
+{% set hostname = ansible_hostname | lower -%}
+{% set fqdn = ansible_fqdn | lower -%}
+{% set fqdn = (inventory_hostname | lower) if fqdn == hostname else fqdn -%}
+{{ ansible_default_ipv4.address }} {{ fqdn }} {{ hostname }}
 127.0.0.1 localhost.localdomain localhost
 127.0.0.1 localhost4.localdomain4 localhost4
 
