@@ -52,3 +52,4 @@
   roles:
     - role: chrony
     - role: freeipa.ansible_freeipa.ipareplica
+      tags: ipa_replica_setup
