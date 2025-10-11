@@ -81,4 +81,4 @@ desktops:
 ipaservers:
   hosts:
     ipa[01:03].server.home.brwyatt.net:
-      ansible_user: brwyatt
+      ansible_user: localadmin
