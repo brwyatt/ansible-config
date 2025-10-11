@@ -35,10 +35,13 @@ chrony_sources:
 ipa_domain: "home.brwyatt.net"
 ipa_realm: "{{ ipa_domain | upper }}"
 
+ipaclient_domain: "{{ ipa_domain }}"
+ipaclient_realm: "{{ ipa_realm }}"
 ipaclient_mkhomedir: true
 
 ipaadmin_principal: "admin"
 
+ipaserver_domain: "{{ ipa_domain }}"
 ipaserver_realm: "{{ ipa_realm }}"
 ipaservers: "{{ query('community.dns.lookup', '_ldap._tcp.' + ipaserver_domain + '.', type='SRV') | map('split') | map('last') | trim('.') }}"
 

@@ -7,6 +7,7 @@ loadbalancers:
   children:
     mqttloadbalancers:
     proxmoxloadbalancers:
+    ipaloadbalancers:
 mqttloadbalancers:
   hosts:
     mqtt-haproxy[01:02].iot.home.brwyatt.net:
@@ -82,3 +83,7 @@ ipaservers:
   hosts:
     ipa[01:03].server.home.brwyatt.net:
       ansible_user: localadmin
+ipaloadbalancers:
+  hosts:
+    ipa-haproxy[01:02].server.home.brwyatt.net:
+      ansible_user: root

@@ -4,6 +4,13 @@
   become: true
   roles:
     - role: common
+# Currently restricted until we've got this proved out.
+# Will move to part of common after we're happy with it.
+- name: Join Domain
+  hosts: ipaloadbalancers
+  become: true
+  roles:
+    - role: freeipa.ansible_freeipa.ipaclient
 - name: Load Balancer hosts
   hosts: loadbalancers
   become: true

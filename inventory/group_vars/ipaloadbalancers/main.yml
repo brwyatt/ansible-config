@@ -1,0 +1,54 @@
+---
+cert:
+  - ipa.home.brwyatt.net
+haproxy_certbot_certs:
+  - "{{ cert[0] }}"
+haproxy_options:
+  - "forwardfor"
+  - "http-server-close"
+haproxy_resolvers:
+  localdns:
+    nameservers:
+      dns1:
+        host: "127.0.0.53"
+        port: "53"
+    options:
+      - "accepted_payload_size 8192"
+haproxy_frontends:
+  stats:
+    bind:
+      port: 8404
+    options:
+      - "stats enable"
+      - "stats uri /"
+      - "stats refresh 5s"
+  www-http:
+    bind:
+      port: 80
+    options:
+      - "http-request redirect scheme https code 301"
+  ipaweb:
+    bind:
+      port: 443
+      ssl_cert: "/etc/haproxy/certs/{{ cert[0] }}.pem"
+    backend: "ipaweb-hosts"
+    options:
+      - "http-request set-header X-Forwarded-Proto https"
+haproxy_backends:
+  ipaweb-hosts:
+    balance: "leastconn"
+    options:
+      - "cookie SERVER insert indirect nocache dynamic"
+      - "dynamic-cookie-key {{ ipaweb_haproxy_cookie_key }}"
+      - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
+      - "server-template ipaweb 1-5 _https._tcp.ipa.home.brwyatt.net resolvers localdns init-addr none"
+keepalived_check_scripts:
+  ipaweb:
+    type: haproxy
+    backend_name: "ipaweb-hosts"
+keepalived_instances:
+  ipaweb:
+    virtual_ip: 172.17.30.5/24
+    auth_pass: "{{ keepalived_auth_pass }}"
+    check_scripts:
+      - ipaweb
