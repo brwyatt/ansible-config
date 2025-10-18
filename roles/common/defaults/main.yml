@@ -30,6 +30,7 @@ common_apt_repo_url_distros:
 common_apt_repo_security_url_distros:
   Debian: http://security.debian.org/debian-security
   Ubuntu: http://archive.ubuntu.com/ubuntu
+common_join_ipa_domain: false
 common_manage_etc_hosts: false
 common_sshd_service_name_families:
   Debian: "ssh"

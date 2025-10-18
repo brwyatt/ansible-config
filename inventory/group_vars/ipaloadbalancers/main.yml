@@ -1,6 +1,7 @@
 ---
 cert:
   - ipa.home.brwyatt.net
+common_join_ipa_domain: true
 haproxy_certbot_certs:
   - "{{ cert[0] }}"
 haproxy_options:

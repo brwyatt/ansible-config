@@ -2,6 +2,12 @@
 - name: Users
   ansible.builtin.include_role:
     role: users
+  vars:
+    users_include: "{{ ['localadmin'] if common_join_ipa_domain else 'all' }}"
+- name: Join Domain
+  ansible.builtin.include_role:
+    role: freeipa.ansible_freeipa.ipaclient
+  when: common_join_ipa_domain
 - name: Manage Apt
   ansible.builtin.include_tasks:
     file: apt.yml
