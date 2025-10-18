@@ -2,7 +2,7 @@
 mqttservers:
   hosts:
     mqtt[01:03].iot.home.brwyatt.net:
-      ansible_user: root
+      ansible_user: localadmin
 loadbalancers:
   children:
     mqttloadbalancers:
@@ -11,11 +11,11 @@ loadbalancers:
 mqttloadbalancers:
   hosts:
     mqtt-haproxy[01:02].iot.home.brwyatt.net:
-      ansible_user: root
+      ansible_user: localadmin
 proxmoxloadbalancers:
   hosts:
     proxmox-haproxy[01:03].server.home.brwyatt.net:
-      ansible_user: root
+      ansible_user: localadmin
 jellyfin:
   hosts:
     jellyfin.server.home.brwyatt.net:
