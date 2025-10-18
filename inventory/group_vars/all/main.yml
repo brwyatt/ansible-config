@@ -41,7 +41,7 @@ ipaclient_domain: "{{ ipa_domain }}"
 ipaclient_realm: "{{ ipa_realm }}"
 ipaclient_mkhomedir: true
 
-ipaadmin_principal: "admin"
+ipaadmin_principal: "ansible"
 
 ipaserver_domain: "{{ ipa_domain }}"
 ipaserver_realm: "{{ ipa_realm }}"
