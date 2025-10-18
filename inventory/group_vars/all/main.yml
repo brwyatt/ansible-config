@@ -32,7 +32,7 @@ chrony_sources:
     trust: true
     prefer: true
 
-common_join_ipa_domain: false
+common_join_ipa_domain: true
 
 ipa_domain: "home.brwyatt.net"
 ipa_realm: "{{ ipa_domain | upper }}"
