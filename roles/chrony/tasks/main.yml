@@ -12,6 +12,15 @@
     group: root
     mode: '0644'
   notify: Restart Chrony
+- name: Chrony defaults
+  ansible.builtin.template:
+    src: etc_default_chrony.j2
+    dest: "/etc/default/chrony"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Chrony
+  when: ansible_os_family == "Debian"
 - name: Chrony keys file
   ansible.builtin.template:
     src: chrony.keys.j2
