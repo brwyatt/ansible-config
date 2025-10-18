@@ -20,7 +20,7 @@
   when: users_manage_root
   become: true
 - name: Manage root SSH Keys
-  ansible.builtin.authorized_key:
+  ansible.posix.authorized_key:
     user: "root"
     key: "{{ ((users_admins | map('extract', users_list) | map(attribute='ssh_pub_keys') | flatten) + (users_extra_root_keys | default([]))) | join('\n') }}"
     state: "{{ 'absent' if users_disable_root_login else 'present' }}"
@@ -58,7 +58,7 @@
     - result.rc != 6
   become: true
 - name: Manage User SSH Keys
-  ansible.builtin.authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ item }}"
     key: "{{ users_list[item].ssh_pub_keys | default([]) | join('\n') }}"
     state: "present"
