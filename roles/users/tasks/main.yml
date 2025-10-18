@@ -52,15 +52,19 @@
   loop: "{{ users_list.keys() }}"
   loop_control:
     label: "User {{ item }}"
+  register: result
+  failed_when:
+    - result is failed
+    - result.rc != 6
   become: true
 - name: Manage User SSH Keys
   ansible.builtin.authorized_key:
     user: "{{ item }}"
     key: "{{ users_list[item].ssh_pub_keys | default([]) | join('\n') }}"
-    state: "{{ 'present' if (users_include == 'all' or item in users_include) and item not in users_exclude else 'absent' }}"
+    state: "present"
     exclusive: true
     manage_dir: true
-  loop: "{{ users_list.keys() }}"
+  loop: "{{ (users_list.keys() if users_include == 'all' else users_list.keys() | select('in', users_include)) | reject('in', users_exclude) | list }}"
   loop_control:
     label: "User {{ item }}"
   become: true
