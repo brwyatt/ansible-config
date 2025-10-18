@@ -58,7 +58,7 @@ ansible:
       ansible_user: root
 proxmox:
   vars:
-    ansible_user: root
+    ansible_user: localadmin
   hosts:
     pve-rainier.proxmox.home.brwyatt.net:
     pve-orca.proxmox.home.brwyatt.net:
@@ -86,4 +86,4 @@ ipaservers:
 ipaloadbalancers:
   hosts:
     ipa-haproxy[01:02].server.home.brwyatt.net:
-      ansible_user: root
+      ansible_user: localadmin
