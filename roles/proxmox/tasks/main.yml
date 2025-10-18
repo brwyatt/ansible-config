@@ -1,0 +1,12 @@
+---
+- name: Allow LDAP sub-ID range mappings for LXC containers
+  ansible.builtin.lineinfile:
+    path: "/etc/{{ item }}"
+    line: "root:1579000000:200000"
+    regexp: "^root:1579000000:[0-9]+$"
+    state: present
+  loop_control:
+    label: "LDAP range in {{ item }}"
+  loop:
+    - subuid
+    - subgid

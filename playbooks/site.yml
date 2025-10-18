@@ -32,6 +32,10 @@
     - role: certbot
     - role: reverseproxy
     - role: keepalived
+- name: Proxmox Servers
+  hosts: proxmox
+  roles:
+    - role: proxmox
 - name: PXE Servers
   hosts: pxeservers
   roles:
