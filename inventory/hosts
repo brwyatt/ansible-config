@@ -51,7 +51,6 @@ nutserver:
 ansible:
   hosts:
     ansible.server.home.brwyatt.net:
-      ansible_user: root
 proxmox:
   hosts:
     pve-rainier.proxmox.home.brwyatt.net:
