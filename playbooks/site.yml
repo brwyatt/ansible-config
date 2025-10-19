@@ -25,6 +25,11 @@
     - role: certbot
     - role: homebox
     - role: reverseproxy
+- name: Mokey Servers
+  hosts: mokeyservers
+  become: true
+  roles:
+    - role: mokey
 - name: Inbound Proxies
   hosts: inboundproxies
   roles:

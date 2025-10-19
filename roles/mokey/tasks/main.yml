@@ -1,0 +1,65 @@
+---
+- name: Gather installed package facts
+  ansible.builtin.package_facts:
+    manager: auto
+- name: Set fact for installed Mokey version
+  ansible.builtin.set_fact:
+    mokey_installed_version: "{{ ansible_facts.packages['mokey'][0].version | default('0.0.0') }}"
+- name: Conditionally download Mokey package
+  ansible.builtin.get_url:
+    url: "{{ mokey_download_url }}"
+    dest: "{{ mokey_download_location }}"
+    mode: '0644'
+  register: download_status
+  when: mokey_installed_version != mokey_version
+- name: Conditionally install/upgrade Mokey from local package file
+  ansible.builtin.package:
+    name: "{{ mokey_download_location }}"
+    state: present
+  when: download_status is changed or mokey_installed_version == '0.0.0'
+  notify: Restart Mokey
+- name: Check for existing keytab
+  ansible.builtin.stat:
+    path: "{{ mokey_keytab_path }}"
+  register: keytab_status
+- name: Authenticate user for keytab
+  ansible.builtin.command:
+    cmd: "kinit {{ mokey_app_principal }}"
+  args:
+    stdin: "{{ mokey_app_password }}"
+  register: kint_cmd
+  changed_when: kinit_cmd.rc == 0
+  when: not keytab_status.stat.exists or mokey_force_keytab_renewal
+- name: Retrieve keytab
+  ansible.builtin.command:
+    cmd: "ipa-getkeytab -p {{ mokey_app_principal }} -k {{ mokey_keytab_path }} -r"
+    creates: "{{ mokey_keytab_path }}"
+  register: keytab_cmd
+  changed_when: keytab_cmd.rc == 0
+  when: (not keytab_status.stat.exists or mokey_force_keytab_renewal) and kinit_cmd.rc == 0
+- name: Destroy kinit cache
+  ansible.builtin.command:
+    cmd: "kdestroy"
+  register: kdestroy_cmd
+  changed_when: kdestroy_cmd.rc == 0
+  when: (not keytab_status.stat.exists or mokey_force_keytab_renewal) and kinit_cmd.rc == 0
+- name: Fix keytab permissions
+  ansible.builtin.file:
+    path: "{{ mokey_keytab_path }}"
+    owner: root
+    group: mokey
+    mode: '0640'
+- name: Mokey Config file
+  ansible.builtin.template:
+    src: "mokey.toml.j2"
+    dest: "/etc/mokey/mokey.toml"
+    owner: root
+    group: mokey
+    mode: '0640'
+  notify: Restart Mokey
+- name: Start Mokey
+  ansible.builtin.service:
+    name: mokey
+    state: started
+    enabled: true
+  become: true
