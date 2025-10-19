@@ -2,7 +2,6 @@
 mqttservers:
   hosts:
     mqtt[01:03].iot.home.brwyatt.net:
-      ansible_user: localadmin
 loadbalancers:
   children:
     mqttloadbalancers:
@@ -11,15 +10,12 @@ loadbalancers:
 mqttloadbalancers:
   hosts:
     mqtt-haproxy[01:02].iot.home.brwyatt.net:
-      ansible_user: localadmin
 proxmoxloadbalancers:
   hosts:
     proxmox-haproxy[01:03].server.home.brwyatt.net:
-      ansible_user: localadmin
 jellyfin:
   hosts:
     jellyfin.server.home.brwyatt.net:
-      ansible_user: brwyatt
 renderers:
   hosts:
     render[01:03].server.home.brwyatt.net:
@@ -57,8 +53,6 @@ ansible:
     ansible.server.home.brwyatt.net:
       ansible_user: root
 proxmox:
-  vars:
-    ansible_user: localadmin
   hosts:
     pve-rainier.proxmox.home.brwyatt.net:
     pve-orca.proxmox.home.brwyatt.net:
@@ -78,12 +72,9 @@ pxeservers:
 desktops:
   hosts:
     zephyr.user.home.brwyatt.net:
-      ansible_user: localadmin
 ipaservers:
   hosts:
     ipa[01:03].server.home.brwyatt.net:
-      ansible_user: localadmin
 ipaloadbalancers:
   hosts:
     ipa-haproxy[01:02].server.home.brwyatt.net:
-      ansible_user: localadmin

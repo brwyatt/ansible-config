@@ -1,4 +1,6 @@
 ---
+ansible_user: localadmin
+
 aws_creds_file_path: "/root/.aws/config"
 users_delete_cloud_init_sudoers: true
 users_manage_root: true
