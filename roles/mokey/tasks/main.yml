@@ -24,7 +24,7 @@
     state: directory
     owner: mokey
     group: mokey
-    mode: '0750'
+    mode: '0755'
     recurse: true
 - name: Mokey Config file
   ansible.builtin.template:
