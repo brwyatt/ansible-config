@@ -13,8 +13,8 @@
   register: download_status
   when: mokey_installed_version != mokey_version
 - name: Conditionally install/upgrade Mokey from local package file
-  ansible.builtin.package:
-    name: "{{ mokey_download_location }}"
+  ansible.builtin.apt:
+    deb: "{{ mokey_download_location }}"
     state: present
   when: download_status is changed or mokey_installed_version == '0.0.0'
   notify: Restart Mokey
@@ -27,7 +27,7 @@
     cmd: "kinit {{ mokey_app_principal }}"
   args:
     stdin: "{{ mokey_app_password }}"
-  register: kint_cmd
+  register: kinit_cmd
   changed_when: kinit_cmd.rc == 0
   when: not keytab_status.stat.exists or mokey_force_keytab_renewal
 - name: Retrieve keytab
