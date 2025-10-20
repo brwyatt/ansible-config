@@ -31,7 +31,6 @@ seedbox:
 devbox:
   hosts:
     devbox.server.home.brwyatt.net:
-      ansible_user: brwyatt
 iotradios:
   children:
     zwave:
