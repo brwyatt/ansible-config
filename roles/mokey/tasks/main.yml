@@ -19,9 +19,9 @@
   when: download_status is changed or mokey_installed_version == '0.0.0'
   notify: Restart Mokey
 - name: Create/add keytab
-  ansible.builtin.file:
+  ansible.builtin.copy:
     src: mokeyapp.keytab
-    path: "{{ mokey_keytab_path }}"
+    dest: "{{ mokey_keytab_path }}"
     owner: root
     group: mokey
     mode: '0640'
