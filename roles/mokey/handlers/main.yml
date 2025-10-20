@@ -4,8 +4,3 @@
     name: mokey
     state: restarted
   become: true
-- name: Destroy kinit cache
-  ansible.builtin.command:
-    cmd: "kdestroy"
-  changed_when: true
-  become: true

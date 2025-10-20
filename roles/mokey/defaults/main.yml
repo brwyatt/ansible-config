@@ -6,8 +6,6 @@ mokey_download_location: "/var/tmp/mokey_{{ mokey_version }}.{{ mokey_package_ty
 mokey_keytab_path: "/etc/mokey/private/mokeyapp.keytab"
 mokey_app_principal: "mokeyapp"
 mokey_app_password: null
-mokey_admin_principal: "{{ mokey_app_principal }}"
-mokey_admin_password: null
 mokey_force_keytab_renewal: false
 mokey_token_secret: ""
 mokey_csrf_secret: ""
