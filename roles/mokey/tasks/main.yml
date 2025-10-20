@@ -18,21 +18,37 @@
     state: present
   when: download_status is changed or mokey_installed_version == '0.0.0'
   notify: Restart Mokey
+- name: Create config dir directories
+  ansible.builtin.file:
+    path: "{{ mokey_config_path }}"
+    state: directory
+    owner: mokey
+    group: mokey
+    mode: '0750'
+    recurse: true
+- name: Mokey Config file
+  ansible.builtin.template:
+    src: "mokey.toml.j2"
+    dest: "{{ mokey_config_path }}/mokey.toml"
+    owner: mokey
+    group: mokey
+    mode: '0640'
+  notify: Restart Mokey
+- name: Create keytab directories
+  ansible.builtin.file:
+    path: "{{ mokey_keytab_path | dirname }}"
+    state: directory
+    owner: mokey
+    group: mokey
+    mode: '0750'
+    recurse: true
 - name: Create/add keytab
   ansible.builtin.copy:
     src: mokeyapp.keytab
     dest: "{{ mokey_keytab_path }}"
-    owner: root
+    owner: mokey
     group: mokey
     mode: '0640'
-- name: Mokey Config file
-  ansible.builtin.template:
-    src: "mokey.toml.j2"
-    dest: "/etc/mokey/mokey.toml"
-    owner: root
-    group: mokey
-    mode: '0640'
-  notify: Restart Mokey
 - name: Start Mokey
   ansible.builtin.service:
     name: mokey
