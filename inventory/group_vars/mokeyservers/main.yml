@@ -1,1 +1,3 @@
 ---
+mokey_admin_principal: "{{ ipaadmin_principal }}"
+mokey_admin_password: "{{ ipaadmin_password }}"

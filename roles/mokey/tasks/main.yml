@@ -24,12 +24,13 @@
   register: keytab_status
 - name: Authenticate user for keytab
   ansible.builtin.command:
-    cmd: "kinit {{ mokey_app_principal }}"
+    cmd: "kinit {{ mokey_admin_principal }}"
   args:
-    stdin: "{{ mokey_app_password }}"
+    stdin: "{{ mokey_admin_password }}"
   register: kinit_cmd
   changed_when: kinit_cmd.rc == 0
   when: not keytab_status.stat.exists or mokey_force_keytab_renewal
+  notify: Destroy kinit cache
 - name: Retrieve keytab
   ansible.builtin.command:
     cmd: "ipa-getkeytab -p {{ mokey_app_principal }} -k {{ mokey_keytab_path }} -r"
@@ -37,12 +38,8 @@
   register: keytab_cmd
   changed_when: keytab_cmd.rc == 0
   when: (not keytab_status.stat.exists or mokey_force_keytab_renewal) and kinit_cmd.rc == 0
-- name: Destroy kinit cache
-  ansible.builtin.command:
-    cmd: "kdestroy"
-  register: kdestroy_cmd
-  changed_when: kdestroy_cmd.rc == 0
-  when: (not keytab_status.stat.exists or mokey_force_keytab_renewal) and kinit_cmd.rc == 0
+- name: Destroy kinit cache (flush)
+  ansible.builtin.meta: flush_handlers
 - name: Fix keytab permissions
   ansible.builtin.file:
     path: "{{ mokey_keytab_path }}"
