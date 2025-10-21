@@ -76,6 +76,3 @@ ipaservers:
 ipaloadbalancers:
   hosts:
     ipa-haproxy[01:02].server.home.brwyatt.net:
-mokeyservers:
-  hosts:
-    mokey[01:02].server.home.brwyatt.net:

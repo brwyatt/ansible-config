@@ -1,6 +1,0 @@
----
-- name: Restart Mokey
-  ansible.builtin.service:
-    name: mokey
-    state: restarted
-  become: true
