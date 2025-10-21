@@ -25,6 +25,13 @@
     - role: certbot
     - role: homebox
     - role: reverseproxy
+- name: Password Servers
+  hosts: sspasswdservers
+  become: true
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: sspasswd
 - name: Inbound Proxies
   hosts: inboundproxies
   roles:

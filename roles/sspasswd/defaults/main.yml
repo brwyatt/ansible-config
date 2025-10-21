@@ -1,0 +1,6 @@
+---
+sspasswd_apt_key_url: "https://ltb-project.org/documentation/_static/ltb-project-debian-keyring.gpg"
+sspasswd_apt_key_path: "/usr/share/keyrings/ltb-project-debian-keyring.gpg"
+sspasswd_apt_repo_url: "https://ltb-project.org/debian/stable"
+sspasswd_server_names:
+  - "password.example.net"

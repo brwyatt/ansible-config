@@ -1,0 +1,8 @@
+---
+- name: Apt install
+  ansible.builtin.include_tasks:
+    file: aptinstall.yml
+  when: ansible_os_family == "Debian"
+- name: Nginx
+  ansible.builtin.include_tasks:
+    file: nginx.yml

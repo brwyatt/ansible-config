@@ -76,3 +76,6 @@ ipaservers:
 ipaloadbalancers:
   hosts:
     ipa-haproxy[01:02].server.home.brwyatt.net:
+sspasswdservers:
+  hosts:
+    password[01:02].server.home.brwyatt.net:

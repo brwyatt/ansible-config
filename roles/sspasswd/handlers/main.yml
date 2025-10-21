@@ -1,0 +1,10 @@
+---
+- name: Apt update
+  ansible.builtin.apt:
+    update_cache: true
+  become: true
+- name: Restart Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+  become: true
