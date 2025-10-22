@@ -22,7 +22,7 @@
     group: root
     mode: '0755'
   notify: Restart Apache
-- name: SSP Site Enabled
+- name: Delete Default Site Enabled
   ansible.builtin.file:
     path: "/etc/apache2/sites-enabled/000-default.conf"
     state: absent

@@ -11,8 +11,8 @@
 
 <VirtualHost *:443>
     SSLEngine On
-    SSLCertificateFile /etc/letsencrypt/live/{{ item.server_names[0] }}/fullchain.pem
-    SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.server_names[0] }}/privkey.pem
+    SSLCertificateFile /etc/letsencrypt/live/{{ sspasswd_server_names[0] }}/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/{{ sspasswd_server_names[0] }}/privkey.pem
 
     ServerName {{ sspasswd_server_names[0] }}
     {% for alias in sspasswd_server_names[1:] %}
