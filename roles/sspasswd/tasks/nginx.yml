@@ -1,4 +1,9 @@
 ---
+- name: Uninstall Apache # This gets installed by SSP
+  ansible.builtin.apt:
+    name: apache2
+    state: absent
+  become: true
 - name: Install Nginx
   ansible.builtin.package:
     name: nginx
