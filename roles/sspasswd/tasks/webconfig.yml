@@ -27,6 +27,15 @@
     path: "/etc/apache2/sites-enabled/000-default.conf"
     state: absent
   notify: Restart Apache
+- name: Enable mod rewrite
+  ansible.builtin.file:
+    src: "/etc/apache2/mods-available/rewrite.load"
+    dest: "/etc/apache2/mods-enabled/rewrite.load"
+    state: link
+    owner: root
+    group: root
+    mode: '0755'
+  notify: Restart Apache
 - name: Certbot Deploy Script
   ansible.builtin.copy:
     src: certbot-deploy-hook.sh
