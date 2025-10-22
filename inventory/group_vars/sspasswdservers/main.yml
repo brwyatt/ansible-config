@@ -1,5 +1,6 @@
 ---
-certbot_certs: "{{ sspasswd_server_names }}"
+certbot_certs: 
+  - "{{ sspasswd_server_names }}"
 sspasswd_server_names:
   - "password.home.brwyatt.net"
   - "{{ ansible_fqdn }}"
