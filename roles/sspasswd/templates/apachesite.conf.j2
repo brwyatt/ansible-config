@@ -1,0 +1,54 @@
+<VirtualHost *:80>
+    ServerName {{ sspasswd_server_names[0] }}
+    {% for alias in sspasswd_server_names[1:] %}
+    ServerAlias {{ alias }}
+    {% endfor %}
+
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+</VirtualHost>
+
+<VirtualHost *:443>
+    SSLEngine On
+    SSLCertificateFile /etc/letsencrypt/live/{{ item.server_names[0] }}/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/{{ item.server_names[0] }}/privkey.pem
+
+    ServerName {{ sspasswd_server_names[0] }}
+    {% for alias in sspasswd_server_names[1:] %}
+    ServerAlias {{ alias }}
+    {% endfor %}
+
+    DocumentRoot /usr/share/self-service-password/htdocs
+    DirectoryIndex index.php
+
+    AddDefaultCharset UTF-8
+
+    <Directory /usr/share/self-service-password/htdocs>
+        AllowOverride None
+        <IfVersion >= 2.3>
+            Require all granted
+        </IfVersion>
+        <IfVersion < 2.3>
+            Order Deny,Allow
+            Allow from all
+        </IfVersion>
+    </Directory>
+
+    Alias /rest /usr/share/self-service-password/rest
+
+    <Directory /usr/share/self-service-password/rest>
+        AllowOverride None
+        <IfVersion >= 2.3>
+            Require all denied
+        </IfVersion>
+        <IfVersion < 2.3>
+            Order Deny,Allow
+            Deny from all
+        </IfVersion>
+    </Directory>
+
+    LogLevel warn
+    ErrorLog /var/log/apache2/ssp_error.log
+    CustomLog /var/log/apache2/ssp_access.log combined
+</VirtualHost>

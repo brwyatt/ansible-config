@@ -3,6 +3,6 @@
   ansible.builtin.include_tasks:
     file: aptinstall.yml
   when: ansible_os_family == "Debian"
-- name: Nginx
+- name: Web Config
   ansible.builtin.include_tasks:
-    file: nginx.yml
+    file: webconfig.yml

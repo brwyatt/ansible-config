@@ -1,3 +1,3 @@
 #!/bin/bash
 
-service nginx reload
+service apache2 reload
