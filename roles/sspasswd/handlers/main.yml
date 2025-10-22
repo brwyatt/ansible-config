@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     update_cache: true
   become: true
-- name: Restart Apache
+- name: Restart webserver
   ansible.builtin.service:
     name: apache2
     state: restarted
