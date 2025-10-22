@@ -7,7 +7,7 @@
 - name: SSP Site Available
   ansible.builtin.template:
     src: apachesite.conf.j2
-    dest: "/etc/apatch2/sites-available/self-service-password.conf"
+    dest: "/etc/apache2/sites-available/self-service-password.conf"
     owner: root
     group: root
     mode: '0644'
