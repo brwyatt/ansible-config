@@ -36,6 +36,20 @@
     group: root
     mode: '0755'
   notify: Restart Apache
+- name: Enable mod ssl
+  ansible.builtin.file:
+    src: "/etc/apache2/mods-available/ssl.{{ item }}"
+    dest: "/etc/apache2/mods-enabled/ssl.{{ item }}"
+    state: link
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - "load"
+    - "conf"
+  loop_control:
+    label: "Apache mod ssl.{{ item }}"
+  notify: Restart Apache
 - name: Certbot Deploy Script
   ansible.builtin.copy:
     src: certbot-deploy-hook.sh
