@@ -1,6 +1,13 @@
 ---
 certbot_certs: 
   - "{{ sspasswd_server_names }}"
+sspasswd_ldap_base: "dc=home,dc=brwyatt,dc=net"
+sspasswd_ldap_binddn: "uid=sspapp,cn=users,cn=accounts,dc=home,dc=brwyatt,dc=net"
+sspasswd_ldap_filter: "(&(uid={login})(objectClass=person)(!(memberOf=cn=service-accounts,cn=groups,cn=accounts,dc=home,dc=brwyatt,dc=net)))"
+sspasswd_ldap_servers:
+  - "ldaps://ipa01.server.home.brwyatt.net"
+  - "ldaps://ipa02.server.home.brwyatt.net"
+  - "ldaps://ipa03.server.home.brwyatt.net"
 sspasswd_server_names:
   - "password.home.brwyatt.net"
   - "{{ ansible_fqdn }}"

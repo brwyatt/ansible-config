@@ -4,6 +4,10 @@
     name: apache2
     state: present
   become: true
+- name: Install Smarty3 # Smarty4 gets installed, but it tries to load smarty3
+  ansible.builtin.apt:
+    name: smarty3
+    state: present
 - name: SSP Site Available
   ansible.builtin.template:
     src: apachesite.conf.j2

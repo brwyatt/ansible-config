@@ -6,3 +6,18 @@
 - name: Web Config
   ansible.builtin.include_tasks:
     file: webconfig.yml
+- name: SSP App config
+  ansible.builtin.template:
+    src: config.inc.local.php.j2
+    dest: "/etc/self-service-password/config.inc.local.php"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+- name: Ensure audit log permissions
+  ansible.builtin.file:
+    path: "{{ sspasswd_audit_log_file }}"
+    owner: "www-data"
+    group: root
+    mode: '0640'
+  become: true

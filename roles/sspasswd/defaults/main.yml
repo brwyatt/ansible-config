@@ -2,5 +2,12 @@
 sspasswd_apt_key_url: "https://ltb-project.org/documentation/_static/ltb-project-debian-keyring.gpg"
 sspasswd_apt_key_path: "/usr/share/keyrings/ltb-project-debian-keyring.gpg"
 sspasswd_apt_repo_url: "https://ltb-project.org/debian/stable"
+sspasswd_audit_log_file: "/var/log/ssp_audit.log"
+sspasswd_debug: false
+sspasswd_ldap_servers: []
+sspasswd_ldap_base: ""
+sspasswd_ldap_binddn: ""
+sspasswd_ldap_bindpw: ""
+sspasswd_ldap_filter: ""
 sspasswd_server_names:
   - "password.example.net"

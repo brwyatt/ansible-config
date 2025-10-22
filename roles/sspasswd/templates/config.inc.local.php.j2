@@ -1,0 +1,15 @@
+<?php
+$audit_log_file = "{{ sspasswd_audit_log_file }}";
+$debug = {{ sspasswd_debug }};
+$keyphrase = "{{ sspasswd_keyphrase }}";
+$ldap_url = "{{ " ".join(sspasswd_ldap_servers) }}";
+$ldap_base = "{{ sspasswd_ldap_base }}";
+$ldap_binddn = "{{ sspasswd_ldap_binddn }}";
+$ldap_bindpw = "{{ sspasswd_ldap_bindpw }}";
+$ldap_filter = "{{ sspasswd_ldap_filter }}";
+
+# Just for now...
+$use_tokens = false;
+$use_sms = false;
+$use_questions = false;
+?>
