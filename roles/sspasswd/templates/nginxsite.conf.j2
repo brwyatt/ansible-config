@@ -32,7 +32,7 @@ server {
 
   # Add stdout logging
   error_log /dev/stdout warn;
-  access_log /dev/stdout main;
+  access_log /dev/stdout combined;
   
   # pass the PHP scripts to FastCGI server listening on socket
   location ~ \.php {
