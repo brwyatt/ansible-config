@@ -24,15 +24,23 @@
     mode: '0644'
   become: true
   notify: Restart Nginx
-- name: Nginx Site
+- name: Nginx Site Available (default)
   ansible.builtin.template:
     src: nginxsite.conf.j2
-    dest: "/etc/nginx/sites-enabled/default.conf"
+    dest: "/etc/nginx/sites-available/default"
     owner: root
     group: root
     mode: '0644'
   become: true
   notify: Restart Nginx
+- name: Nginx Site Enabled (default)
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/default"
+    dest: "/etc/nginx/sites-enabled/default"
+    state: link
+    owner: root
+    group: root
+    mode: '0755'
 - name: "Certbot Deploy Script"
   ansible.builtin.copy:
     src: certbot-deploy-hook.sh
