@@ -31,8 +31,8 @@ server {
   gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
   # Add stdout logging
-  error_log /dev/stdout warn;
-  access_log /dev/stdout combined;
+  # error_log /dev/stdout warn;
+  # access_log /dev/stdout combined;
   
   # pass the PHP scripts to FastCGI server listening on socket
   location ~ \.php {
