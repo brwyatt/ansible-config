@@ -1,0 +1,8 @@
+[Unit]
+Description=CephFS Automount for {{ item.mount_path }} from {{ item.fs_name }}
+
+[Mount]
+Where={{ item.mount_path }}
+
+[Install]
+WantedBy=multi-user.target

@@ -2,6 +2,7 @@
 - name: Set systemd unit name
   ansible.builtin.set_fact:
     systemd_mount_unit: "{{ item.mount_path[1:].replace('/', '-') }}.mount"
+    systemd_automount_unit: "{{ item.mount_path[1:].replace('/', '-') }}.automount"
 - name: Create Mount Dir
   ansible.builtin.file:
     path: "{{ item.mount_path }}"
@@ -29,6 +30,31 @@
 - name: "Mount CephFS Mount {{ item.mount_path }}"
   ansible.builtin.service:
     name: "{{ systemd_mount_unit }}"
+    state: started
+    enabled: true
+    daemon_reload: true
+  become: true
+- name: Check systemd automount unit existence
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/{{ systemd_automount_unit }}"
+  register: systemd_automount_unit_stat
+- name: Create systemd automount unit
+  ansible.builtin.template:
+    src: systemd_automount.j2
+    dest: "/etc/systemd/system/{{ systemd_automount_unit }}"
+    mode: '0644'
+  become: true
+  register: automount_unit
+- name: "Reload CephFS Automount if changed {{ item.mount_path }}"
+  ansible.builtin.service:
+    name: "{{ systemd_automount_unit }}"
+    state: reloaded
+    daemon_reload: true
+  become: true
+  when: automount_unit.changed and systemd_automount_unit_stat.stat.exists
+- name: "Enable CephFS Automount {{ item.mount_path }}"
+  ansible.builtin.service:
+    name: "{{ systemd_automount_unit }}"
     state: started
     enabled: true
     daemon_reload: true
