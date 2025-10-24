@@ -7,6 +7,21 @@
 - name: Needed scripts
   ansible.builtin.set_fact:
     keepalived_check_scripts_needed: "{{ keepalived_check_scripts | dict2items | json_query('[].value.type') | list | unique }}"
+- name: Chrony Sync Tracking Script
+  ansible.builtin.copy:
+    src: chrony_check.sh
+    dest: /usr/local/bin/chrony_check.sh
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+  when: "'chrony' in keepalived_check_scripts_needed"
+- name: Remove Chrony Sync Tracking Script if not used
+  ansible.builtin.file:
+    path: /usr/local/bin/chrony_check.sh
+    state: absent
+  become: true
+  when: "'chrony' not in keepalived_check_scripts_needed"
 - name: HAProxy Backend Tracking Script
   ansible.builtin.copy:
     src: haproxy_track.sh

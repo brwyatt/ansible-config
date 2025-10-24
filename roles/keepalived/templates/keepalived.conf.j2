@@ -20,7 +20,7 @@ vrrp_script {{ name|replace("-", "_") }} {
 {% elif config.type == "vip_absent" %}
   script "/usr/local/bin/vip_check_absent.sh {{ config.vip }}"
 {% elif config.type == "chrony" %}
-  script "/usr/bin/chronyc tracking | /usr/bin/grep -E '^Leap status\s+:\s+Normal$'"
+  script "/usr/local/bin/chrony_check.sh"
 {% endif %}
   timeout {{ config.timeout|default(1) }}
   interval {{ config.interval|default(1) }}
