@@ -3,7 +3,7 @@
   ansible.builtin.get_url:
     url: "{{ proxmoxdcm_apt_key_url }}"
     dest: "{{ proxmoxdcm_apt_key_dest }}"
-    mode: '0600'
+    mode: '0644'
     checksum: "{{ proxmoxdcm_apt_key_checksum }}"
   become: true
   notify: Apt update
