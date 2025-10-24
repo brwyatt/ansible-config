@@ -23,7 +23,6 @@ renderers:
 ntpservers:
   hosts:
     ntp[01:04].server.home.brwyatt.net:
-      ansible_user: brwyatt
 seedbox:
   hosts:
     seedbox.server.home.brwyatt.net:
@@ -62,7 +61,6 @@ homebox:
 inboundproxies:
   hosts:
     inboundproxy[01:02].server.home.brwyatt.net:
-      ansible_user: root
 pxeservers:
   hosts:
     pxe-boot[01:02].server.home.brwyatt.net:
