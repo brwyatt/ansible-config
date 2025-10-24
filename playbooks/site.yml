@@ -44,6 +44,10 @@
   hosts: proxmox
   roles:
     - role: proxmox
+- name: Proxmox Datacenter Manager
+  hosts: proxmoxdcm
+  roles:
+    - role: proxmoxdcm
 - name: PXE Servers
   hosts: pxeservers
   roles:

@@ -1,0 +1,7 @@
+---
+proxmoxdcm_apt_components: "pdm-test"
+proxmoxdcm_apt_key_checksum: "sha256:136673be77aba35dcce385b28737689ad64fd785a797e57897589aed08db6e45"
+proxmoxdcm_apt_key_dest: "/usr/share/keyrings/proxmox-archive-keyring.gpg"
+proxmoxdcm_apt_key_url: "https://enterprise.proxmox.com/debian/proxmox-archive-keyring-trixie.gpg"
+proxmoxdcm_apt_suites: "{{ ansible_distribution_release }}"
+proxmoxdcm_apt_url: "http://download.proxmox.com/debian/pdm/"

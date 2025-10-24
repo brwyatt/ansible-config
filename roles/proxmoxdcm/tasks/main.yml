@@ -1,0 +1,29 @@
+---
+- name: Download apt repo key
+  ansible.builtin.get_url:
+    url: "{{ proxmoxdcm_apt_key_url }}"
+    dest: "{{ proxmoxdcm_apt_key_dest }}"
+    mode: '0600'
+    checksum: "{{ proxmoxdcm_apt_key_checksum }}"
+  become: true
+  notify: Apt update
+- name: Apt repo file
+  ansible.builtin.template:
+    src: pdm.sources.j2
+    dest: /etc/apt/sources.list.d/pdm.sources
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Apt update
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+- name: Install packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - proxmox-datacenter-manager
+    - proxmox-datacenter-manager-ui
+  loop_control:
+    label: "Package {{ item }}"
