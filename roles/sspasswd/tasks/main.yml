@@ -17,6 +17,7 @@
 - name: Ensure audit log permissions
   ansible.builtin.file:
     path: "{{ sspasswd_audit_log_file }}"
+    state: touch
     owner: "www-data"
     group: root
     mode: '0640'
