@@ -19,7 +19,6 @@ jellyfin:
 renderers:
   hosts:
     render[01:03].server.home.brwyatt.net:
-      ansible_user: root
 ntpservers:
   hosts:
     ntp[01:04].server.home.brwyatt.net:
