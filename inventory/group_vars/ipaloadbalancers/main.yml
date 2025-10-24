@@ -35,6 +35,15 @@ haproxy_frontends:
     backend: "ipaweb-hosts"
     options:
       - "http-request set-header X-Forwarded-Proto https"
+  ipaldap:
+    bind:
+      port: 389
+    backend: "ipaldap-hosts"
+  ipaldaps:
+    bind:
+      port: 636
+      ssl_cert: "/etc/haproxy/certs/{{ cert[0] }}.pem"
+    backend: "ipaldaps-hosts"
 haproxy_backends:
   ipaweb-hosts:
     balance: "leastconn"
@@ -43,13 +52,31 @@ haproxy_backends:
       - "dynamic-cookie-key {{ ipaweb_haproxy_cookie_key }}"
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
       - "server-template ipaweb 1-5 _https._tcp.ipa.home.brwyatt.net resolvers localdns init-addr none"
+  ipaldap-hosts:
+    balance: "leastconn"
+    options:
+      - "default-server check"
+      - "server-template ipaldap 1-5 _ldap._tcp.ipa.home.brwyatt.net resolvers localdns init-addr none"
+  ipaldaps-hosts:
+    balance: "leastconn"
+    options:
+      - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
+      - "server-template ipaldaps 1-5 _ldaps._tcp.ipa.home.brwyatt.net resolvers localdns init-addr none"
 keepalived_check_scripts:
   ipaweb:
     type: haproxy
     backend_name: "ipaweb-hosts"
+  ipaldap:
+    type: haproxy
+    backend_name: "ipaldap-hosts"
+  ipaldaps:
+    type: haproxy
+    backend_name: "ipaldaps-hosts"
 keepalived_instances:
   ipaweb:
     virtual_ip: 172.17.30.5/24
     auth_pass: "{{ keepalived_auth_pass }}"
     check_scripts:
       - ipaweb
+      - ipaldap
+      - ipaldaps
