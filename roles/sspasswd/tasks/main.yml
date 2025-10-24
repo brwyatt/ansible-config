@@ -14,6 +14,11 @@
     group: root
     mode: '0644'
   become: true
+- name: Check audit log permissions
+  ansible.builtin.stat:
+    path: "{{ sspasswd_audit_log_file }}"
+  register: audit_log_stat
+  become: true
 - name: Ensure audit log permissions
   ansible.builtin.file:
     path: "{{ sspasswd_audit_log_file }}"
@@ -21,4 +26,5 @@
     owner: "www-data"
     group: root
     mode: '0640'
+  when: audit_log_stat.stat.exists or audit_log_stat.stat.mode != '0640' or audit_log_stat.stat.pw_name != "www-data"
   become: true
