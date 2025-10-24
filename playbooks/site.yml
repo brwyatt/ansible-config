@@ -32,6 +32,7 @@
     - role: aws_creds
     - role: certbot
     - role: sspasswd
+    - role: keepalived
 - name: Inbound Proxies
   hosts: inboundproxies
   roles:
