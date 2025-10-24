@@ -26,5 +26,5 @@
     owner: "www-data"
     group: root
     mode: '0640'
-  when: audit_log_stat.stat.exists or audit_log_stat.stat.mode != '0640' or audit_log_stat.stat.pw_name != "www-data"
+  when: not (audit_log_stat.stat.exists and audit_log_stat.stat.mode == '0640' and audit_log_stat.stat.pw_name == "www-data")
   become: true
