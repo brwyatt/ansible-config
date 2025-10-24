@@ -1,6 +1,17 @@
 ---
 certbot_certs: 
   - "{{ sspasswd_server_names }}"
+keepalived_check_scripts:
+  apache:
+    insecure: false
+    url: "https://{{ ansible_fqdn }}/check"
+    type: curl
+keepalived_instances:
+  sspasswd:
+    virtual_ip: "{{ sspasswd_vip }}/24"
+    auth_pass: "{{ keepalived_auth_pass }}"
+    check_scripts:
+      - apache
 sspasswd_ldap_base: "dc=home,dc=brwyatt,dc=net"
 sspasswd_ldap_binddn: "uid=sspapp,cn=users,cn=accounts,dc=home,dc=brwyatt,dc=net"
 sspasswd_ldap_filter: "(&(uid={login})(objectClass=person)(!(memberOf=cn=service-accounts,cn=groups,cn=accounts,dc=home,dc=brwyatt,dc=net)))"
@@ -11,3 +22,4 @@ sspasswd_ldap_servers:
 sspasswd_server_names:
   - "password.home.brwyatt.net"
   - "{{ ansible_fqdn }}"
+sspasswd_vip: "172.17.30.205"
