@@ -45,7 +45,6 @@ zigbee:
 nutserver:
   hosts:
     nut-server.ups.home.brwyatt.net:
-      ansible_user: root
 ansible:
   hosts:
     ansible.server.home.brwyatt.net:
