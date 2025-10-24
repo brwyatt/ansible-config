@@ -25,9 +25,9 @@ reverseproxy_sites:
       - "client_max_body_size 0;"
       - "proxy_max_temp_file_size 0;"
       - "proxy_buffering off;"
-  - server_names:
-      - matrix.home.brwyatt.net
-    destination: "https://matrix.server.home.brwyatt.net:443"
+  # - server_names:
+  #     - matrix.home.brwyatt.net
+  #   destination: "https://matrix.server.home.brwyatt.net:443"
   - server_names:
       - "password.home.brwyatt.net"
     destination: "https://password.home.brwyatt.net:443"
