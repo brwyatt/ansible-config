@@ -36,10 +36,12 @@ haproxy_frontends:
     options:
       - "http-request set-header X-Forwarded-Proto https"
   ipaldap:
+    mode: tcp
     bind:
       port: 389
     backend: "ipaldap-hosts"
   ipaldaps:
+    mode: tcp
     bind:
       port: 636
       ssl_cert: "/etc/haproxy/certs/{{ cert[0] }}.pem"
@@ -53,11 +55,13 @@ haproxy_backends:
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
       - "server-template ipaweb 1-5 _https._tcp.ipa.home.brwyatt.net resolvers localdns init-addr none"
   ipaldap-hosts:
+    mode: tcp
     balance: "leastconn"
     options:
       - "default-server check"
       - "server-template ipaldap 1-5 _ldap._tcp.home.brwyatt.net resolvers localdns init-addr none"
   ipaldaps-hosts:
+    mode: tcp
     balance: "leastconn"
     options:
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
