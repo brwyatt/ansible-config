@@ -56,12 +56,12 @@ haproxy_backends:
     balance: "leastconn"
     options:
       - "default-server check"
-      - "server-template ipaldap 1-5 _ldap._tcp.ipa.home.brwyatt.net resolvers localdns init-addr none"
+      - "server-template ipaldap 1-5 _ldap._tcp.home.brwyatt.net resolvers localdns init-addr none"
   ipaldaps-hosts:
     balance: "leastconn"
     options:
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
-      - "server-template ipaldaps 1-5 _ldaps._tcp.ipa.home.brwyatt.net resolvers localdns init-addr none"
+      - "server-template ipaldaps 1-5 _ldaps._tcp.home.brwyatt.net resolvers localdns init-addr none"
 keepalived_check_scripts:
   ipaweb:
     type: haproxy
