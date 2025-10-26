@@ -1,0 +1,4 @@
+---
+proxmox_ceph_enterprise: false
+proxmox_ceph_distro: "squid"
+proxmox_enterprise: false

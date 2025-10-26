@@ -10,3 +10,21 @@
   loop:
     - subuid
     - subgid
+- name: Apt proxmox sources
+  ansible.builtin.template:
+    src: proxmox.sources.j2
+    dest: /etc/apt/sources.list.d/proxmox.sources
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Apt update
+- name: Apt ceph sources
+  ansible.builtin.template:
+    src: ceph.sources.j2
+    dest: /etc/apt/sources.list.d/ceph.sources
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Apt update

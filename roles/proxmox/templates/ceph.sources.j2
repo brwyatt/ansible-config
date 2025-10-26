@@ -1,0 +1,5 @@
+Types: deb
+URIs: https://{{ "enterprise" if proxmox_ceph_enterprise else "download" }}.proxmox.com/debian/ceph-{{ proxmox_ceph_distro }}
+Suites: {{ ansible_distribution_release }}
+Components: {{ "enterprise" if proxmox_ceph_enterprise else "no-subscription" }}
+Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
