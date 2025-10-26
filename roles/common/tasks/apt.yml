@@ -81,6 +81,14 @@
           default("http://localhost/null")
         )
       }}
+    common_apt_repo_signing_key: |-
+      {{
+        common_apt_repo_signing_key |
+        default(
+          common_apt_repo_signing_key_distros[ansible_distribution] |
+          default(undef())
+        )
+      }}
 - name: Check if newer sources file exists
   ansible.builtin.stat:
     path: /etc/apt/sources.list.d/{{ ansible_distribution | lower }}.sources
@@ -93,10 +101,20 @@
     group: root
     mode: '0644'
   become: true
-  register: sources_list_status
+  register: sources_status
   when: not sources_file_stat.stat.exists
+- name: Apt distro sources
+  ansible.builtin.template:
+    src: distro.sources.j2
+    dest: /etc/apt/sources.list.d/{{ ansible_distribution | lower }}.sources
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  register: sources_status
+  when: sources_file_stat.stat.exists
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: true
-    cache_valid_time: "{{ 0 if (sources_list_status.changed | default(false)) else common_apt_cache_validity }}"
+    cache_valid_time: "{{ 0 if (sources_status.changed | default(false)) else common_apt_cache_validity }}"
   become: true

@@ -1,0 +1,17 @@
+Types: deb
+URIs: {{ common_apt_repo_url }}
+Suites: {{ ansible_distribution_release }} {{ ansible_distribution_release }}-updates{% if common_apt_repo_backports %} {{ ansible_distribution_release }}-backports{% endif %}
+Components: main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{{ " contrib" if common_apt_repo_contrib else "" }}{{ " non-free-firmware" if common_apt_repo_nonfreefirmware else "" }}
+{% if common_apt_repo_signing_key %}
+Signed-By: {{ common_apt_repo_signing_key }}
+{% endif %}
+{% if common_apt_repo_security %}
+
+Types: deb
+URIs: {{ common_apt_repo_security_url }}
+Suites: {{ ansible_distribution_release }}-security
+Components: main{{ " restricted" if common_apt_repo_restricted else "" }}{{ " universe" if common_apt_repo_universe else "" }}{{ " multiverse" if common_apt_repo_multiverse else "" }}{{ " contrib" if common_apt_repo_contrib else "" }}{{ " non-free-firmware" if common_apt_repo_nonfreefirmware else "" }}
+{% if common_apt_repo_signing_key %}
+Signed-By: {{ common_apt_repo_signing_key }}
+{% endif %}
+{% endif %}
