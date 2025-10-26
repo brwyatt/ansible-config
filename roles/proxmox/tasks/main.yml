@@ -28,3 +28,5 @@
     mode: '0644'
   become: true
   notify: Apt update
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
