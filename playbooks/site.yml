@@ -62,6 +62,10 @@
   hosts: ntpservers
   roles:
     - role: keepalived
+- name: OpenMediaVault
+  hosts: openmediavault
+  roles:
+    - role: openmediavault
 - name: IPA Servers
   hosts: ipaservers
   roles:

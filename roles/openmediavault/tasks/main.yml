@@ -1,0 +1,29 @@
+---
+- name: Check apt repo key
+  ansible.builtin.stat:
+    path: "{{ openmediavault_apt_key_dest }}"
+  register: apt_key_status
+- name: Download apt repo key
+  ansible.builtin.get_url:
+    url: "{{ openmediavault_apt_key_url }}"
+    dest: "/tmp/openmediavault.gpg"
+    mode: '0600'
+  when: not apt_key_status.stat.exists
+- name: Install/convert apt repo key
+  ansible.builtin.command:
+    cmd: "/usr/bin/gpg -o '{{ openmediavault_apt_key_dest }}' --dearmor '/tmp/openmediavault.gpg'"
+    creates: "{{ openmediavault_apt_key_dest }}"
+  when: not apt_key_status.stat.exists
+  become: true
+  notify: Apt update
+- name: Apt proxmox sources
+  ansible.builtin.template:
+    src: openmediavault.sources.j2
+    dest: /etc/apt/sources.list.d/openmediavault.sources
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Apt update
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

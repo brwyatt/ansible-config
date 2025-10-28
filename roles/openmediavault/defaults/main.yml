@@ -1,0 +1,4 @@
+---
+openmediavault_apt_key_url: "https://packages.openmediavault.org/public/archive.key"
+openmediavault_apt_key_dest: "/usr/share/keyrings/openmediavault-archive-keyring.gpg"
+openmediavault_release: "sandworm"

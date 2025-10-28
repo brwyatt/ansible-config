@@ -77,3 +77,6 @@ ipaloadbalancers:
 sspasswdservers:
   hosts:
     password[01:02].server.home.brwyatt.net:
+openmediavault:
+  hosts:
+    omv-test.server.home.brwyatt.net:
