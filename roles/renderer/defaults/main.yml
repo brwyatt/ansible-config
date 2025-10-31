@@ -1,0 +1,4 @@
+---
+renderer_jellyfin_apt_key_path: "/usr/share/keyrings/jellyfin.gpg"
+renderer_jellyfin_apt_key_url: "https://repo.jellyfin.org/ubuntu/jellyfin_team.gpg.key"
+renderer_jellyfin_apt_repo_url: "https://repo.jellyfin.org/{{ ansible_distribution | lower }}"

@@ -1,0 +1,35 @@
+---
+- name: Install NFS
+  ansible.builtin.apt:
+    name: nfs-common
+- name: Create cache mount dir
+  ansible.builtin.file:
+    path: "/mnt/jellyfin"
+    state: directory
+    mode: '0755'
+  become: true
+- name: Check cache systemd mount unit existence
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/mnt-jellyfin.mount"
+  register: systemd_unit_stat
+- name: Create cache systemd mount unit
+  ansible.builtin.template:
+    src: systemd_mount.j2
+    dest: "/etc/systemd/system/mnt-jellyfin.mount"
+    mode: '0644'
+  become: true
+  register: mount_unit
+- name: Reload cache mount if changed
+  ansible.builtin.service:
+    name: "mnt-jellyfin.mount"
+    state: reloaded
+    daemon_reload: true
+  become: true
+  when: mount_unit.changed and systemd_unit_stat.stat.exists
+- name: Mount cache
+  ansible.builtin.service:
+    name: "mnt-jellyfin.mount"
+    state: started
+    enabled: true
+    daemon_reload: true
+  become: true

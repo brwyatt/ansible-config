@@ -1,32 +1,28 @@
 ---
-- name: Create cache mount dir
-  ansible.builtin.file:
-    path: "/mnt/jellyfin"
-    state: directory
-    mode: '0755'
-  become: true
-- name: Check cache systemd mount unit existence
-  ansible.builtin.stat:
-    path: "/etc/systemd/system/mnt-jellyfin.mount"
-  register: systemd_unit_stat
-- name: Create cache systemd mount unit
-  ansible.builtin.template:
-    src: systemd_mount.j2
-    dest: "/etc/systemd/system/mnt-jellyfin.mount"
-    mode: '0644'
-  become: true
-  register: mount_unit
-- name: Reload cache mount if changed
-  ansible.builtin.service:
-    name: "mnt-jellyfin.mount"
-    state: reloaded
-    daemon_reload: true
-  become: true
-  when: mount_unit.changed and systemd_unit_stat.stat.exists
-- name: Mount cache
-  ansible.builtin.service:
-    name: "mnt-jellyfin.mount"
-    state: started
-    enabled: true
-    daemon_reload: true
-  become: true
+- name: Install pre-dependencies
+  ansible.builtin.apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - gpg
+      - intel-opencl-icd
+      - intel-gpu-tools
+- name: Manage Jellyfin repos and install
+  ansible.builtin.include_tasks:
+    file: aptinstall.yml
+- name: Manage Jellyfin group
+  ansible.builtin.group:
+    name: jellyfin
+    gid: 112
+    state: present
+- name: Manage Jellyfin user
+  ansible.builtin.user:
+    name: jellyfin
+    uid: 109
+    group: jellyfin
+    create_home: false
+    home: /var/lib/jellyfin
+    shell: /bin/bash
+- name: Create Mount
+  ansible.builtin.include_tasks:
+    file: mount.yml
