@@ -22,6 +22,7 @@
   become: true
   roles:
     - role: cephclient
+    - role: renderer
 - name: SeedBox
   hosts: seedbox
   become: true

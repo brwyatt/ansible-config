@@ -1,0 +1,13 @@
+[Unit]
+Description=NFS Mount for Jellyfin cache
+After=network-online.target remote-fs.target
+Wants=network-online.target
+
+[Mount]
+What=jellyfin.server.home.brwyatt.net:/mnt/jellyfin
+Where=/mnt/jellyfin
+Type=nfs
+Options=defaults,vers=3,sync
+
+[Install]
+WantedBy=multi-user.target
