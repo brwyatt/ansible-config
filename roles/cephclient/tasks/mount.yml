@@ -7,7 +7,7 @@
   ansible.builtin.file:
     path: "{{ item.mount_path }}"
     state: directory
-    mode: '0755'
+    mode: "{{ item.mode | default('0755') }}"
   become: true
 - name: Check systemd mount unit existence
   ansible.builtin.stat:
