@@ -26,6 +26,7 @@
     dest: "/etc/systemd/system/{{ systemd_automount_unit }}"
     mode: '0644'
   become: true
+  when: item.automount | default(cephclient_automount)
 - name: "Enable CephFS Automount {{ item.mount_path }}"
   ansible.builtin.service:
     name: "{{ systemd_automount_unit }}"
@@ -33,6 +34,7 @@
     enabled: true
     daemon_reload: true
   become: true
+  when: item.automount | default(cephclient_automount)
 - name: "Reload CephFS Mount if changed {{ item.mount_path }}"
   ansible.builtin.service:
     name: "{{ systemd_mount_unit }}"
