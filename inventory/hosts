@@ -25,7 +25,6 @@ ntpservers:
 seedbox:
   hosts:
     seedbox.server.home.brwyatt.net:
-      ansible_user: brwyatt
 devbox:
   hosts:
     devbox.server.home.brwyatt.net:
