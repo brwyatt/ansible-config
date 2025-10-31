@@ -1,0 +1,8 @@
+---
+cephclient_mon_dns_srv_name:
+  domain: "home.brwyatt.net"
+cephclient_mounts:
+  - user: "jellyfin-render"
+    fs_name: "Media"
+    remote_path: "/"
+    mount_path: "/mnt/ceph_media"

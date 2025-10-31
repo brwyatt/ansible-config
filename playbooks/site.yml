@@ -12,6 +12,21 @@
     - role: certbot
     - role: haproxy
     - role: keepalived
+- name: Jellyfin Server
+  hosts: jellyfin
+  become: true
+  roles:
+    - role: cephclient
+- name: Renderer
+  hosts: renderers
+  become: true
+  roles:
+    - role: cephclient
+- name: SeedBox
+  hosts: seedbox
+  become: true
+  roles:
+    - role: cephclient
 - name: NUT Server
   hosts: nutserver
   become: true
