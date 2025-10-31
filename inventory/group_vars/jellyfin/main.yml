@@ -4,5 +4,9 @@ cephclient_mon_dns_srv_name:
 cephclient_mounts:
   - user: "jellyfin-server"
     fs_name: "Media"
-    remote_path: "/"
-    mount_path: "/mnt/ceph_media"
+    remote_path: "/JellyfinCache"
+    mount_path: "/mnt/ceph_media_jellyfincache"
+  - user: "jellyfin-server"
+    fs_name: "Media"
+    remote_path: "/JellyfinHome"
+    mount_path: "/mnt/ceph_media_jellyfinhome"
