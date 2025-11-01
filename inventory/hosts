@@ -51,6 +51,7 @@ proxmox:
     pve-rainier.proxmox.home.brwyatt.net:
     pve-orca.proxmox.home.brwyatt.net:
     pve-douglasfir.proxmox.home.brwyatt.net:
+    pve-chinook.proxmox.home.brwyatt.net:
 proxmoxdcm:
   hosts:
     proxmox-dcm.server.home.brwyatt.net:
