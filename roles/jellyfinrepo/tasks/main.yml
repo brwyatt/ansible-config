@@ -1,18 +1,24 @@
 ---
+- name: Install dependencies
+  ansible.builtin.apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - gpg
 - name: Check apt repo key
   ansible.builtin.stat:
-    path: "{{ renderer_jellyfin_apt_key_path }}"
+    path: "{{ jellyfinrepo_apt_key_path }}"
   register: apt_key_status
 - name: Download apt repo key
   ansible.builtin.get_url:
-    url: "{{ renderer_jellyfin_apt_key_url }}"
+    url: "{{ jellyfinrepo_apt_key_url }}"
     dest: "/tmp/jellyfin.gpg"
     mode: '0600'
   when: not apt_key_status.stat.exists
 - name: Install/convert apt repo key
   ansible.builtin.command:
-    cmd: "/usr/bin/gpg -o '{{ renderer_jellyfin_apt_key_path }}' --dearmor '/tmp/jellyfin.gpg'"
-    creates: "{{ renderer_jellyfin_apt_key_path }}"
+    cmd: "/usr/bin/gpg -o '{{ jellyfinrepo_apt_key_path }}' --dearmor '/tmp/jellyfin.gpg'"
+    creates: "{{ jellyfinrepo_apt_key_path }}"
   when: not apt_key_status.stat.exists
   become: true
 - name: Add apt repo
@@ -26,8 +32,3 @@
   become: true
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
-- name: Install ffmpeg
-  ansible.builtin.apt:
-    name: jellyfin-ffmpeg7
-    state: present
-  become: true

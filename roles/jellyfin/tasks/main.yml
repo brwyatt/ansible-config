@@ -1,17 +1,7 @@
 ---
-- name: Install pre-dependencies
-  ansible.builtin.apt:
-    pkg:
-      - intel-opencl-icd
-      - intel-gpu-tools
 - name: Manage Jellyfin repo
   ansible.builtin.include_role:
     name: jellyfinrepo
-- name: Install ffmpeg
-  ansible.builtin.apt:
-    name: jellyfin-ffmpeg7
-    state: present
-  become: true
 - name: Manage Jellyfin group
   ansible.builtin.group:
     name: jellyfin
@@ -25,6 +15,3 @@
     create_home: false
     home: /var/lib/jellyfin
     shell: /bin/bash
-- name: Create Mount
-  ansible.builtin.include_tasks:
-    file: mount.yml

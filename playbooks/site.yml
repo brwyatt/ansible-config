@@ -17,6 +17,7 @@
   become: true
   roles:
     - role: cephclient
+    - role: jellyfin
 - name: Renderer
   hosts: renderers
   become: true
