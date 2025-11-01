@@ -18,3 +18,7 @@ cephclient_mounts:
     fs_name: "Media"
     remote_path: "/TorrentFiles"
     mount_path: "/mnt/torrentfiles"
+  # - user: "seedbox"
+  #   fs_name: "Media"
+  #   remote_path: "/Media"
+  #   mount_path: "/mnt/media"
