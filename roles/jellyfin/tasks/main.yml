@@ -7,11 +7,18 @@
     name: jellyfin
     gid: 112
     state: present
+- name: Manage media group
+  ansible.builtin.group:
+    name: media
+    gid: 1001
+    state: present
 - name: Manage Jellyfin user
   ansible.builtin.user:
     name: jellyfin
     uid: 109
     group: jellyfin
+    append: true
+    groups: media
     create_home: false
     home: /var/lib/jellyfin
     shell: /bin/bash
