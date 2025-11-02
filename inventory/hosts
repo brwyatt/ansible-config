@@ -18,7 +18,7 @@ jellyfin:
     jellyfin.server.home.brwyatt.net:
 renderers:
   hosts:
-    render[01:03].server.home.brwyatt.net:
+    render[01:04].server.home.brwyatt.net:
 ntpservers:
   hosts:
     ntp[01:04].server.home.brwyatt.net:
