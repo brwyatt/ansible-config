@@ -30,3 +30,8 @@
   notify: Apt update
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
+- name: Install Ceph
+  # not installed by default, but it's part of our config
+  ansible.builtin.apt:
+    name: ceph
+    state: present
