@@ -12,6 +12,7 @@ cephclient_mounts:
     fs_name: "Media"
     remote_path: "/Media"
     mount_path: "/mnt/media_original"
+bindfs_automount: false
 bindfs_mounts:
   - source_path: "/mnt/media_original"
     mount_path: "/mnt/media"
