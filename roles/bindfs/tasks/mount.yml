@@ -1,0 +1,56 @@
+---
+- name: Set systemd unit name
+  ansible.builtin.set_fact:
+    systemd_mount_unit: "{{ item.mount_path[1:].replace('/', '-') }}.mount"
+    systemd_automount_unit: "{{ item.mount_path[1:].replace('/', '-') }}.automount"
+    systemd_source_mount_unit: "{{ item.source_path[1:].replace('/', '-') }}.mount"
+- name: Create Mount Dir
+  ansible.builtin.file:
+    path: "{{ item.mount_path }}"
+    state: directory
+    mode: "{{ item.mode | default('0755') }}"
+  become: true
+- name: Check systemd mount unit existence
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/{{ systemd_mount_unit }}"
+  register: systemd_unit_stat
+- name: Check source systemd mount unit existence
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/{{ systemd_source_mount_unit }}"
+  register: systemd_source_unit_stat
+- name: Create systemd mount unit
+  ansible.builtin.template:
+    src: systemd_mount.j2
+    dest: "/etc/systemd/system/{{ systemd_mount_unit }}"
+    mode: '0644'
+  become: true
+  register: mount_unit
+- name: Create systemd automount unit
+  ansible.builtin.template:
+    src: systemd_automount.j2
+    dest: "/etc/systemd/system/{{ systemd_automount_unit }}"
+    mode: '0644'
+  become: true
+  when: item.automount | default(bindfs_automount)
+- name: "Enable BindFS Automount {{ item.mount_path }}"
+  ansible.builtin.service:
+    name: "{{ systemd_automount_unit }}"
+    state: started
+    enabled: true
+    daemon_reload: true
+  become: true
+  when: item.automount | default(bindfs_automount)
+- name: "Reload BindFS Mount if changed {{ item.mount_path }}"
+  ansible.builtin.service:
+    name: "{{ systemd_mount_unit }}"
+    state: reloaded
+    daemon_reload: true
+  become: true
+  when: mount_unit.changed and systemd_unit_stat.stat.exists
+- name: "Mount BindFS Mount {{ item.mount_path }}"
+  ansible.builtin.service:
+    name: "{{ systemd_mount_unit }}"
+    state: started
+    enabled: true
+    daemon_reload: true
+  become: true

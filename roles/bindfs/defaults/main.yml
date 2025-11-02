@@ -1,0 +1,2 @@
+bindfs_automount: true
+bindfs_mounts: []

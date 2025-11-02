@@ -1,0 +1,12 @@
+---
+- name: Install bindfs
+  ansible.builtin.package:
+    name: bindfs
+    state: present
+  become: true
+- name: Create Mounts
+  loop: "{{ bindfs_mounts }}"
+  loop_control:
+    loop_var: item
+  ansible.builtin.include_tasks:
+    file: mount.yml

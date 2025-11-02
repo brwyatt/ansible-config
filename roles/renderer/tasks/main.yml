@@ -25,6 +25,11 @@
     create_home: false
     home: /var/lib/jellyfin
     shell: /bin/bash
+- name: Setup Bind mounts
+  # Need to add this here... AFTER the users are created...
+  # ... but before anything else
+  ansible.builtin.include_role:
+    name: bindfs
 - name: Create Mount
   ansible.builtin.include_tasks:
     file: mount.yml

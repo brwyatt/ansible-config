@@ -1,0 +1,21 @@
+{% set options = (["noexec"] if item.noexec|default(False) else ["exec"]) -%}
+{% if ((item.map | default([])) | length) > 0 -%}
+{% set options = options + ["map=" + (item.map | join(":"))] -%}
+{% endif -%}
+[Unit]
+Description=BindFS Mount for {{ item.mount_path }} from {{ item.source_path }}
+After=network-online.target remote-fs.target{% if systemd_source_unit_stat.stat.exists %} {{ systemd_source_mount_unit }}{% endif %}
+{% if systemd_source_unit_stat.stat.exists %}
+Wants={{ systemd_source_mount_unit }}
+{% endif %}
+
+[Mount]
+What={{ item.source_path }}
+Where={{ item.mount_path }}
+Type=fuse.bindfs
+{% if (options | length) > 0 %}
+Options={{ options | join(",") }}
+{% endif %}
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,8 @@
+[Unit]
+Description=BindFS Automount for {{ item.mount_path }} from {{ item.source_path }}
+
+[Mount]
+Where={{ item.mount_path }}
+
+[Install]
+WantedBy=multi-user.target
