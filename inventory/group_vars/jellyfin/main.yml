@@ -11,7 +11,7 @@ cephclient_mounts:
     remote_path: "/JellyfinHome"
     mount_path: "/var/lib/jellyfin"
     mode: '0750'
-  # - user: "jellyfin-server"
-  #   fs_name: "Media"
-  #   remote_path: "/Media"
-  #   mount_path: "/mnt/media"
+  - user: "jellyfin-server"
+    fs_name: "Media"
+    remote_path: "/Media"
+    mount_path: "/mnt/media"

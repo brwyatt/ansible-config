@@ -2,10 +2,6 @@
 cephclient_mon_dns_srv_name:
   domain: "home.brwyatt.net"
 cephclient_mounts:
-  # - user: "MEDIA-ADMIN"
-  #   fs_name: "Media"
-  #   remote_path: "/"
-  #   mount_path: "/mnt/ceph_media"
   - user: "seedbox"
     fs_name: "Media"
     remote_path: "/TorrentData"
@@ -18,7 +14,7 @@ cephclient_mounts:
     fs_name: "Media"
     remote_path: "/TorrentFiles"
     mount_path: "/mnt/torrentfiles"
-  # - user: "seedbox"
-  #   fs_name: "Media"
-  #   remote_path: "/Media"
-  #   mount_path: "/mnt/media"
+  - user: "seedbox"
+    fs_name: "Media"
+    remote_path: "/Media"
+    mount_path: "/mnt/media"
