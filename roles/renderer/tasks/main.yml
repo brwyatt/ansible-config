@@ -27,6 +27,7 @@
     name: jellyfin
     uid: 109
     group: jellyfin
+    groups: render
     create_home: false
     home: /var/lib/jellyfin
     shell: /bin/bash
