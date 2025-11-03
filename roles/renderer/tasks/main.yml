@@ -12,6 +12,11 @@
     name: jellyfin-ffmpeg7
     state: present
   become: true
+- name: Setup ffmpeg link
+  ansible.builtin.file:
+    src: /usr/lib/jellyfin-ffmpeg/ffmpeg
+    dest: /usr/local/bin/ffmpeg
+    state: link
 - name: Manage Jellyfin group
   ansible.builtin.group:
     name: jellyfin
