@@ -38,7 +38,7 @@
 - name: "Reload CephFS Mount if changed {{ item.mount_path }}"
   ansible.builtin.service:
     name: "{{ systemd_mount_unit }}"
-    state: reloaded
+    state: restarted
     daemon_reload: true
   become: true
   when: mount_unit.changed and systemd_unit_stat.stat.exists
