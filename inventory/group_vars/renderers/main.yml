@@ -4,12 +4,12 @@ cephclient_mon_dns_srv_name:
   domain: "home.brwyatt.net"
 cephclient_mounts:
   - user: "jellyfin-render"
-    fs_name: "Media"
+    fs_name: "Media_EC"
     remote_path: "/JellyfinHome"
     mount_path: "/var/lib/jellyfin"
     mode: '0750'
   - user: "jellyfin-render"
-    fs_name: "Media"
+    fs_name: "Media_EC"
     remote_path: "/Media"
     mount_path: "/mnt/media_original"
 bindfs_automount: false
