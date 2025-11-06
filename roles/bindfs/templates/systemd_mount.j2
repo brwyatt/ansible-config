@@ -4,7 +4,7 @@
 {% endif -%}
 [Unit]
 Description=BindFS Mount for {{ item.mount_path }} from {{ item.source_path }}
-After=network-online.target remote-fs.target{% if systemd_source_unit_stat.stat.exists %} {{ systemd_source_mount_unit }}{% endif %}
+After=network-online.target remote-fs.target local-fs.target nss-user-lookup.target{% if systemd_source_unit_stat.stat.exists %} {{ systemd_source_mount_unit }}{% endif %}
 {% if systemd_source_unit_stat.stat.exists %}
 
 Wants={{ systemd_source_mount_unit }}
