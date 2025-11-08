@@ -46,6 +46,11 @@ haproxy_frontends:
       port: 636
       ssl_cert: "/etc/haproxy/certs/{{ cert[0] }}.pem"
     backend: "ipaldaps-hosts"
+  ipakerberos:
+    mode: tcp
+    bind:
+      port: 88
+    backend: "ipakerberos-hosts"
 haproxy_backends:
   ipaweb-hosts:
     balance: "leastconn"
@@ -66,6 +71,12 @@ haproxy_backends:
     options:
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
       - "server-template ipaldaps 1-5 _ldaps._tcp.home.brwyatt.net resolvers localdns init-addr none"
+  ipakerberos-hosts:
+    mode: tcp
+    balance: "leastconn"
+    options:
+      - "default-server check"
+      - "server-template ipakerb 1-5 _kerberos._tcp.home.brwyatt.net resolvers localdns init-addr none"
 keepalived_check_scripts:
   ipaweb:
     type: haproxy
@@ -76,6 +87,9 @@ keepalived_check_scripts:
   ipaldaps:
     type: haproxy
     backend_name: "ipaldaps-hosts"
+  ipakerberos:
+    type: haproxy
+    backend_name: "ipakerberos-hosts"
 keepalived_instances:
   ipaweb:
     virtual_ip: 172.17.30.5/24
@@ -84,3 +98,4 @@ keepalived_instances:
       - ipaweb
       - ipaldap
       - ipaldaps
+      - ipakerberos
