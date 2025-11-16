@@ -88,3 +88,10 @@
   roles:
     - role: freeipa.ansible_freeipa.ipareplica
       tags: ipa_replica_setup
+- name: Sonarr
+  hosts: sonarr
+  roles:
+    - role: cephclient
+    - role: aws_creds
+    - role: certbot
+    - role: reverseproxy
