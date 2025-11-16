@@ -1,2 +1,2 @@
-bindfs_automount: true
+bindfs_automount: "{{ ansible_virtualization_type != 'lxc' }}"
 bindfs_mounts: []
