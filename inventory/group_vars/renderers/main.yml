@@ -10,11 +10,11 @@ cephclient_mounts:
     mode: '0750'
   - user: "jellyfin-render"
     fs_name: "Media_EC"
-    remote_path: "/Media"
+    remote_path: "/"
     mount_path: "/mnt/media_original"
 bindfs_automount: false
 bindfs_mounts:
-  - source_path: "/mnt/media_original"
+  - source_path: "/mnt/media_original/Media"
     mount_path: "/mnt/media"
     map:
       - "root/jellyfin"
