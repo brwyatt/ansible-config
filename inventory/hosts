@@ -86,3 +86,6 @@ sonarr:
 prowlarr:
   hosts:
     prowlarr.server.home.brwyatt.net:
+mediamanager:
+  hosts:
+    mediamanager.server.home.brwyatt.net:

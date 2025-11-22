@@ -101,3 +101,10 @@
     - role: aws_creds
     - role: certbot
     - role: reverseproxy
+- name: MediaManager
+  hosts: mediamanager
+  roles:
+    - role: cephclient
+    - role: aws_creds
+    - role: certbot
+    - role: reverseproxy
