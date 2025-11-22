@@ -83,3 +83,6 @@ openmediavault:
 sonarr:
   hosts:
     sonarr.server.home.brwyatt.net:
+prowlarr:
+  hosts:
+    prowlarr.server.home.brwyatt.net:

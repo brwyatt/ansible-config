@@ -95,3 +95,9 @@
     - role: aws_creds
     - role: certbot
     - role: reverseproxy
+- name: Prowlarr
+  hosts: prowlarr
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: reverseproxy
