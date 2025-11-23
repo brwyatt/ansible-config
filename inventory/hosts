@@ -80,6 +80,9 @@ sspasswdservers:
 openmediavault:
   hosts:
     omv-test.server.home.brwyatt.net:
+radarr:
+  hosts:
+    radarr.server.home.brwyatt.net:
 sonarr:
   hosts:
     sonarr.server.home.brwyatt.net:

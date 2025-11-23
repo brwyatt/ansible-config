@@ -1,0 +1,15 @@
+---
+cephclient_mon_dns_srv_name:
+  domain: "home.brwyatt.net"
+cephclient_mounts:
+  - user: "radarr"
+    fs_name: "Media_EC"
+    remote_path: "/"
+    mount_path: "/mnt/Media"
+cert:
+  - radarr.server.home.brwyatt.net
+certbot_certs:
+  - "{{ cert }}"
+reverseproxy_sites:
+  - server_names: "{{ cert }}"
+    destination: "http://127.0.0.1:7878"
