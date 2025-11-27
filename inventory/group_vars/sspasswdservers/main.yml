@@ -20,6 +20,7 @@ sspasswd_ldap_servers:
   - "ldaps://ipa02.server.home.brwyatt.net"
   - "ldaps://ipa03.server.home.brwyatt.net"
 sspasswd_server_names:
-  - "password.home.brwyatt.net"
   - "{{ ansible_fqdn }}"
+  - "password.server.home.brwyatt.net"
+  - "password.home.brwyatt.net"
 sspasswd_vip: "172.17.30.205"

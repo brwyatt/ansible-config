@@ -30,4 +30,4 @@ reverseproxy_sites:
   #   destination: "https://matrix.server.home.brwyatt.net:443"
   - server_names:
       - "password.home.brwyatt.net"
-    destination: "https://password.home.brwyatt.net:443"
+    destination: "https://password.server.home.brwyatt.net:443"
