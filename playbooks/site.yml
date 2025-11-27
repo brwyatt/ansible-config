@@ -121,3 +121,15 @@
     - role: aws_creds
     - role: certbot
     - role: reverseproxy
+- name: ZWave-JS-UI
+  hosts: zwave
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: reverseproxy
+- name: Zigbee
+  hosts: zigbee
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: reverseproxy

@@ -28,18 +28,16 @@ seedbox:
 devbox:
   hosts:
     devbox.server.home.brwyatt.net:
-iotradios:
+iotradiomanagers:
   children:
     zwave:
     zigbee:
 zwave:
   hosts:
     zwave-js-ui.iot.home.brwyatt.net:
-      ansible_user: root
 zigbee:
   hosts:
     zigbee2mqtt.iot.home.brwyatt.net:
-      ansible_user: root
 nutserver:
   hosts:
     nut-server.ups.home.brwyatt.net:
