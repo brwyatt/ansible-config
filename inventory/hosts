@@ -92,3 +92,6 @@ prowlarr:
 mediamanager:
   hosts:
     mediamanager.server.home.brwyatt.net:
+uptimekuma:
+  hosts:
+    uptimekuma.server.home.brwyatt.net:
