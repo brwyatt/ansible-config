@@ -115,3 +115,9 @@
     - role: aws_creds
     - role: certbot
     - role: reverseproxy
+- name: Uptime Kuma
+  hosts: uptimekuma
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: reverseproxy
