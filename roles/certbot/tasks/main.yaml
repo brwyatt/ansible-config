@@ -12,7 +12,7 @@
     email: "{{ certbot_email }}"
 - name: "Request certificates using Route53"
   ansible.builtin.command:
-    cmd: "certbot certonly --dns-route53 -d {{ item | join(' -d ') }} --non-interactive --expand"
+    cmd: "certbot certonly --dns-route53 --cert-name {{ item | join(' -d ') }} --non-interactive --expand"
     creates: "/etc/letsencrypt/live/{{ item[0] }}/fullchain.pem"
   loop: "{{ certbot_certs }}"
   loop_control:
