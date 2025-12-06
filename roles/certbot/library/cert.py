@@ -70,21 +70,23 @@ def main():
             (requested_domains_set != current['domains'])
         )
         if module.check_mode:
-            return {
+            module.exit_json(**{
                 'changed': need_change,
                 'failed': False,
                 'cert_name': cert_name,
                 'domains_added': list(requested_domains_set - current['domains']),
                 'domains_removed': list(current['domains'] - requested_domains_set),
-            }
+            })
+            return
         if not need_change:
-            return {
+            module.exit_json(**{
                 'changed': False,
                 'failed': False,
                 'cert_name': cert_name,
                 'domains_added': [],
                 'domains_removed': [],
-            }
+            })
+            return
 
         cmd = [
             "certbot",
@@ -111,33 +113,36 @@ def main():
             new_cert = check_cert(cert_name)
         except RuntimeError as e:
             module.fail_json(msg=f"{e}")
-        return {
+        module.exit_json(**{
             'changed': current['domains'] != new_cert['domains'],
             'failed': False,
             'cert_name': cert_name,
             'domains_added': list(new_cert['domains'] - current['domains']),
             'domains_removed': list(current['domains'] - new_cert['domains']),
-        }
+        })
+        return
 
     if state == "absent":
         need_change = current['present']
         if module.check_mode:
-            return {
+            module.exit_json(**{
                 'changed': need_change,
                 'failed': False,
                 'cert_name': cert_name,
                 'domains_added': [],
                 'domains_removed': list(current['domains']),
-            }
+            })
+            return
 
         if not need_change:
-            return {
+            module.exit_json(**{
                 'changed': False,
                 'failed': False,
                 'cert_name': cert_name,
                 'domains_added': [],
                 'domains_removed': [],
-            }
+            })
+            return
 
         cmd = [
             "certbot",
@@ -160,13 +165,14 @@ def main():
             new_cert = check_cert(cert_name)
         except RuntimeError as e:
             module.fail_json(msg=f"{e}")
-        return {
+        module.exit_json(**{
             'changed': current['domains'] != new_cert['domains'],
             'failed': False,
             'cert_name': cert_name,
             'domains_added': list(new_cert['domains'] - current['domains']),
             'domains_removed': list(current['domains'] - new_cert['domains']),
-        }
+        })
+        return
 
 
 if __name__ == '__main__':
