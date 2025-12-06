@@ -74,6 +74,7 @@ def main():
                 'changed': need_change,
                 'failed': False,
                 'cert_name': cert_name,
+                'domains': list(requested_domains_set),
                 'domains_added': list(requested_domains_set - current['domains']),
                 'domains_removed': list(current['domains'] - requested_domains_set),
             })
@@ -83,6 +84,7 @@ def main():
                 'changed': False,
                 'failed': False,
                 'cert_name': cert_name,
+                'domains': list(current['domains']),
                 'domains_added': [],
                 'domains_removed': [],
             })
@@ -117,6 +119,7 @@ def main():
             'changed': current['domains'] != new_cert['domains'],
             'failed': False,
             'cert_name': cert_name,
+            'domains': list(new_cert['domains']),
             'domains_added': list(new_cert['domains'] - current['domains']),
             'domains_removed': list(current['domains'] - new_cert['domains']),
         })
@@ -129,6 +132,7 @@ def main():
                 'changed': need_change,
                 'failed': False,
                 'cert_name': cert_name,
+                'domains': [],
                 'domains_added': [],
                 'domains_removed': list(current['domains']),
             })
@@ -139,6 +143,7 @@ def main():
                 'changed': False,
                 'failed': False,
                 'cert_name': cert_name,
+                'domains': [],
                 'domains_added': [],
                 'domains_removed': [],
             })
@@ -169,6 +174,7 @@ def main():
             'changed': current['domains'] != new_cert['domains'],
             'failed': False,
             'cert_name': cert_name,
+            'domains': list(new_cert['domains']),
             'domains_added': list(new_cert['domains'] - current['domains']),
             'domains_removed': list(current['domains'] - new_cert['domains']),
         })
