@@ -65,6 +65,9 @@
   hosts: proxmoxdcm
   roles:
     - role: proxmoxdcm
+    - role: aws_creds
+    - role: certbot
+    - role: reverseproxy
 - name: PXE Servers
   hosts: pxeservers
   roles:
