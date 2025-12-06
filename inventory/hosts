@@ -93,3 +93,6 @@ mediamanager:
 uptimekuma:
   hosts:
     uptimekuma.server.home.brwyatt.net:
+pulse:
+  hosts:
+    pulse.server.home.brwyatt.net:
