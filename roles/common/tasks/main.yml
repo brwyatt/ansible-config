@@ -14,7 +14,7 @@
 - name: Join Domain
   ansible.builtin.include_role:
     role: freeipa.ansible_freeipa.ipaclient
-  when: common_join_ipa_domain
+  when: common_join_ipa_domain and not ansible_check_mode
 - name: Manage SSH service
   ansible.builtin.include_tasks:
     file: sshd.yml
