@@ -4,10 +4,6 @@ cephclient_mon_dns_srv_name:
 cephclient_mounts:
   - user: "seedbox"
     fs_name: "Media_EC"
-    remote_path: "/"
-    mount_path: "/mnt/Media"
-  - user: "seedbox"
-    fs_name: "Media_EC"
     remote_path: "/TorrentData"
     mount_path: "/mnt/torrentdata"
   - user: "seedbox"
