@@ -17,20 +17,13 @@
     src: /usr/lib/jellyfin-ffmpeg/ffmpeg
     dest: /usr/local/bin/ffmpeg
     state: link
-- name: Manage Jellyfin group
-  ansible.builtin.group:
-    name: jellyfin
-    gid: 112
-    state: present
 - name: Manage Jellyfin user
   ansible.builtin.user:
     name: jellyfin
-    uid: 109
-    group: jellyfin
-    groups: render
-    create_home: false
-    home: /var/lib/jellyfin
-    shell: /bin/bash
+    append: true
+    groups:
+      - video
+      - render
 - name: Setup Bind mounts
   # Need to add this here... AFTER the users are created...
   # ... but before anything else
