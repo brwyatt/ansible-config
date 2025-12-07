@@ -35,7 +35,6 @@ haproxy_frontends:
     backend: "ipaweb-hosts"
     options:
       - "http-request set-header X-Forwarded-Proto https"
-      - "http-send-name-header Host"
   ipaldap:
     mode: tcp
     bind:
