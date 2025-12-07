@@ -17,7 +17,7 @@
     src: /usr/lib/jellyfin-ffmpeg/ffmpeg
     dest: /usr/local/bin/ffmpeg
     state: link
-- name: Manage Jellyfin user
+- name: Add Jellyfin user to local groups
   ansible.builtin.user:
     name: jellyfin
     append: true
