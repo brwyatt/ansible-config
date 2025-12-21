@@ -56,7 +56,6 @@ proxmoxdcm:
 homebox:
   hosts:
     homebox.server.home.brwyatt.net:
-      ansible_user: root
 inboundproxies:
   hosts:
     inboundproxy[01:02].server.home.brwyatt.net:
