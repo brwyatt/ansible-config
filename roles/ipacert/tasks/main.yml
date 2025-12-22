@@ -1,0 +1,25 @@
+---
+- name: Create Cert directory
+  ansible.builtin.file:
+    path: "{{ ipacert_cert_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+- name: Create Key directory
+  ansible.builtin.file:
+    path: "{{ ipacert_key_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0750'
+- name: "Request certificates IPA CA"
+  cert:
+    state: "{{ item.value['state'] | default('present') }}"
+    cert_name: "{{ item.value['name'] }}"
+    domain: "{{ item.value['domain'] }}"
+    principal: "{{ item.value['principal'] | default(omit) }}"
+  loop: "{{ ipacert_certs | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  become: true
