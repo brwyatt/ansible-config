@@ -19,6 +19,8 @@
     cert_name: "{{ item.value['name'] }}"
     domain: "{{ item.value['domain'] }}"
     principal: "{{ item.value['principal'] | default(omit) }}"
+    cert_path: "{{ item.value['cert_path'] | default(ipacert_cert_dir + '/' + item.value['name'] + '.crt') }}"
+    key_path: "{{ item.value['key_path'] | default(ipacert_key_dir + '/' + item.value['name'] + '.key') }}"
   loop: "{{ ipacert_certs | dict2items }}"
   loop_control:
     label: "{{ item.key }}"
