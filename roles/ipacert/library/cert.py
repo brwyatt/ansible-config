@@ -66,8 +66,8 @@ def check_cert(cert_name: str) -> CertData:
         'stuck': (stuck_match.group(1) == "yes") if stuck_match else None,
         'key_path': key_match.group(1) if key_match else None,
         'cert_path': cert_match.group(1) if cert_match else None,
-        'subject_cn': subject_cn_match.group(1) if subject_cn_match else None,
-        'domain': domain_match.group(1) if domain_match else None,
+        'subject_cn': subject_cn_match.group(1).lower() if subject_cn_match else None,
+        'domain': domain_match.group(1).lower() if domain_match else None,
         'track': (track_match.group(1) == "yes") if track_match else None,
         'auto_renew': (auto_renew_match.group(1) == "yes") if auto_renew_match else None,
     }
@@ -125,8 +125,11 @@ def main():
     state = module.params['state'].lower()
     cert_name = module.params['cert_name']
     domain = module.params['domain']
-    if state == "present" and (domain is None or domain == ""):
-        module.fail_json(msg="`domain` must be defined when `state` is \"present\"")
+    if state == "present":
+        if domain is None or domain == "":
+            module.fail_json(msg="`domain` must be defined when `state` is \"present\"")
+        else:
+            domain = domain.lower()
     principal = module.params['principal']
     if principal is None or principal == "":
         principal = get_host_principal()
@@ -200,7 +203,7 @@ def main():
         'failed': failed,
         'original_state': original_state,
         'new_state': new_state,
-        'requeted_state': requested_state,
+        'requested_state': requested_state,
     })
 
 
