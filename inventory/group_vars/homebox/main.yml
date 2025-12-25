@@ -10,4 +10,4 @@ reverseproxy_sites:
 ipacert_certs:
   "20251221175534":
     state: absent
-  iam-roles:
+  iam-roles: {}
