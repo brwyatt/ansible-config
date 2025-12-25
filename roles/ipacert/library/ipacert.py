@@ -83,7 +83,7 @@ def delete_cert(cert_name: str) -> None:
 def request_cert(cert_name: str, cert_path: str, key_path: str, principal: str, domain: str) -> None:
     cmd = [
         'ipa-getcert', 'request',
-        '--new-id', cert_name,
+        '--id', cert_name,
         '--certfile', cert_path,
         '--keyfile', key_path,
         '--principal', principal,
