@@ -14,7 +14,7 @@
     group: root
     mode: '0750'
 - name: "Request certificates IPA CA"
-  cert:
+  ipacert:
     state: "{{ item.value['state'] | default('present') }}"
     cert_name: "{{ item.key }}"
     domain: "{{ item.value['domain'] | default(ansible_fqdn) }}"
