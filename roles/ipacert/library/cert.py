@@ -80,7 +80,7 @@ def delete_cert(cert_name: str) -> None:
     except FileNotFoundError as e:
         raise RuntimeError(f"ipa-getcert failed: {e}")
 
-def request_cert(cert_name: str, cert_path: str, key_path: str, principal: str, domain: str) -> CertData:
+def request_cert(cert_name: str, cert_path: str, key_path: str, principal: str, domain: str) -> None:
     cmd = [
         'ipa-getcert', 'request',
         '--new-id', cert_name,
@@ -129,6 +129,7 @@ def main():
     if state == "present":
         if domain is None or domain == "":
             module.fail_json(msg="`domain` must be defined when `state` is \"present\"")
+            return
         else:
             domain = domain.lower()
     principal = module.params['principal']
@@ -137,9 +138,11 @@ def main():
     cert_path = module.params['cert_path']
     if state == "present" and (cert_path is None or cert_path == ""):
         module.fail_json(msg="`cert_path` must be defined when `state` is \"present\"")
+        return
     key_path = module.params['key_path']
     if state == "present" and (key_path is None or key_path == ""):
         module.fail_json(msg="`key_path` must be defined when `state` is \"present\"")
+        return
 
     requested_state =  {
         'cert_name': cert_name,
@@ -171,6 +174,7 @@ def main():
         original_state = check_cert(cert_name)
     except RuntimeError as e:
         module.fail_json(msg=f"{e}")
+        return
 
     need_change = requested_state != original_state
 
@@ -181,6 +185,7 @@ def main():
             'original_state': original_state,
             'new_state': requested_state,
         })
+        return
 
     if original_state["present"] and need_change:
         # either we're removing a cert or we're changing it (and need to delete first)
@@ -188,12 +193,14 @@ def main():
             delete_cert(cert_name)
         except RuntimeError as e:
             module.fail_json(msg=f"{e}")
+            return
 
     if requested_state["present"] and need_change:
         try:
             request_cert(cert_name, cert_path, key_path, principal, domain)
         except RuntimeError as e:
             module.fail_json(msg=f"{e}")
+            return
 
     new_state = check_cert(cert_name)
     changed = original_state != new_state
@@ -206,6 +213,7 @@ def main():
         'new_state': new_state,
         'requested_state': requested_state,
     })
+    return
 
 
 if __name__ == '__main__':
