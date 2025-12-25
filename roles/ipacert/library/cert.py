@@ -89,6 +89,7 @@ def request_cert(cert_name: str, cert_path: str, key_path: str, principal: str, 
         '--principal', principal,
         '--dns', domain,
         '--subject-name', domain,
+        '--cert-perms', '0644',
         '--wait',
     ]
     try:
