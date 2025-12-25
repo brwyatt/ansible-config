@@ -62,14 +62,14 @@ def check_cert(cert_name: str) -> CertData:
     return {
         'cert_name': cert_name_match.group(1),
         'present': True,
-        'status': status_match.group(1),
-        'stuck': stuck_match.group(1) == "yes",
-        'key_path': key_match.group(1),
-        'cert_path': cert_match.group(1),
-        'subject': subject_match.group(1),
-        'domain': domain_match.group(1),
-        'track': track_match.group(1) == "yes",
-        'auto_renew': auto_renew_match.group(1) == "yes",
+        'status': status_match.group(1) if status_match else None,
+        'stuck': (stuck_match.group(1) == "yes") if stuck_match else None,
+        'key_path': key_match.group(1) if key_match else None,
+        'cert_path': cert_match.group(1) if cert_match else None,
+        'subject': subject_match.group(1) if subject_match else None,
+        'domain': domain_match.group(1) if domain_match else None,
+        'track': (track_match.group(1) == "yes") if track_match else None,
+        'auto_renew': (auto_renew_match.group(1) == "yes") if auto_renew_match else None,
     }
 
 
