@@ -38,6 +38,7 @@
   hosts: homebox
   become: true
   roles:
+    - role: ipacert
     - role: aws_creds
     - role: certbot
     - role: homebox
