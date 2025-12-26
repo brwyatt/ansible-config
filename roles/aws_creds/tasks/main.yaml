@@ -1,8 +1,11 @@
 ---
+- name: Get config directory
+  ansible.builtin.set_fact:
+    config_dir: "{{ aws_creds_file_path | dirname }}"
 - name: Create AWS Config directory
   become: true
   ansible.builtin.file:
-    path: "{{ aws_creds_file_path | dirname }}"
+    path: "{{ config_dir }}"
     state: directory
     mode: "0700"
 - name: Set AWS creds for default profile
@@ -10,11 +13,61 @@
   community.general.ini_file:
     path: "{{ aws_creds_file_path }}"
     mode: "0600"
-    state: present
+    state: |-
+      {{
+        'present'
+        if aws_creds_aws_access_key_id is not undefined
+        and aws_creds_aws_secret_access_key is not undefined
+        else 'absent'
+      }}
     no_extra_spaces: true
     section: "default"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-    - {"option": "aws_access_key_id", "value": "{{ aws_creds_aws_access_key_id }}"}
-    - {"option": "aws_secret_access_key", "value": "{{ aws_creds_aws_secret_access_key }}"}
+    - {"option": "aws_access_key_id", "value": "{{ aws_creds_aws_access_key_id | default('') }}"}
+    - {"option": "aws_secret_access_key", "value": "{{ aws_creds_aws_secret_access_key | default('') }}"}
+- name: Set IPA Cert vars
+  ansible.builtin.set_fact:
+    cert_dir: "{{ config_dir }}/roles-anywhere/certs"
+    key_dir: "{{ config_dir }}/roles-anywhere/priv"
+    cert_name: "iam-roles-root-default"
+- name: IAM Roles Cert
+  ansible.builtin.include_role:
+    name: ipacert
+  vars:
+    ipacert_cert_dir: "{{ cert_dir }}"
+    ipacert_key_dir: "{{ key_dir }}"
+    ipacert_certs:
+      "{{ cert_name }}": {}
+  when:
+    - aws_creds_role_arn is not undefined
+    - aws_creds_trust_anchor_arn is not undefined
+    - aws_creds_profile_arn is not undefined
+- name: Set AWS IAM Role helper for default profile
+  become: true
+  community.general.ini_file:
+    path: "{{ aws_creds_file_path }}"
+    mode: "0600"
+    state: |-
+      {{
+        'present'
+        if aws_creds_role_arn is not undefined
+        and aws_creds_trust_anchor_arn is not undefined
+        and aws_creds_profile_arn is not undefined
+        else 'absent'
+      }}
+    no_extra_spaces: true
+    section: "default"
+    option: "credential_process"
+    value: |-
+      {{
+        [
+          "/usr/local/bin/aws_signing_helper", "credential-process",
+          "--certificate", "{{ cert_dir }}/{{ cert_name }}.cert",
+          "--private-key", "{{ key_dir }}/{{ cert_name }}.key",
+          "--trust-anchor-arn", "{{ aws_creds_trust_anchor_arn | default('') }}",
+          "--profile-arn", "{{ aws_creds_profile_arn | default('') }}",
+          "--role-arn", "{{ aws_creds_role_arn | default('') }}",
+        ] | join(' ')
+      }}
