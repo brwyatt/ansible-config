@@ -11,7 +11,7 @@
   account:
     email: "{{ certbot_email }}"
 - name: "Request certificates using Route53"
-  cert:
+  certbotcert:
     state: present
     cert_name: "{{ item[0] }}"
     domains: "{{ item }}"
