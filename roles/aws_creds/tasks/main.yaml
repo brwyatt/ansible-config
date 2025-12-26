@@ -64,10 +64,10 @@
       {{
         [
           "/usr/local/bin/aws_signing_helper", "credential-process",
-          "--certificate", "{{ cert_dir }}/{{ cert_name }}.cert",
-          "--private-key", "{{ key_dir }}/{{ cert_name }}.key",
-          "--trust-anchor-arn", "{{ aws_creds_trust_anchor_arn | default('') }}",
-          "--profile-arn", "{{ aws_creds_profile_arn | default('') }}",
-          "--role-arn", "{{ aws_creds_role_arn | default('') }}",
+          "--certificate", cert_dir + "/" + cert_name + ".cert",
+          "--private-key", key_dir + "/" + cert_name + ".key",
+          "--trust-anchor-arn", aws_creds_trust_anchor_arn | default(''),
+          "--profile-arn", aws_creds_profile_arn | default(''),
+          "--role-arn", aws_creds_role_arn | default(''),
         ] | join(' ')
       }}
