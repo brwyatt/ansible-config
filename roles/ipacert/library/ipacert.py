@@ -1,5 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
+import os
 from typing import Optional, TypedDict
 import re
 import subprocess
@@ -192,6 +193,20 @@ def main():
         try:
             delete_cert(cert_name)
         except RuntimeError as e:
+            module.fail_json(msg=f"{e}")
+            return
+        try:
+            os.remove(original_state['cert_path'])
+        except FileNotFoundError:
+            pass
+        except Exception as e:
+            module.fail_json(msg=f"{e}")
+            return
+        try:
+            os.remove(original_state['key_path'])
+        except FileNotFoundError:
+            pass
+        except Exception as e:
             module.fail_json(msg=f"{e}")
             return
 
