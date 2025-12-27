@@ -48,7 +48,6 @@
       "{{ cert_name }}": {}
   when: include_roles_anywhere
 - name: Signing helper command
-  when: include_roles_anywhere
   ansible.builtin.set_fact:
     aws_signing_helper_cmd: |-
       {{
