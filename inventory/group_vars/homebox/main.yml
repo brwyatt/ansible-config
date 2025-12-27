@@ -7,6 +7,3 @@ homebox_web_host: "127.0.0.1"
 reverseproxy_sites:
   - server_names: "{{ cert }}"
     destination: "http://{{ homebox_web_host }}:{{ homebox_web_port }}"
-ipacert_certs:
-  iam-roles:
-    state: absent
