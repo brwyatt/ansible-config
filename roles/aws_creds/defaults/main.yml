@@ -1,2 +1,16 @@
 ---
 aws_creds_file_path: "/root/.aws/config"
+aws_creds_signing_helper_arch: "{{ ansible_architecture | capitalize }}"
+aws_creds_signing_helper_version: "1.7.2"
+aws_creds_signing_helper_download_url: |-
+  {{
+    "https://rolesanywhere.amazonaws.com/releases/"
+    + aws_creds_signing_helper_version + "/" + aws_creds_signing_helper_arch
+    + "/Linux/Amzn2023/aws_signing_helper"
+  }}
+aws_creds_signing_helper_checksums:
+  "1.7.2":
+    aarch64: "75e998e9a6b63f579421c2f8dd6fb38a9d69c987a4399ab6ce1da60684f759ee"
+    x86_64: "39d406c703e07a3943831a3164474770a15c40243d8ffed0a2fcdf8eccf84274"
+aws_creds_signing_helper_staging_dir: "/opt/aws_signing_helper"
+aws_creds_signing_helper_bin: "/usr/local/bin/aws_signing_helper"

@@ -32,6 +32,12 @@
     cert_dir: "{{ config_dir }}/roles-anywhere/certs"
     key_dir: "{{ config_dir }}/roles-anywhere/priv"
     cert_name: "iam-roles-root-default"
+    include_roles_anywhere: |-
+      {{
+        aws_creds_role_arn is not undefined
+        and aws_creds_trust_anchor_arn is not undefined
+        and aws_creds_profile_arn is not undefined
+      }}
 - name: IAM Roles Cert
   ansible.builtin.include_role:
     name: ipacert
@@ -40,10 +46,7 @@
     ipacert_key_dir: "{{ key_dir }}"
     ipacert_certs:
       "{{ cert_name }}": {}
-  when:
-    - aws_creds_role_arn is not undefined
-    - aws_creds_trust_anchor_arn is not undefined
-    - aws_creds_profile_arn is not undefined
+  when: include_roles_anywhere
 - name: Set AWS IAM Role helper for default profile
   become: true
   community.general.ini_file:
@@ -52,9 +55,7 @@
     state: |-
       {{
         'present'
-        if aws_creds_role_arn is not undefined
-        and aws_creds_trust_anchor_arn is not undefined
-        and aws_creds_profile_arn is not undefined
+        if include_roles_anywhere
         else 'absent'
       }}
     no_extra_spaces: true
@@ -71,3 +72,23 @@
           "--role-arn", aws_creds_role_arn | default(''),
         ] | join(' ')
       }}
+- name: AWS Signing Helper
+  when: include_roles_anywhere
+  block:
+    - name: Create staging directory
+      ansible.builtin.file:
+        path: "{{ aws_creds_signing_helper_staging_dir }}"
+        state: directory
+        mode: "0755"
+    - name: Download aws_signing_helper
+      ansible.builtin.get_url:
+        url: "{{ aws_creds_signing_helper_download_url }}"
+        dest: "{{ aws_creds_signing_helper_staging_dir }}/{{ aws_creds_signing_helper_version }}"
+        mode: "0755"
+        checksum: "sha256:{{ aws_creds_signing_helper_checksums[aws_creds_signing_helper_version][ansible_architecture | lower] }}"
+    - name: Symlink binary to system path
+      ansible.builtin.file:
+        src: "{{ aws_creds_signing_helper_staging_dir }}/{{ aws_creds_signing_helper_version }}"
+        dest: "{{ aws_creds_signing_helper_bin }}"
+        state: link
+        force: true
