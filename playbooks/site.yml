@@ -28,6 +28,8 @@
   hosts: seedbox
   become: true
   roles:
+    - role: aws_creds
+    - role: certbot
     - role: cephclient
 - name: NUT Server
   hosts: nutserver

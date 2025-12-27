@@ -22,3 +22,5 @@ cephclient_mounts:
     fs_name: "ISOs"
     remote_path: "/template/iso"
     mount_path: "/mnt/iso"
+certbot_certs:
+  - - "seedbox.server.home.brwyatt.net"
