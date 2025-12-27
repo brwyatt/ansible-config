@@ -47,21 +47,10 @@
     ipacert_certs:
       "{{ cert_name }}": {}
   when: include_roles_anywhere
-- name: Set AWS IAM Role helper for default profile
-  become: true
-  community.general.ini_file:
-    path: "{{ aws_creds_file_path }}"
-    mode: "0600"
-    state: |-
-      {{
-        'present'
-        if include_roles_anywhere
-        else 'absent'
-      }}
-    no_extra_spaces: true
-    section: "default"
-    option: "credential_process"
-    value: |-
+- name: Signing helper command
+  when: include_roles_anywhere
+  ansible.builtin.set_fact:
+    aws_signing_helper_cmd: |-
       {{
         [
           "/usr/local/bin/aws_signing_helper", "credential-process",
@@ -92,3 +81,27 @@
         dest: "{{ aws_creds_signing_helper_bin }}"
         state: link
         force: true
+- name: Check signing helper can assume role
+  become: true
+  ansible.builtin.command:
+    cmd: "{{ aws_signing_helper_cmd }}"
+  register: auth_test
+  changed_when: false
+  when: include_roles_anywhere
+  failed_when: auth_test.rc != 0 or 'AccessKeyId' not in auth_test.stdout
+  no_log: true
+- name: Set AWS IAM Role helper for default profile
+  become: true
+  community.general.ini_file:
+    path: "{{ aws_creds_file_path }}"
+    mode: "0600"
+    state: |-
+      {{
+        'present'
+        if include_roles_anywhere
+        else 'absent'
+      }}
+    no_extra_spaces: true
+    section: "default"
+    option: "credential_process"
+    value: "{{ aws_signing_helper_cmd }}"
