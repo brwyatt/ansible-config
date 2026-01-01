@@ -33,7 +33,7 @@
       become: true
       register: deploy_hook_file
     - name: Run deploy hook when changed # noqa: no-handler
-      when: deploy_hook_file.changed
+      when: deploy_hook_file.changed or (item.value['force_deploy'] | default(false))
       ansible.builtin.command:
         argv:
           - "/etc/letsencrypt/renewal-hooks/deploy/{{ item.key }}-deploy.sh"
