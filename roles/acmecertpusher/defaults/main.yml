@@ -1,3 +1,5 @@
 ---
 acmecertpusher_hosts: {}
 acmecertpusher_certs: {}
+acmecertpusher_ssh_key: null
+acmecertpusher_ssh_key_name: certpusher

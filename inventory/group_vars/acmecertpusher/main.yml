@@ -5,12 +5,11 @@ acmecertpusher_hosts:
     method: ssh
     ssh_hostkey: "ssh-rsa 12345abcd"
     ssh_user: root
-    ssh_pass: "{{ skylightkvm_password }}"
     cert: skylightkvm
-    key_dest: "/etc/kvmd/user/ssl"
-    cert_dest: "/etc/kvmd/user/ssl"
+    key_dest: "/etc/kvmd/user/ssl/server.key"
+    cert_dest: "/etc/kvmd/user/ssl/server.crt"
     commands:
-      - "systemctl restart nginx"
+      - "/etc/init.d/S99kvmd-nginx restart"
 acmecertpusher_certs:
   skylightkvm:
     - skylightkvm.kvm.home.brwyatt.net

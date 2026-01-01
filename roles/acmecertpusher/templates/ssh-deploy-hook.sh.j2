@@ -4,6 +4,7 @@ certbot_live="/etc/letsencrypt/live"
 host="{{ dest_host }}"
 cert_name="{{ cert_name }}"
 cert_dir="${certbot_live}/${cert_name}"
+ssh_key="{{ ssh_key }}"
 
 if [ "${RENEWED_LINEAGE}" != "${cert_dir}" ] && [ "$1" != "--force" ]; then
     echo "Skipping deploy hook for ${host}: Certificate mismatch (${RENEWED_LINEAGE})."
@@ -11,11 +12,10 @@ if [ "${RENEWED_LINEAGE}" != "${cert_dir}" ] && [ "$1" != "--force" ]; then
 fi
 
 user="{{ user }}"
-export SSHPASS="{{ passwd | quote }}"
 
-sshpass -e scp "${cert_dir}/fullchain.pem" "${user}@${host}:{{ cert_dest }}"
-sshpass -e scp "${cert_dir}/privkey.pem" "${user}@${host}:{{ key_dest }}"
+scp -i "${ssh_key}" "${cert_dir}/fullchain.pem" "${user}@${host}:{{ cert_dest }}"
+scp -i "${ssh_key}" "${cert_dir}/privkey.pem" "${user}@${host}:{{ key_dest }}"
 
 {% for command in commands %}
-sshpass -e ssh "${user}@${host}" {{ command }}
+ssh -i "${ssh_key}" "${user}@${host}" {{ command }}
 {% endfor %}
