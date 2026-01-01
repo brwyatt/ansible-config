@@ -1,0 +1,33 @@
+---
+- name: SSH hostkey
+  ansible.builtin.known_hosts:
+    name: "{{ item.key }}"
+    key: "{{ item.key }} {{ item.value['ssh_hostkey'] }}"
+    state: present
+  when: item.value["method"] == "ssh"
+  become: true
+- name: Add SSH deploy hook
+  when: item.value["method"] == "ssh"
+  ansible.builtin.template:
+    src: ssh-deploy-hook.sh.j2
+    dest: "/etc/letsencrypt/renewal-hooks/deploy/{{ item.key }}-deploy.sh"
+    owner: root
+    group: root
+    mode: '0750'
+  vars:
+    dest_host: "{{ item.key }}"
+    cert_name: "{{ acmecertpusher_certs[item.value['cert']][0] }}"
+    key_dest: "{{ item.value['key_dest'] }}"
+    cert_dest: "{{ item.value['cert_dest'] }}"
+    user: "{{ item.value['ssh_user'] }}"
+    commands: "{{ item.value['commands'] }}"
+    ssh_key: "/root/.ssh/{{ acmecertpusher_ssh_key_name }}"
+  become: true
+  register: deploy_hook_file
+- name: Run deploy hook when changed # noqa: no-handler
+  when: deploy_hook_file.changed or (item.value['force_deploy'] | default(false))
+  ansible.builtin.command:
+    argv:
+      - "/etc/letsencrypt/renewal-hooks/deploy/{{ item.key }}-deploy.sh"
+      - "--force"
+  changed_when: true
