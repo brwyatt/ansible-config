@@ -1,0 +1,14 @@
+#!/bin/bash
+
+certbot_live="/etc/letsencrypt/live"
+host="{{ dest_host }}"
+cert_name="{{ cert_name }}"
+user="{{ user }}"
+export SSHPASS="{{ pass }}"
+
+sshpass -e scp "${certbot_live}/${cert_name}/fullchain.pem" "${user}@${host}:{{ cert_dest }}"
+sshpass -e scp "${certbot_live}/${cert_name}/privkey.pem" "${user}@${host}:{{ key_dest }}"
+
+{% for command in commands %}
+sshpass -e ssh "${user}@${host}" {{ command }}
+{% endfor %}

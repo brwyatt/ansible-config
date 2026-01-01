@@ -1,0 +1,16 @@
+---
+certbot_certs: "{{ acmecertpusher_certs.values() }}"
+acmecertpusher_hosts:
+  skylightkvm.kvm.home.brwyatt.net:
+    method: ssh
+    ssh_hostkey: "ssh-rsa 12345abcd"
+    ssh_user: root
+    ssh_pass: "{{ skylightkvm_password }}"
+    cert: skylightkvm
+    key_dest: "/etc/kvmd/user/ssl"
+    cert_dest: "/etc/kvmd/user/ssl"
+    commands:
+      - "systemctl restart nginx"
+acmecertpusher_certs:
+  skylightkvm:
+    - skylightkvm.kvm.home.brwyatt.net

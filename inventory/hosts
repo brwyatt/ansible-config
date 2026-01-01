@@ -93,3 +93,6 @@ mediamanager:
 uptimekuma:
   hosts:
     uptimekuma.server.home.brwyatt.net:
+acmecertpusher:
+  hosts:
+    acmecertpusher.server.home.brwyatt.net:

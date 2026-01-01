@@ -138,3 +138,9 @@
     - role: aws_creds
     - role: certbot
     - role: reverseproxy
+- name: ACME Cert Pusher
+  hosts: acmecertpusher
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: acmecertpusher

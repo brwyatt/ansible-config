@@ -1,0 +1,8 @@
+- name: Run deploy hooks
+  ansible.builtin.command:
+    argv:
+      - "/usr/bin/certbot"
+      - "renew"
+      - "--dry-run"
+      - "--run-deploy-hooks"
+  changed_when: true
