@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     name: sshpass
 - name: SSH dir
-  when: acmecertpusher_ssh_key is definied and acmecertpusher_ssh_key != ''
+  when: acmecertpusher_ssh_key is defined and acmecertpusher_ssh_key != ''
   ansible.builtin.file:
     path: "/root/.ssh"
     owner: root
@@ -11,7 +11,7 @@
     mode: '0700'
     state: directory
 - name: SSH key
-  when: acmecertpusher_ssh_key is definied and acmecertpusher_ssh_key != ''
+  when: acmecertpusher_ssh_key is defined and acmecertpusher_ssh_key != ''
   ansible.builtin.copy:
     dest: "/root/.ssh/{{ acmecertpusher_ssh_key_name }}"
     owner: root
