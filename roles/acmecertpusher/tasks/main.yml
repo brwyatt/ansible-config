@@ -17,7 +17,7 @@
     owner: root
     group: root
     mode: '0600'
-    content: "{{ acmecertpusher_ssh_key }}"
+    content: "{{ acmecertpusher_ssh_key }}\n"
 - name: Cert host
   loop: "{{ acmecertpusher_hosts | dict2items }}"
   loop_control:
