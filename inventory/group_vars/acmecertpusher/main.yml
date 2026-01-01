@@ -3,7 +3,7 @@ certbot_certs: "{{ acmecertpusher_certs.values() }}"
 acmecertpusher_hosts:
   skylightkvm.kvm.home.brwyatt.net:
     method: ssh
-    ssh_hostkey: "ssh-rsa 12345abcd"
+    ssh_hostkey: "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBG7yKuiaijVdM3gVzjKVaw22K0RHS0Q25QQqcV7s+WjoD8Txqi5bMYGpQREbieC4ACjZ/oF+anfb/rXMZFGOA7I="
     ssh_user: root
     cert: skylightkvm
     key_dest: "/etc/kvmd/user/ssl/server.key"
