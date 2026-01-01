@@ -2,8 +2,8 @@
 
 certbot_live="/etc/letsencrypt/live"
 host="{{ dest_host }}"
-cert_name="{{ cert_name }}"
-cert_dir="${certbot_live}/${cert_name}"
+cert_domain="{{ cert_domain }}"
+cert_dir="${certbot_live}/${cert_domain}"
 ssh_key="{{ ssh_key }}"
 
 if [ "${RENEWED_LINEAGE}" != "${cert_dir}" ] && [ "$1" != "--force" ]; then
@@ -13,8 +13,8 @@ fi
 
 user="{{ user }}"
 
-scp -i "${ssh_key}" "${cert_dir}/fullchain.pem" "${user}@${host}:{{ cert_dest }}"
-scp -i "${ssh_key}" "${cert_dir}/privkey.pem" "${user}@${host}:{{ key_dest }}"
+scp -i "${ssh_key}" -O "${cert_dir}/fullchain.pem" "${user}@${host}:{{ cert_dest }}"
+scp -i "${ssh_key}" -O "${cert_dir}/privkey.pem" "${user}@${host}:{{ key_dest }}"
 
 {% for command in commands %}
 ssh -i "${ssh_key}" "${user}@${host}" {{ command }}

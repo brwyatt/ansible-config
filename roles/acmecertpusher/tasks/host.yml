@@ -16,7 +16,7 @@
     mode: '0750'
   vars:
     dest_host: "{{ item.key }}"
-    cert_name: "{{ acmecertpusher_certs[item.value['cert']][0] }}"
+    cert_domain: "{{ acmecertpusher_certs[item.value['cert']][0] }}"
     key_dest: "{{ item.value['key_dest'] }}"
     cert_dest: "{{ item.value['cert_dest'] }}"
     user: "{{ item.value['ssh_user'] }}"
