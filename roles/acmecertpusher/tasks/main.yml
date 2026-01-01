@@ -5,30 +5,30 @@
 - name: Cert host
   loop: "{{ acmecertpusher_hosts | dict2items }}"
   loop_control:
-    label: "{{ item[0] }}"
+    label: "{{ item.key }}"
   block:
     - name: SSH hostkey
       ansible.builtin.known_hosts:
-        name: "{{ item[0] }}"
-        key: "{{ item[0] }} {{ item[1]['ssh_hostkey'] }}"
+        name: "{{ item.key }}"
+        key: "{{ item.key }} {{ item.value['ssh_hostkey'] }}"
         state: present
-      when: item[1]["method"] == "ssh"
+      when: item.value["method"] == "ssh"
       become: true
     - name: Add SSH deploy hook
-      when: item[1]["method"] == "ssh"
+      when: item.value["method"] == "ssh"
       ansible.builtin.template:
         src: ssh-deploy-hook.sh.j2
-        dest: "/etc/letsencrypt/renewal-hooks/deploy/{{ item[0] }}-deploy.sh"
+        dest: "/etc/letsencrypt/renewal-hooks/deploy/{{ item.key }}-deploy.sh"
         owner: root
         group: root
         mode: '0750'
       vars:
-        dest_host: "{{ item[0] }}"
-        cert_name: "{{ acmecertpusher_certs[item[1]['cert']][0] }}"
-        key_dest: "{{ item[1]['key_dest'] }}"
-        cert_dest: "{{ item[1]['cert_dest'] }}"
-        user: "{{ item[1]['ssh_user'] }}"
-        passwd: "{{ item[1]['ssh_pass'] }}"
-        commands: "{{ item[1]['commands'] }}"
+        dest_host: "{{ item.key }}"
+        cert_name: "{{ acmecertpusher_certs[item.value['cert']][0] }}"
+        key_dest: "{{ item.value['key_dest'] }}"
+        cert_dest: "{{ item.value['cert_dest'] }}"
+        user: "{{ item.value['ssh_user'] }}"
+        passwd: "{{ item.value['ssh_pass'] }}"
+        commands: "{{ item.value['commands'] }}"
       become: true
       notify: Run deploy hooks
