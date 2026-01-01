@@ -31,4 +31,11 @@
         passwd: "{{ item.value['ssh_pass'] }}"
         commands: "{{ item.value['commands'] }}"
       become: true
-      notify: Run deploy hooks
+      register: deploy_hook_file
+    - name: Run deploy hook when changed # noqa: no-handler
+      when: deploy_hook_file.changed
+      ansible.builtin.command:
+        argv:
+          - "/etc/letsencrypt/renewal-hooks/deploy/{{ item.key }}-deploy.sh"
+          - "--force"
+      changed_when: true
