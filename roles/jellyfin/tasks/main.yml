@@ -14,3 +14,4 @@
   # ... but before anything else
   ansible.builtin.include_role:
     name: bindfs
+# TODO: Install Jellyfin, install/setup rffmpeg, start Jellyfin
