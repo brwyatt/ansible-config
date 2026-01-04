@@ -1,6 +1,9 @@
 ---
 ansible_user: localadmin
 
+cephclient_mon_dns_srv_name:
+  domain: "home.brwyatt.net"
+
 users_delete_cloud_init_sudoers: true
 users_manage_root: true
 users_admins:

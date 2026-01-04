@@ -1,7 +1,5 @@
 ---
 cephclient_automount: false
-cephclient_mon_dns_srv_name:
-  domain: "home.brwyatt.net"
 cephclient_mounts:
   - user: "jellyfin-render"
     fs_name: "Media_EC"

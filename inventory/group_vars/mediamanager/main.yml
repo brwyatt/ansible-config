@@ -1,6 +1,4 @@
 ---
-cephclient_mon_dns_srv_name:
-  domain: "home.brwyatt.net"
 cephclient_mounts:
   - user: "mediamanager"
     fs_name: "Media_EC"
