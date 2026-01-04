@@ -1,5 +1,5 @@
 ---
-cephiscsi_ceph_user: iscsi
+cephiscsi_ceph_user: admin
 cephiscsi_cluster_name: ceph
-cephiscsi_keyring: keyring
+cephiscsi_pool: rbd
 cephiscsi_trusted_ips: []
