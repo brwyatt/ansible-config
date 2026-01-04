@@ -96,3 +96,6 @@ uptimekuma:
 acmecertpusher:
   hosts:
     acmecertpusher.server.home.brwyatt.net:
+cephiscsi:
+  hosts:
+    iscsigw[01:02].server.home.brwyatt.net:

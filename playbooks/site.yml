@@ -144,3 +144,8 @@
     - role: aws_creds
     - role: certbot
     - role: acmecertpusher
+- name: Ceph ISCSI Gateways
+  hosts: cephiscsi
+  roles:
+    - role: cephclient
+    - role: cephiscsi

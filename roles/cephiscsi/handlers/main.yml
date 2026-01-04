@@ -1,0 +1,11 @@
+---
+- name: Restart services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  loop:
+    - rbd-target-gw
+    - rbd-target-api
+    - tcmu-runner
+  loop_control:
+    label: "{{ item }}"

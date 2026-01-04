@@ -1,0 +1,30 @@
+---
+- name: Install Ceph iSCSI packages
+  ansible.builtin.package:
+    name:
+      - ceph-iscsi
+      - tcmu-runner
+    state: present
+  become: true
+- name: Create Ceph iSCSI Gateway Config file
+  ansible.builtin.template:
+    src: iscsi-gateway.cfg.j2
+    dest: /etc/ceph/iscsi-gateway.cfg
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart services
+- name: Start/Enable services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop:
+    - rbd-target-gw
+    - rbd-target-api
+    - tcmu-runner
+  loop_control:
+    label: "{{ item }}"
+- name: Run pending handlers
+  ansible.builtin.meta: flush_handlers

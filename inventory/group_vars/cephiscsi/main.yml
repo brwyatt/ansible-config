@@ -1,0 +1,5 @@
+---
+cephiscsi_ceph_user: iscsi
+cephiscsi_trusted_ips:
+  - "172.17.41.90"
+  - "172.17.41.91"

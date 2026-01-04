@@ -1,0 +1,5 @@
+---
+cephiscsi_ceph_user: iscsi
+cephiscsi_cluster_name: ceph
+cephiscsi_keyring: keyring
+cephiscsi_trusted_ips: []

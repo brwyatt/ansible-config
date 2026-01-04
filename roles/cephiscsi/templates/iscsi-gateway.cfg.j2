@@ -1,0 +1,16 @@
+[config]
+# Name of the Ceph cluster (usually 'ceph')
+cluster_name = {{ cephiscsi_cluster_name }}
+
+# Name of Ceph user (usually 'admin')
+ceph_user = {{ cephiscsi_ceph_user }}
+
+# Name of the RBD keyring to use
+gateway_keyring = {{ cephiscsi_keyring }}
+
+# Secure API? (keep it false for homelab to avoid SSL cert headaches between nodes)
+api_secure = false
+
+# The list of API endpoints (The IPs of your gateway nodes)
+# This allows Node A to talk to Node B to sync config.
+trusted_ip_list = {{ cephiscsi_trusted_ips | join(',') }}
