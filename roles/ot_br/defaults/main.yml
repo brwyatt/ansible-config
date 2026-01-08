@@ -1,0 +1,6 @@
+---
+ot_br_path: /opt/ot-br-posix
+ot_br_repo: https://github.com/openthread/ot-br-posix
+ot_br_infra_if_name: eth0
+ot_br_version: "thread-reference-20250612"
+ot_br_radio_url: "spinel+tcp://127.0.0.1:6638"

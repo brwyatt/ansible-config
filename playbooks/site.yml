@@ -149,3 +149,7 @@
   roles:
     - role: cephclient
     - role: cephiscsi
+- name: Open Thread Border Router
+  hosts: otbr
+  roles:
+    - role: ot_br

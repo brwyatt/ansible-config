@@ -99,3 +99,6 @@ acmecertpusher:
 cephiscsi:
   hosts:
     iscsigw[01:02].server.home.brwyatt.net:
+otbr:
+  hosts:
+    thread-br.iot.home.brwyatt.net:

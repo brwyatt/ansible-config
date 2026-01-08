@@ -1,0 +1,46 @@
+---
+- name: Install git
+  ansible.builtin.package:
+    name: git
+- name: Checkout ot-br-posix repo
+  ansible.builtin.git:
+    clone: true
+    dest: "{{ ot_br_path }}"
+    force: true
+    recursive: true
+    repo: "{{ ot_br_repo }}"
+    version: "{{ ot_br_version }}"
+  register: repo_status
+- name: Stat otbr-agent
+  ansible.builtin.stat:
+    path: /usr/sbin/otbr-agent
+  register: agent_stat
+- name: Bootstrap  # noqa: no-handler
+  ansible.builtin.command:
+    chdir: "{{ ot_br_path }}"
+    argv:
+      - "./scripts/bootstrap"
+  changed_when: true
+  when: repo_status.changed
+- name: Install  # noqa: no-handler
+  ansible.builtin.command:
+    chdir: "{{ ot_br_path }}"
+    argv:
+      - "./scripts/{{ 'update' if agent_stat.exists else 'setup' }}"
+  environment:
+    INFRA_IF_NAME: "{{ ot_br_infra_if_name }}"
+  changed_when: true
+  when: repo_status.changed or not agent_stat.exists
+- name: Config file
+  ansible.builtin.template:
+    src: otbr-agent.default.j2
+    dest: /etc/default/otbr-agent
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart otbr-agent
+- name: Manage otbr-agent service
+  ansible.builtin.service:
+    name: otbr-agent
+    state: started
+    enabled: true

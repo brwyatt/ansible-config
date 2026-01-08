@@ -1,0 +1,5 @@
+---
+- name: Restart otbr-agent
+  ansible.builtin.service:
+    name: otbr-agent
+    state: restarted
