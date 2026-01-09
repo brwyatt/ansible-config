@@ -26,11 +26,11 @@
   ansible.builtin.command:
     chdir: "{{ ot_br_path }}"
     argv:
-      - "./script/{{ 'update' if agent_stat.exists else 'setup' }}"
+      - "./script/{{ 'update' if agent_stat.stat.exists else 'setup' }}"
   environment:
     INFRA_IF_NAME: "{{ ot_br_infra_if_name }}"
   changed_when: true
-  when: repo_status.changed or not agent_stat.exists
+  when: repo_status.changed or not agent_stat.stat.exists
 - name: Config file
   ansible.builtin.template:
     src: otbr-agent.default.j2
