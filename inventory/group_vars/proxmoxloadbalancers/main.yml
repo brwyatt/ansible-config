@@ -41,7 +41,7 @@ haproxy_backends:
       - "cookie SERVER insert indirect nocache dynamic"
       - "dynamic-cookie-key {{ proxmox_haproxy_cookie_key }}"
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
-      - "server-template pve-web 1-5 _https._tcp.proxmox.home.brwyatt.net resolvers localdns init-addr none"
+      - "server-template pve-web 1-10 _https._tcp.proxmox.home.brwyatt.net resolvers localdns init-addr none"
 keepalived_check_scripts:
   proxmox:
     type: haproxy
