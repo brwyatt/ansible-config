@@ -51,6 +51,7 @@ proxmox:
     pve-douglasfir.proxmox.home.brwyatt.net:
     pve-chinook.proxmox.home.brwyatt.net:
     pve-pugetsound.proxmox.home.brwyatt.net:
+    pve-baker.proxmox.home.brwyatt.net:
 proxmoxdcm:
   hosts:
     proxmox-dcm.server.home.brwyatt.net:
