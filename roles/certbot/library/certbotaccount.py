@@ -36,10 +36,10 @@ def query():
         for name, regex in regexs.items():
             match = regex.match(line)
             if match:
-                data[name] = match[1]
+                data[name] = match[1] if match[1] != "none" else None
                 break
 
-    data['registered'] = None not in data.values()
+    data['registered'] = data['account_url'] is not None and data['thumbprint'] is not None
 
     return data
 
@@ -70,22 +70,17 @@ def main():
                     ret = subprocess.run(['certbot', 'register', '--agree-tos', '--email', email], capture_output=True, text=True)
                 except Exception:
                     result['failed'] = True
-            elif data['email'] != email:
-                try:
-                    ret = subprocess.run(['certbot', 'update_account', '--email', email], capture_output=True, text=True)
-                except Exception:
-                    result['failed'] = True
             result = {
                 **result,
                 **query(),
             }
-            result['changed'] = data['email'] != result['email'] or data['thumbprint'] != result['thumbprint']
+            result['changed'] = data["account_url"] != result["account_url"] or data['thumbprint'] != result['thumbprint']
         else:
             result = {
                 **data,
                 'email': email,
                 'registered': True,
-                'changed': data['email'] != email,
+                'changed': not data['registered'],
             }
     elif state == 'query':
         pass
