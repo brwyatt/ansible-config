@@ -103,3 +103,6 @@ cephiscsi:
 otbr:
   hosts:
     thread-br.iot.home.brwyatt.net:
+n8n:
+  hosts:
+    n8n.server.home.brwyatt.net:

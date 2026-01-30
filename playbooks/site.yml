@@ -153,3 +153,9 @@
   hosts: otbr
   roles:
     - role: ot_br
+- name: n8n # noqa: name[casing]
+  hosts: n8n
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: reverseproxy
