@@ -106,3 +106,25 @@ otbr:
 n8n:
   hosts:
     n8n.server.home.brwyatt.net:
+app_proxy:
+  children:
+    radarr:
+    sonarr:
+    prowlarr:
+    mediamanager:
+    uptimekuma:
+    zwave:
+    zigbee:
+    n8n:
+    homebox:
+    proxmoxdcm:
+ceph_clients:
+  children:
+    jellyfin:
+    renderers:
+    seedbox:
+    pxeservers:
+    radarr:
+    sonarr:
+    mediamanager:
+    cephiscsi:

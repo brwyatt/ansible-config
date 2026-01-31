@@ -1,8 +1,2 @@
 ---
-cert:
-  - prowlarr.server.home.brwyatt.net
-certbot_certs:
-  - "{{ cert }}"
-reverseproxy_sites:
-  - server_names: "{{ cert }}"
-    destination: "http://127.0.0.1:9696"
+proxy_port: 9696

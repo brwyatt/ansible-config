@@ -1,0 +1,7 @@
+---
+certbot_certs:
+  - ["{{ inventory_hostname }}"]
+
+reverseproxy_sites:
+  - server_names: "{{ certbot_certs[0] }}"
+    destination: "{{ proxy_destination | default('http://127.0.0.1:' + (proxy_port | string)) }}"

@@ -1,8 +1,2 @@
 ---
-cert:
-  - proxmox-dcm.server.home.brwyatt.net
-certbot_certs:
-  - "{{ cert }}"
-reverseproxy_sites:
-  - server_names: "{{ cert }}"
-    destination: "https://127.0.0.1:8443"
+proxy_destination: "https://127.0.0.1:8443"

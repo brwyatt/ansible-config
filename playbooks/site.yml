@@ -4,25 +4,20 @@
   become: true
   roles:
     - role: common
-- name: Load Balancer hosts
-  hosts: loadbalancers
+- name: Ceph Clients
+  hosts: ceph_clients
   become: true
   roles:
-    - role: aws_creds
-    - role: certbot
-    - role: haproxy
-    - role: keepalived
+    - role: cephclient
 - name: Jellyfin Server
   hosts: jellyfin
   become: true
   roles:
-    - role: cephclient
     - role: jellyfin
 - name: Renderer
   hosts: renderers
   become: true
   roles:
-    - role: cephclient
     - role: renderer
 - name: SeedBox
   hosts: seedbox
@@ -30,7 +25,6 @@
   roles:
     - role: aws_creds
     - role: certbot
-    - role: cephclient
 - name: NUT Server
   hosts: nutserver
   become: true
@@ -40,25 +34,7 @@
   hosts: homebox
   become: true
   roles:
-    - role: aws_creds
-    - role: certbot
     - role: homebox
-    - role: reverseproxy
-- name: Password Servers
-  hosts: sspasswdservers
-  become: true
-  roles:
-    - role: aws_creds
-    - role: certbot
-    - role: sspasswd
-    - role: keepalived
-- name: Inbound Proxies
-  hosts: inboundproxies
-  roles:
-    - role: aws_creds
-    - role: certbot
-    - role: reverseproxy
-    - role: keepalived
 - name: Proxmox Servers
   hosts: proxmox
   roles:
@@ -67,13 +43,9 @@
   hosts: proxmoxdcm
   roles:
     - role: proxmoxdcm
-    - role: aws_creds
-    - role: certbot
-    - role: reverseproxy
 - name: PXE Servers
   hosts: pxeservers
   roles:
-    - role: cephclient
     - role: pxeserver
     - role: keepalived
 - name: Desktops
@@ -93,51 +65,6 @@
   roles:
     - role: freeipa.ansible_freeipa.ipareplica
       tags: ipa_replica_setup
-- name: Radarr
-  hosts: radarr
-  roles:
-    - role: cephclient
-    - role: aws_creds
-    - role: certbot
-    - role: reverseproxy
-- name: Sonarr
-  hosts: sonarr
-  roles:
-    - role: cephclient
-    - role: aws_creds
-    - role: certbot
-    - role: reverseproxy
-- name: Prowlarr
-  hosts: prowlarr
-  roles:
-    - role: aws_creds
-    - role: certbot
-    - role: reverseproxy
-- name: MediaManager
-  hosts: mediamanager
-  roles:
-    - role: cephclient
-    - role: aws_creds
-    - role: certbot
-    - role: reverseproxy
-- name: Uptime Kuma
-  hosts: uptimekuma
-  roles:
-    - role: aws_creds
-    - role: certbot
-    - role: reverseproxy
-- name: ZWave-JS-UI
-  hosts: zwave
-  roles:
-    - role: aws_creds
-    - role: certbot
-    - role: reverseproxy
-- name: Zigbee
-  hosts: zigbee
-  roles:
-    - role: aws_creds
-    - role: certbot
-    - role: reverseproxy
 - name: ACME Cert Pusher
   hosts: acmecertpusher
   roles:
@@ -147,15 +74,37 @@
 - name: Ceph ISCSI Gateways
   hosts: cephiscsi
   roles:
-    - role: cephclient
     - role: cephiscsi
 - name: Open Thread Border Router
   hosts: otbr
   roles:
     - role: ot_br
-- name: n8n # noqa: name[casing]
-  hosts: n8n
+- name: Password Servers
+  hosts: sspasswdservers
+  become: true
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: sspasswd
+    - role: keepalived
+- name: App Proxy Config
+  hosts: app_proxy
   roles:
     - role: aws_creds
     - role: certbot
     - role: reverseproxy
+- name: Load Balancer hosts
+  hosts: loadbalancers
+  become: true
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: haproxy
+    - role: keepalived
+- name: Inbound Proxies
+  hosts: inboundproxies
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: reverseproxy
+    - role: keepalived
