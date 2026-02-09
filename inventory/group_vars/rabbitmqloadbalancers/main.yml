@@ -1,10 +1,6 @@
 ---
-certbot_certs:
-  - rabbitmq.server.home.brwyatt.net
-
 cert:
   - rabbitmq.server.home.brwyatt.net
-
 haproxy_certbot_certs:
   - "{{ cert[0] }}"
 haproxy_options:
