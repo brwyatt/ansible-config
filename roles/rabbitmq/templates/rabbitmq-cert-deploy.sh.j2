@@ -17,4 +17,4 @@ chmod 600 "$CERT_DIR/key.pem"
 chmod 644 "$CERT_DIR/cert.pem" "$CERT_DIR/ca.pem"
 
 # Rotate listeners to reload certificates without restart
-rabbitmqctl rotate_listeners
+rabbitmqctl eval 'ssl:clear_pem_cache().'
