@@ -40,6 +40,14 @@
     owner: rabbitmq
     group: rabbitmq
     mode: '0400'
+- name: Configure RabbitMQ Default
+  ansible.builtin.template:
+    src: rabbitmq.default.j2
+    dest: "/etc/default/rabbitmq-server"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart RabbitMQ
 - name: Configure RabbitMQ
   ansible.builtin.template:
     src: rabbitmq.conf.j2

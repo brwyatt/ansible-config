@@ -2,11 +2,6 @@
 
 cluster_name = {{ rabbitmq_cluster_name }}
 
-{% if rabbitmq_use_long_names %}
-# Use long names (FQDN)
-use_long_names = true
-{% endif %}
-
 # Non-TLS Listeners
 listeners.tcp.default = 5672
 
