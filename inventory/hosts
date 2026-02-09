@@ -2,14 +2,21 @@
 mqttservers:
   hosts:
     mqtt[01:03].iot.home.brwyatt.net:
+rabbitmq:
+  hosts:
+    rabbitmq[01:03].server.home.brwyatt.net:
 loadbalancers:
   children:
     mqttloadbalancers:
     proxmoxloadbalancers:
     ipaloadbalancers:
+    rabbitmqloadbalancers:
 mqttloadbalancers:
   hosts:
     mqtt-haproxy[01:02].iot.home.brwyatt.net:
+rabbitmqloadbalancers:
+  hosts:
+    rabbitmq-haproxy[01:02].server.home.brwyatt.net:
 proxmoxloadbalancers:
   hosts:
     proxmox-haproxy[01:03].server.home.brwyatt.net:

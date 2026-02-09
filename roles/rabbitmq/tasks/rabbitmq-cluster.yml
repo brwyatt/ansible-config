@@ -1,0 +1,32 @@
+---
+- name: Check if node is already in cluster
+  ansible.builtin.command: rabbitmqctl cluster_status
+  register: rabbitmq_cluster_status
+  changed_when: false
+- name: Join RabbitMQ Cluster
+  when:
+    - inventory_hostname != groups['rabbitmq'][0]
+    - "groups['rabbitmq'][0] not in rabbitmq_cluster_status.stdout"
+  block:
+    - name: Stop RabbitMQ App
+      ansible.builtin.command: rabbitmqctl stop_app
+      changed_when: true
+    - name: Join Cluster
+      ansible.builtin.command: "rabbitmqctl join_cluster rabbit@{{ groups['rabbitmq'][0] | split('.') | first }}"
+      changed_when: true
+    - name: Start RabbitMQ App
+      ansible.builtin.command: rabbitmqctl start_app
+      changed_when: true
+- name: Create Admin User
+  when: inventory_hostname == groups['rabbitmq'][0]
+  community.rabbitmq.rabbitmq_user:
+    user: "{{ rabbitmq_admin_user }}"
+    password: "{{ rabbitmq_admin_password }}"
+    tags: administrator
+    vhost: /
+    permissions:
+      - vhost: /
+        configure_priv: .*
+        read_priv: .*
+        write_priv: .*
+    state: present

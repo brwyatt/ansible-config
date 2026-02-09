@@ -1,0 +1,65 @@
+---
+- name: Install RabbitMQ Server
+  ansible.builtin.package:
+    name: "{{ rabbitmq_package }}"
+    state: present
+- name: Ensure RabbitMQ cert directory exists
+  ansible.builtin.file:
+    path: "{{ rabbitmq_cert_dir }}"
+    state: directory
+    owner: rabbitmq
+    group: rabbitmq
+    mode: '0750'
+- name: Deploy Certbot renewal hook for RabbitMQ
+  ansible.builtin.template:
+    src: rabbitmq-cert-deploy.sh.j2
+    dest: /etc/letsencrypt/renewal-hooks/deploy/rabbitmq
+    owner: root
+    group: root
+    mode: '0755'
+- name: Check if certificates are deployed
+  ansible.builtin.stat:
+    path: "{{ rabbitmq_cert_path }}"
+  register: cert_stat
+- name: Initial certificate deployment
+  when: not cert_stat.stat.exists
+  ansible.builtin.command:
+    argv:
+      - "/etc/letsencrypt/renewal-hooks/deploy/rabbitmq"
+    creates: "{{ rabbitmq_cert_path }}"
+  environment:
+    RENEWED_LINEAGE: "/etc/letsencrypt/live/{{ inventory_hostname }}"
+- name: Ensure RabbitMQ is stopped to set cookie
+  ansible.builtin.service:
+    name: "{{ rabbitmq_service }}"
+    state: stopped
+- name: Set Erlang Cookie
+  ansible.builtin.template:
+    src: erlang.cookie.j2
+    dest: "{{ rabbitmq_erlang_cookie_path }}"
+    owner: rabbitmq
+    group: rabbitmq
+    mode: '0400'
+- name: Configure RabbitMQ
+  ansible.builtin.template:
+    src: rabbitmq.conf.j2
+    dest: "{{ rabbitmq_config_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart RabbitMQ
+- name: Ensure RabbitMQ is started and enabled
+  ansible.builtin.service:
+    name: "{{ rabbitmq_service }}"
+    state: started
+    enabled: true
+- name: Enable RabbitMQ Plugins
+  community.rabbitmq.rabbitmq_plugin:
+    names: "{{ rabbitmq_plugins | join(',') }}"
+    state: enabled
+  notify: Restart RabbitMQ
+- name: Flush handlers to ensure RabbitMQ is ready
+  ansible.builtin.meta: flush_handlers
+- name: Include clustering tasks
+  ansible.builtin.include_tasks:
+    file: rabbitmq-cluster.yml

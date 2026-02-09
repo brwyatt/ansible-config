@@ -3,4 +3,5 @@ collections:
   - ansible.posix
   - community.dns
   - community.general
+  - community.rabbitmq
   - freeipa.ansible_freeipa

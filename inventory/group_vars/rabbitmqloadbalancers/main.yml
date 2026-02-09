@@ -1,0 +1,78 @@
+---
+certbot_certs:
+  - rabbitmq.server.home.brwyatt.net
+
+cert:
+  - rabbitmq.server.home.brwyatt.net
+
+haproxy_certbot_certs:
+  - "{{ cert[0] }}"
+haproxy_options:
+  - "forwardfor"
+  - "http-server-close"
+haproxy_resolvers:
+  localdns:
+    nameservers:
+      dns1:
+        host: "127.0.0.53"
+        port: "53"
+    options:
+      - "accepted_payload_size 8192"
+haproxy_frontends:
+  stats:
+    bind:
+      port: 8404
+    options:
+      - "stats enable"
+      - "stats uri /"
+      - "stats refresh 5s"
+  www-http:
+    bind:
+      port: 80
+    options:
+      - "http-request redirect scheme https code 301"
+  www-https:
+    bind:
+      port: 443
+      ssl_cert: "/etc/haproxy/certs/{{ cert[0] }}.pem"
+    backend: "rabbitmq-mgmt"
+    options:
+      - "http-request set-header X-Forwarded-Proto https"
+  amqp:
+    mode: "tcp"
+    client_timeout: "3h"
+    bind:
+      port: 5672
+    backend: "rabbitmq-amqp"
+  amqps:
+    mode: "tcp"
+    client_timeout: "3h"
+    bind:
+      port: 5671
+      ssl_cert: "/etc/haproxy/certs/{{ cert[0] }}.pem"
+    backend: "rabbitmq-amqp"
+haproxy_backends:
+  rabbitmq-mgmt:
+    balance: "roundrobin"
+    options:
+      - "cookie SERVER insert indirect nocache dynamic"
+      - "dynamic-cookie-key {{ rabbitmq_haproxy_cookie_key }}"
+      - "default-server check inter 2s ssl ca-file /etc/ssl/certs/ca-certificates.crt"
+      - "server-template rabbitmq-mgmt 1-5 _https._tcp.rabbitmq.server.home.brwyatt.net resolvers localdns init-addr none"
+  rabbitmq-amqp:
+    mode: "tcp"
+    balance: "roundrobin"
+    server_timeout: "3h"
+    options:
+      - "default-server check inter 2s ssl ca-file /etc/ssl/certs/ca-certificates.crt"
+      - "server-template rabbitmq-amqps 1-5 _amqps._tcp.rabbitmq.server.home.brwyatt.net resolvers localdns init-addr none"
+
+keepalived_check_scripts:
+  haproxy:
+    type: haproxy
+keepalived_instances:
+  rabbitmq:
+    virtual_ip: "172.17.30.206/24"
+    auth_pass: "{{ keepalived_auth_pass }}"
+    check_scripts:
+      - haproxy

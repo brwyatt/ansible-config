@@ -1,0 +1,20 @@
+#!/bin/bash
+# Certbot deploy hook for RabbitMQ
+
+set -e
+
+CERT_DIR="{{ rabbitmq_cert_dir }}"
+DOMAIN="{{ inventory_hostname }}"
+
+# Copy certificates to RabbitMQ accessible directory
+cp "$RENEWED_LINEAGE/fullchain.pem" "$CERT_DIR/cert.pem"
+cp "$RENEWED_LINEAGE/privkey.pem" "$CERT_DIR/key.pem"
+cp "$RENEWED_LINEAGE/chain.pem" "$CERT_DIR/ca.pem"
+
+# Set permissions
+chown rabbitmq:rabbitmq "$CERT_DIR/cert.pem" "$CERT_DIR/key.pem" "$CERT_DIR/ca.pem"
+chmod 600 "$CERT_DIR/key.pem"
+chmod 644 "$CERT_DIR/cert.pem" "$CERT_DIR/ca.pem"
+
+# Rotate listeners to reload certificates without restart
+rabbitmqctl rotate_listeners

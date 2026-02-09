@@ -1,0 +1,9 @@
+---
+rabbitmq_package: rabbitmq-server
+rabbitmq_service: rabbitmq-server
+rabbitmq_config_path: /etc/rabbitmq/rabbitmq.conf
+rabbitmq_erlang_cookie_path: /var/lib/rabbitmq/.erlang.cookie
+rabbitmq_cert_dir: /etc/rabbitmq/certs
+rabbitmq_ca_cert_path: "{{ rabbitmq_cert_dir }}/ca.pem"
+rabbitmq_cert_path: "{{ rabbitmq_cert_dir }}/cert.pem"
+rabbitmq_key_path: "{{ rabbitmq_cert_dir }}/key.pem"

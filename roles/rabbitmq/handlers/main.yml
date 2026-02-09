@@ -1,0 +1,5 @@
+---
+- name: Restart RabbitMQ
+  ansible.builtin.service:
+    name: "{{ rabbitmq_service }}"
+    state: restarted

@@ -1,0 +1,13 @@
+---
+certbot_certs:
+  - ["{{ inventory_hostname }}"]
+
+rabbitmq_cluster_name: "brnet-home-rabbitmq"
+rabbitmq_plugins:
+  - rabbitmq_management
+  - rabbitmq_peer_discovery_common
+# RabbitMQ defaults to using hostname for node naming.
+# In a cluster, we want to ensure nodes can reach each other via FQDN.
+rabbitmq_use_long_names: true
+
+rabbitmq_admin_user: "admin"

@@ -93,6 +93,13 @@
     - role: aws_creds
     - role: certbot
     - role: reverseproxy
+- name: RabbitMQ Cluster
+  hosts: rabbitmq
+  become: true
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: rabbitmq
 - name: Load Balancer hosts
   hosts: loadbalancers
   become: true
