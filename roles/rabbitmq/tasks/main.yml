@@ -63,7 +63,7 @@
   failed_when: false # Don't fail if the file doesn't exist yet
 - name: Determine if cookie needs update
   ansible.builtin.set_fact:
-    cookie_needs_update: "{{ (current_cookie_encoded.content | default('') | trim) != (rabbitmq_erlang_cookie | trim) }}"
+    cookie_needs_update: "{{ (current_cookie_encoded.content | default('') | b64decode | trim) != (rabbitmq_erlang_cookie | trim) }}"
 - name: Stop RabbitMQ only if cookie update is required
   ansible.builtin.service:
     name: "{{ rabbitmq_service }}"
