@@ -4,6 +4,8 @@ rabbitmq_service: rabbitmq-server
 rabbitmq_config_dir: /etc/rabbitmq
 rabbitmq_config_file: "{{ rabbitmq_config_dir }}/rabbitmq.conf"
 rabbitmq_config_env_file: "{{ rabbitmq_config_dir }}/rabbitmq-env.conf"
+rabbitmq_advanced_config_file: "{{ rabbitmq_config_dir }}/advanced.config"
+rabbitmq_inter_node_tls_config_file: "{{ rabbitmq_config_dir }}/inter_node_tls.config"
 rabbitmq_erlang_cookie_path: /var/lib/rabbitmq/.erlang.cookie
 rabbitmq_cert_dir: /etc/rabbitmq/certs
 rabbitmq_ca_cert_path: "{{ rabbitmq_cert_dir }}/ca.pem"

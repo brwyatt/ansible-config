@@ -48,14 +48,28 @@
     group: root
     mode: '0644'
   notify: Restart RabbitMQ
-- name: Configure RabbitMQ Advanced config
+- name: Configure RabbitMQ advanced config
   ansible.builtin.template:
     src: advanced.config.j2
-    dest: "{{ rabbitmq_config_dir }}/advanced.config"
+    dest: "{{ rabbitmq_advanced_config_file }}"
     owner: root
     group: root
     mode: '0644'
   notify: Restart RabbitMQ
+- name: Configure RabbitMQ inter-node TLS config
+  ansible.builtin.template:
+    src: inter_node_tls.config.j2
+    dest: "{{ rabbitmq_inter_node_tls_config_file }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart RabbitMQ
+  when: rabbitmq_use_tls_distribution
+- name: Remove RabbitMQ inter-node TLS config
+  ansible.builtin.file:
+    path: "{{ rabbitmq_inter_node_tls_config_file }}"
+    state: absent
+  when: not rabbitmq_use_tls_distribution
 - name: Configure RabbitMQ
   ansible.builtin.template:
     src: rabbitmq.conf.j2

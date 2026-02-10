@@ -19,6 +19,8 @@ RABBITMQ_USE_LONGNAME=true
 {% if rabbitmq_use_tls_distribution %}
 
 # Enable TLS for cluster Distribution
-SERVER_ADDITIONAL_ERL_ARGS="-proto_dist inet_tls"
-CTL_ERL_ARGS="-proto_dist inet_tls"
+SERVER_ADDITIONAL_ERL_ARGS="-proto_dist inet_tls
+  -ssl_dist_optfile {{ rabbitmq_inter_node_tls_config_file }}"
+RABBITMQ_CTL_ERL_ARGS="-proto_dist inet_tls
+  -ssl_dist_optfile {{ rabbitmq_inter_node_tls_config_file }}"
 {% endif %}
