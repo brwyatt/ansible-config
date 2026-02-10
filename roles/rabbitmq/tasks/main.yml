@@ -40,25 +40,10 @@
     owner: rabbitmq
     group: rabbitmq
     mode: '0400'
-- name: Configure RabbitMQ Default
+- name: Configure RabbitMQ Env
   ansible.builtin.template:
-    src: rabbitmq.default.j2
-    dest: "/etc/default/rabbitmq-server"
-    owner: root
-    group: root
-    mode: '0644'
-  notify: Restart RabbitMQ
-- name: Ensure RabbitMQ systemd override directory exists
-  ansible.builtin.file:
-    path: "/etc/systemd/system/rabbitmq-server.service.d"
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-- name: Configure RabbitMQ systemd override file
-  ansible.builtin.template:
-    src: rabbitmq.override.j2
-    dest: "/etc/systemd/system/rabbitmq-server.service.d/override.conf"
+    src: rabbitmq-env.conf.j2
+    dest: "{{ rabbitmq_config_env_file }}"
     owner: root
     group: root
     mode: '0644'
@@ -66,7 +51,7 @@
 - name: Configure RabbitMQ
   ansible.builtin.template:
     src: rabbitmq.conf.j2
-    dest: "{{ rabbitmq_config_path }}"
+    dest: "{{ rabbitmq_config_file }}"
     owner: root
     group: root
     mode: '0644'
