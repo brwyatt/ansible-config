@@ -38,21 +38,24 @@ def parse_storage_line(line: str):
     """Parses a storage line like:
     key pair storage: type=FILE,location='/path/to/key',owner='user',perms=0600
     or
-    certificate: type=FILE,location='/path/to/cert',perms=0644
+    certificate: type=FILE,location='/path/to/cert',owner=rabbitmq,perms=0644
     """
     location = None
     owner = None
     perms = None
     
-    loc_match = re.search(r"location='([^']+)'", line)
+    # Improved regex for location: handles optional quotes
+    loc_match = re.search(r"location=['\"]?([^'\",]+)['\"]?", line)
     if loc_match:
         location = loc_match.group(1)
         
-    owner_match = re.search(r"owner='([^']+)'", line)
+    # Improved regex for owner: handles optional quotes
+    owner_match = re.search(r"owner=['\"]?([^'\",]+)['\"]?", line)
     if owner_match:
         owner = owner_match.group(1)
         
-    perms_match = re.search(r"perms=([0-7]+)", line)
+    # Improved regex for perms: handles optional quotes
+    perms_match = re.search(r"perms=['\"]?([0-7]+)['\"]?", line)
     if perms_match:
         perms = perms_match.group(1)
         
@@ -215,8 +218,8 @@ def main():
 
     try:
         original_state = check_cert(cert_name)
-    except RuntimeError as e:
-        module.fail_json(msg=f"{e}")
+    except Exception as e:
+        module.fail_json(msg=f"Failed to check current state: {e}")
         return
 
     requested_state = original_state.copy()
@@ -274,25 +277,23 @@ def main():
         # either we're removing a cert or we're changing it (and need to delete first)
         try:
             delete_cert(cert_name)
-        except RuntimeError as e:
-            module.fail_json(msg=f"{e}")
+        except Exception as e:
+            module.fail_json(msg=f"Failed to delete cert tracking: {e}")
             return
         # Only remove files if we are actually making a change that requires it
-        # If we're just changing owner/perms, ipa-getcert would normally handle it on re-request
-        # but since we're deleting and re-requesting, we should probably clean up to be sure.
         try:
             os.remove(original_state['cert_path'])
-        except (FileNotFoundError, TypeError):
+        except (FileNotFoundError, TypeError, KeyError):
             pass
         except Exception as e:
-            module.fail_json(msg=f"{e}")
+            module.fail_json(msg=f"Failed to remove cert file: {e}")
             return
         try:
             os.remove(original_state['key_path'])
-        except (FileNotFoundError, TypeError):
+        except (FileNotFoundError, TypeError, KeyError):
             pass
         except Exception as e:
-            module.fail_json(msg=f"{e}")
+            module.fail_json(msg=f"Failed to remove key file: {e}")
             return
 
     if requested_state["present"] and need_change:
@@ -305,18 +306,23 @@ def main():
                 key_perms=module.params['key_perms'],
                 after_command=module.params['after_command']
             )
-        except RuntimeError as e:
-            module.fail_json(msg=f"{e}")
+        except Exception as e:
+            module.fail_json(msg=f"Failed to request cert: {e}")
             return
 
-    new_state = check_cert(cert_name)
+    try:
+        new_state = check_cert(cert_name)
+    except Exception as e:
+        module.fail_json(msg=f"Failed to check new state: {e}")
+        return
+
     # Changed if something actually changed on the system
     changed = False
     if original_state['present'] != new_state['present']:
         changed = True
     elif original_state['present'] and new_state['present']:
         for field in ['cert_path', 'key_path', 'domain', 'cert_owner', 'cert_perms', 'key_owner', 'key_perms', 'after_command']:
-            if original_state[field] != new_state[field]:
+            if original_state.get(field) != new_state.get(field):
                 changed = True
                 break
                 
@@ -326,12 +332,12 @@ def main():
         failed = True
     elif requested_state['present']:
         for field in ['cert_path', 'key_path', 'domain']:
-            if new_state[field] != requested_state[field]:
+            if new_state.get(field) != requested_state.get(field):
                 failed = True
                 break
         if not failed:
             for field in ['cert_owner', 'cert_perms', 'key_owner', 'key_perms', 'after_command']:
-                if module.params[field] is not None and new_state[field] != module.params[field]:
+                if module.params[field] is not None and new_state.get(field) != module.params[field]:
                     failed = True
                     break
 
