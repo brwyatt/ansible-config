@@ -30,8 +30,10 @@
   vars:
     ipacert_certs:
       "{{ rabbitmq_ipa_cert_name }}":
+        cert_path: "{{ rabbitmq_ipa_cert_path }}"
         cert_owner: rabbitmq
         cert_perms: "0644"
+        key_path: "{{ rabbitmq_ipa_key_path }}"
         key_owner: rabbitmq
         key_perms: "0600"
         after_command: "{{ rabbitmq_ipa_reload_script }}"
