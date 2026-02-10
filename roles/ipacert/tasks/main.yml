@@ -20,7 +20,12 @@
     domain: "{{ item.value['domain'] | default(ansible_fqdn) }}"
     principal: "{{ item.value['principal'] | default(omit) }}"
     cert_path: "{{ item.value['cert_path'] | default(ipacert_cert_dir + '/' + item.key + '.crt') }}"
+    cert_owner: "{{ item.value['cert_owner'] | default(omit) }}"
+    cert_perms: "{{ item.value['cert_perms'] | default(omit) }}"
     key_path: "{{ item.value['key_path'] | default(ipacert_key_dir + '/' + item.key + '.key') }}"
+    key_owner: "{{ item.value['key_owner'] | default(omit) }}"
+    key_perms: "{{ item.value['key_perms'] | default(omit) }}"
+    after_command: "{{ item.value['after_command'] | default(omit) }}"
   loop: "{{ ipacert_certs | dict2items }}"
   loop_control:
     label: "{{ item.key }}"

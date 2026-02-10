@@ -45,7 +45,8 @@
     ipacert_cert_dir: "{{ cert_dir }}"
     ipacert_key_dir: "{{ key_dir }}"
     ipacert_certs:
-      "{{ cert_name }}": {}
+      "{{ cert_name }}":
+        cert_perms: "0644"
   when: include_roles_anywhere
 - name: Signing helper command
   ansible.builtin.set_fact:

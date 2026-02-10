@@ -1,0 +1,5 @@
+#!/bin/bash
+# Hook script to reload TLS in RabbitMQ after certificate renewal
+# Managed by Ansible
+
+rabbitmqctl eval 'ssl:clear_pem_cache().'

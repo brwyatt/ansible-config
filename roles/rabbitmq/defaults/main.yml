@@ -11,8 +11,13 @@ rabbitmq_cert_dir: /etc/rabbitmq/certs
 rabbitmq_ca_cert_path: "{{ rabbitmq_cert_dir }}/ca.pem"
 rabbitmq_cert_path: "{{ rabbitmq_cert_dir }}/cert.pem"
 rabbitmq_key_path: "{{ rabbitmq_cert_dir }}/key.pem"
-rabbitmq_distribution_ca_cert_path: "/etc/ssl/certs/ca-certificates.crt"
-rabbitmq_distribution_cert_path: "{{ rabbitmq_cert_path }}"
-rabbitmq_distribution_key_path: "{{ rabbitmq_key_path }}"
+rabbitmq_ipa_cert_name: "rabbitmq-distribution"
+rabbitmq_ipa_cert_dir: "/etc/rabbitmq/certs-ipa"
+rabbitmq_ipa_cert_path: "{{ rabbitmq_ipa_cert_dir }}/{{ rabbitmq_ipa_cert_name }}.crt"
+rabbitmq_ipa_key_path: "{{ rabbitmq_ipa_cert_dir }}/{{ rabbitmq_ipa_cert_name }}.key"
+rabbitmq_ipa_reload_script: "/usr/local/bin/rabbitmq-ipa-reload.sh"
+rabbitmq_distribution_ca_cert_path: "/etc/ipa/ca.crt"
+rabbitmq_distribution_cert_path: "{{ rabbitmq_ipa_cert_path }}"
+rabbitmq_distribution_key_path: "{{ rabbitmq_ipa_key_path }}"
 rabbitmq_use_long_names: false
 rabbitmq_use_tls_distribution: false

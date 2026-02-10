@@ -10,6 +10,33 @@
     owner: rabbitmq
     group: rabbitmq
     mode: '0750'
+- name: Ensure RabbitMQ IPA cert directory exists
+  ansible.builtin.file:
+    path: "{{ rabbitmq_ipa_cert_dir }}"
+    state: directory
+    owner: rabbitmq
+    group: rabbitmq
+    mode: '0750'
+- name: Deploy IPA renewal hook for RabbitMQ
+  ansible.builtin.template:
+    src: rabbitmq-ipa-reload.sh.j2
+    dest: "{{ rabbitmq_ipa_reload_script }}"
+    owner: root
+    group: root
+    mode: '0755'
+- name: Request IPA certificate for RabbitMQ
+  ansible.builtin.include_role:
+    name: ipacert
+  vars:
+    ipacert_cert_dir: "{{ rabbitmq_ipa_cert_dir }}"
+    ipacert_key_dir: "{{ rabbitmq_ipa_cert_dir }}"
+    ipacert_certs:
+      "{{ rabbitmq_ipa_cert_name }}":
+        cert_owner: rabbitmq
+        cert_perms: "0644"
+        key_owner: rabbitmq
+        key_perms: "0600"
+        after_command: "{{ rabbitmq_ipa_reload_script }}"
 - name: Deploy Certbot renewal hook for RabbitMQ
   ansible.builtin.template:
     src: rabbitmq-cert-deploy.sh.j2
