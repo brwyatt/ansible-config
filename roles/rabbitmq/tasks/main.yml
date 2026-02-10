@@ -48,6 +48,14 @@
     group: root
     mode: '0644'
   notify: Restart RabbitMQ
+- name: Configure RabbitMQ Advanced config
+  ansible.builtin.template:
+    src: advanced.config.j2
+    dest: "{{ rabbitmq_config_dir }}/advanced.config"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart RabbitMQ
 - name: Configure RabbitMQ
   ansible.builtin.template:
     src: rabbitmq.conf.j2

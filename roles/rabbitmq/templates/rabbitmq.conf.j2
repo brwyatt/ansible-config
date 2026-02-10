@@ -13,20 +13,6 @@ ssl_options.certfile   = {{ rabbitmq_cert_path }}
 ssl_options.keyfile    = {{ rabbitmq_key_path }}
 ssl_options.verify     = verify_peer
 ssl_options.fail_if_no_peer_cert = false
-{% if rabbitmq_use_tls_distribution %}
-
-# TLS distribution
-ssl_dist_opts.server.cacertfile = {{ rabbitmq_ca_cert_path }}
-ssl_dist_opts.server.certfile = {{ rabbitmq_cert_path }}
-ssl_dist_opts.server.key = {{ rabbitmq_key_path }}
-ssl_dist_opts.server.verify = verify_peer
-ssl_dist_opts.server.fail_if_no_peer_cert = true
-
-ssl_dist_opts.client.cacertfile = {{ rabbitmq_ca_cert_path }}
-ssl_dist_opts.client.certfile = {{ rabbitmq_cert_path }}
-ssl_dist_opts.client.key = {{ rabbitmq_key_path }}
-ssl_dist_opts.client.verify = verify_peer
-{% endif %}
 
 # Management UI
 management.tcp.port = 15672
