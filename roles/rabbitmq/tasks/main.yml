@@ -28,8 +28,6 @@
   ansible.builtin.include_role:
     name: ipacert
   vars:
-    ipacert_cert_dir: "{{ rabbitmq_ipa_cert_dir }}"
-    ipacert_key_dir: "{{ rabbitmq_ipa_cert_dir }}"
     ipacert_certs:
       "{{ rabbitmq_ipa_cert_name }}":
         cert_owner: rabbitmq
