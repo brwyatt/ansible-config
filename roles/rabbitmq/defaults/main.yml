@@ -11,5 +11,8 @@ rabbitmq_cert_dir: /etc/rabbitmq/certs
 rabbitmq_ca_cert_path: "{{ rabbitmq_cert_dir }}/ca.pem"
 rabbitmq_cert_path: "{{ rabbitmq_cert_dir }}/cert.pem"
 rabbitmq_key_path: "{{ rabbitmq_cert_dir }}/key.pem"
+rabbitmq_distribution_ca_cert_path: "/etc/ssl/certs/ca-certificates.crt"
+rabbitmq_distribution_cert_path: "{{ rabbitmq_cert_path }}"
+rabbitmq_distribution_key_path: "{{ rabbitmq_key_path }}"
 rabbitmq_use_long_names: false
 rabbitmq_use_tls_distribution: false

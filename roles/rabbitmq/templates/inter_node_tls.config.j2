@@ -1,16 +1,16 @@
 [
   {server, [
-    {cacertfile, "{{ rabbitmq_ca_cert_path }}"},
-    {certfile,   "{{ rabbitmq_cert_path }}"},
-    {keyfile,    "{{ rabbitmq_key_path }}"},
+    {cacertfile, "{{ rabbitmq_distribution_ca_cert_path }}"},
+    {certfile,   "{{ rabbitmq_distribution_cert_path }}"},
+    {keyfile,    "{{ rabbitmq_distribution_key_path }}"},
     {secure_renegotiate, true},
     {verify, verify_peer},
     {fail_if_no_peer_cert, true}
   ]},
   {client, [
-    {cacertfile, "{{ rabbitmq_ca_cert_path }}"},
-    {certfile,   "{{ rabbitmq_cert_path }}"},
-    {keyfile,    "{{ rabbitmq_key_path }}"},
+    {cacertfile, "{{ rabbitmq_distribution_ca_cert_path }}"},
+    {certfile,   "{{ rabbitmq_distribution_cert_path }}"},
+    {keyfile,    "{{ rabbitmq_distribution_key_path }}"},
     {secure_renegotiate, true},
     {verify, verify_peer}
   ]}
