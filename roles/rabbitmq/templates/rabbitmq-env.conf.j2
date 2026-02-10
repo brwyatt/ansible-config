@@ -16,3 +16,8 @@
 # Use long names (FQDN)
 RABBITMQ_USE_LONGNAME=true
 {% endif %}
+{% if rabbitmq_use_tls_distribution %}
+
+# Enable TLS for cluster Distribution
+SERVER_ADDITIONAL_ERL_ARGS="-proto_dist inet_tls"
+{% endif %}

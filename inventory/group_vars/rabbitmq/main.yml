@@ -10,4 +10,6 @@ rabbitmq_plugins:
 # In a cluster, we want to ensure nodes can reach each other via FQDN.
 rabbitmq_use_long_names: true
 
+rabbitmq_use_tls_distribution: true
+
 rabbitmq_admin_user: "admin"
