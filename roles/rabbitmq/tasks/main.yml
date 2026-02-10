@@ -56,10 +56,19 @@
     creates: "{{ rabbitmq_cert_path }}"
   environment:
     RENEWED_LINEAGE: "/etc/letsencrypt/live/{{ inventory_hostname }}"
-- name: Ensure RabbitMQ is stopped to set cookie
+- name: Read existing Erlang cookie
+  ansible.builtin.slurp:
+    src: "{{ rabbitmq_erlang_cookie_path }}"
+  register: current_cookie_encoded
+  failed_when: false # Don't fail if the file doesn't exist yet
+- name: Determine if cookie needs update
+  ansible.builtin.set_fact:
+    cookie_needs_update: "{{ (current_cookie_encoded.content | default('') | trim) != (rabbitmq_erlang_cookie | trim) }}"
+- name: Stop RabbitMQ only if cookie update is required
   ansible.builtin.service:
     name: "{{ rabbitmq_service }}"
     state: stopped
+  when: cookie_needs_update
 - name: Set Erlang Cookie
   ansible.builtin.template:
     src: erlang.cookie.j2
@@ -67,6 +76,7 @@
     owner: rabbitmq
     group: rabbitmq
     mode: '0400'
+  when: cookie_needs_update
 - name: Configure RabbitMQ Env
   ansible.builtin.template:
     src: rabbitmq-env.conf.j2
