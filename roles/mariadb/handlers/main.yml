@@ -1,5 +1,6 @@
 ---
 - name: Restart MariaDB
+  when: not (bootstrap_result.changed | default(false))
   ansible.builtin.service:
     name: "{{ mariadb_service }}"
     state: restarted

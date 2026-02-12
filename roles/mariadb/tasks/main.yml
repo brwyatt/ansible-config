@@ -98,6 +98,28 @@
   ansible.builtin.meta: flush_handlers
 - name: Collect service facts
   ansible.builtin.service_facts:
+- name: Check Cluster Status (Node 0)
+  when:
+    - inventory_hostname == groups['mariadb'][0]
+    - ansible_facts.services[mariadb_service ~ '.service'] is defined
+    - ansible_facts.services[mariadb_service ~ '.service'].state == 'running'
+  ansible.builtin.command: mariadb -NBe "SHOW STATUS LIKE 'wsrep_cluster_size'"
+  register: wsrep_status
+  failed_when: false
+  changed_when: false
+- name: Stop MariaDB for Bootstrap (Node 0)
+  when:
+    - inventory_hostname == groups['mariadb'][0]
+    - ansible_facts.services[mariadb_service ~ '.service'] is defined
+    - ansible_facts.services[mariadb_service ~ '.service'].state == 'running'
+    - wsrep_status.rc != 0 or (wsrep_status.stdout | regex_search('\t(0|1)$'))
+  ansible.builtin.service:
+    name: "{{ mariadb_service }}"
+    state: stopped
+  register: stop_result
+- name: Update service facts after stop  # noqa: no-handler
+  when: stop_result.changed
+  ansible.builtin.service_facts:
 - name: Bootstrap Cluster on Primary Node
   when:
     - inventory_hostname == groups['mariadb'][0]
