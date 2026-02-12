@@ -2,13 +2,21 @@
 # Cluster check script for HAProxy
 # Checks if wsrep_local_state is Synced (4)
 
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Consume HTTP request headers to avoid TCP RST
+# We read lines until we encounter an empty line (\r)
+while read -r line; do
+    [[ "$line" == $'\r' ]] && break
+done
+
 MYSQL_USER="{{ mariadb_clustercheck_user }}"
 MYSQL_PASS="{{ mysql_clustercheck_password }}"
-MYSQL_CMD="mariadb -nNE -u$MYSQL_USER -p$MYSQL_PASS"
+MYSQL_CMD="mariadb -nNB -h 127.0.0.1 -P 3306 -u$MYSQL_USER -p$MYSQL_PASS"
 
 # Check if mariadb is running
 if ! systemctl is-active --quiet mariadb; then
-    echo -e "HTTP/1.1 503 Service Unavailable\r\nContent-Type: text/plain\r\n\r\nMariaDB Service Down"
+    echo -e "HTTP/1.1 503 Service Unavailable\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nMariaDB Service Down"
     exit 1
 fi
 
@@ -16,9 +24,9 @@ fi
 WSREP_STATUS=$($MYSQL_CMD -e "SHOW STATUS LIKE 'wsrep_local_state';" 2>/dev/null | awk '{print $2}')
 
 if [ "$WSREP_STATUS" == "4" ]; then
-    echo -e "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nNode is Synced."
+    echo -e "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nNode is Synced."
     exit 0
 else
-    echo -e "HTTP/1.1 503 Service Unavailable\r\nContent-Type: text/plain\r\n\r\nNode not Synced (State: $WSREP_STATUS)."
+    echo -e "HTTP/1.1 503 Service Unavailable\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nNode not Synced (State: $WSREP_STATUS)."
     exit 1
 fi

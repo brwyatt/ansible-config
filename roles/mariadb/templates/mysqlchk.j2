@@ -3,6 +3,7 @@
 service mysqlchk
 {
         disable = no
+        type = UNLISTED
         flags = REUSE
         socket_type = stream
         port = {{ mariadb_clustercheck_port }}
@@ -10,6 +11,5 @@ service mysqlchk
         user = nobody
         server = /usr/local/bin/clustercheck
         log_on_failure += USERID
-        only_from = 0.0.0.0/0
         per_source = UNLIMITED
 }
