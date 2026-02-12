@@ -196,9 +196,18 @@
   retries: 30
   delay: 2
   changed_when: false
-- name: Update wsrep_cluster_address dynamically on Primary (Post-Join)
+- name: Check current wsrep_cluster_address on Primary
   when: inventory_hostname == groups['mariadb'][0]
+  ansible.builtin.command: mariadb -NBe "SELECT @@wsrep_cluster_address"
+  register: current_wsrep_cluster_address
+  changed_when: false
+  failed_when: false
+- name: Update wsrep_cluster_address dynamically on Primary (Post-Join)
+  when:
+    - inventory_hostname == groups['mariadb'][0]
+    - current_wsrep_cluster_address.rc == 0
+    - current_wsrep_cluster_address.stdout != mariadb_cluster_address
   ansible.builtin.command: >-
-    mariadb -e "SET GLOBAL wsrep_cluster_address='gcomm://{{ mariadb_cluster_nodes | join(',') }}'"
+    mariadb -e "SET GLOBAL wsrep_cluster_address='{{ mariadb_cluster_address }}'"
   changed_when: true
   failed_when: false
