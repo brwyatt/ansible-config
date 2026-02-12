@@ -5,6 +5,7 @@
       - "{{ mariadb_package }}"
       - "{{ mariadb_galera_package }}"
       - "{{ mariadb_rsync_package }}"
+      - "{{ mariadb_backup_package }}"
       - "{{ mariadb_xinetd_package }}"
       - "{{ mariadb_python_package }}"
     state: present

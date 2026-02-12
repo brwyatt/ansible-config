@@ -2,6 +2,7 @@
 mariadb_package: mariadb-server
 mariadb_galera_package: galera-4
 mariadb_rsync_package: rsync
+mariadb_backup_package: mariadb-backup
 mariadb_xinetd_package: xinetd
 mariadb_python_package: python3-pymysql
 
