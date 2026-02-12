@@ -111,89 +111,36 @@
   notify: Restart MariaDB
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
-- name: Collect service facts
-  ansible.builtin.service_facts:
-- name: Check Cluster Status
-  when:
-    - ansible_facts.services[mariadb_service ~ '.service'] is defined
-    - ansible_facts.services[mariadb_service ~ '.service'].state == 'running'
-  ansible.builtin.command: mariadb -NBe "SHOW STATUS LIKE 'wsrep_cluster_status'"
-  register: wsrep_cluster_status
-  failed_when: false
-  changed_when: false
-- name: Determine if bootstrap is needed
-  ansible.builtin.set_fact:
-    mariadb_needs_bootstrap: >-
-      {{
-        inventory_hostname == groups['mariadb'][0] and
-        (
-          ansible_facts.services[mariadb_service ~ '.service'] is not defined or
-          ansible_facts.services[mariadb_service ~ '.service'].state != 'running' or
-          (
-            wsrep_cluster_status.rc == 0 and
-            not (wsrep_cluster_status.stdout | regex_search('\tPrimary$') is not none)
-          )
-        )
-      }}
-- name: Stop MariaDB for Bootstrap
-  when:
-    - mariadb_needs_bootstrap
-    - ansible_facts.services[mariadb_service ~ '.service'] is defined
-    - ansible_facts.services[mariadb_service ~ '.service'].state == 'running'
-  ansible.builtin.service:
-    name: "{{ mariadb_service }}"
-    state: stopped
-  register: stop_result
-- name: Force safe_to_bootstrap in grastate.dat
-  when: mariadb_needs_bootstrap
-  ansible.builtin.replace:
-    path: "{{ mariadb_datadir }}/grastate.dat"
-    regexp: 'safe_to_bootstrap: 0'
-    replace: 'safe_to_bootstrap: 1'
-  failed_when: false
-- name: Temporarily set bootstrap config (gcomm://)
-  when: mariadb_needs_bootstrap
-  ansible.builtin.template:
-    src: 50-server.cnf.j2
-    dest: "{{ mariadb_config_file }}"
-    owner: root
-    group: mysql
-    mode: '0640'
-  vars:
-    mariadb_cluster_address: "gcomm://"
-- name: Start MariaDB (Bootstrap)
-  when: mariadb_needs_bootstrap
-  ansible.builtin.service:
-    name: "{{ mariadb_service }}"
-    state: started
-  register: bootstrap_result
-- name: Restore production config
-  when: mariadb_needs_bootstrap
-  ansible.builtin.template:
-    src: 50-server.cnf.j2
-    dest: "{{ mariadb_config_file }}"
-    owner: root
-    group: mysql
-    mode: '0640'
-- name: Start MariaDB on Primary Node
-  when:
-    - inventory_hostname == groups['mariadb'][0]
+# Include Bootstrap Logic (Handles primary node start/recovery)
+- name: Run Bootstrap Logic
+  ansible.builtin.include_tasks: bootstrap.yml
+- name: Ensure MariaDB is started (Primary)
+  when: inventory_hostname == groups['mariadb'][0]
   ansible.builtin.service:
     name: "{{ mariadb_service }}"
     state: started
     enabled: true
-- name: Check Cluster Status After Start
-  ansible.builtin.command: mariadb -NBe "SHOW STATUS LIKE 'wsrep_cluster_status'"
-  register: wsrep_cluster_status_after
-  changed_when: false
-  failed_when: false
-- name: Recover Primary Component (Force Bootstrap)
+# Secondary Node Handling
+- name: Collect service facts (Secondary)
+  when: inventory_hostname != groups['mariadb'][0]
+  ansible.builtin.service_facts:
+- name: Check if Secondary Node needs recovery
   when:
-    - inventory_hostname == groups['mariadb'][0]
-    - wsrep_cluster_status_after.rc == 0
-    - wsrep_cluster_status_after.stdout | regex_search('\tNon-Primary$') is not none
-  ansible.builtin.command: mariadb -e "SET GLOBAL wsrep_provider_options='pc.bootstrap=YES'"
-  changed_when: true
+    - inventory_hostname != groups['mariadb'][0]
+    - ansible_facts.services[mariadb_service ~ '.service'] is defined
+    - ansible_facts.services[mariadb_service ~ '.service'].state != 'running'
+  block:
+    - name: Reset safe_to_bootstrap on Secondary (force join)
+      ansible.builtin.replace:
+        path: "{{ mariadb_datadir }}/grastate.dat"
+        regexp: 'safe_to_bootstrap: 0'
+        replace: 'safe_to_bootstrap: 1'
+      failed_when: false
+    - name: Ensure clean joiner state (optional - remove grastate if needed)
+      # Sometimes simply setting safe_to_bootstrap isn't enough if seqno is bad
+      # But for now, let's try just starting it.
+      ansible.builtin.debug:
+        msg: "Attempting to start secondary node..."
 - name: Start MariaDB on Secondary Nodes
   when:
     - inventory_hostname != groups['mariadb'][0]
@@ -201,6 +148,28 @@
     name: "{{ mariadb_service }}"
     state: started
     enabled: true
+  register: secondary_start
+  ignore_errors: true
+- name: Force full SST if start failed (Secondary)
+  when:
+    - inventory_hostname != groups['mariadb'][0]
+    - secondary_start.failed is defined
+    - secondary_start.failed
+  block:
+    - name: Stop MariaDB (just in case)
+      ansible.builtin.service:
+        name: "{{ mariadb_service }}"
+        state: stopped
+      failed_when: false
+    - name: Remove grastate.dat to force SST
+      ansible.builtin.file:
+        path: "{{ mariadb_datadir }}/grastate.dat"
+        state: absent
+    - name: Start MariaDB again (Secondary)
+      ansible.builtin.service:
+        name: "{{ mariadb_service }}"
+        state: started
+        enabled: true
 - name: Wait for MariaDB to be Synced
   ansible.builtin.command: mariadb -NBe "SHOW STATUS LIKE 'wsrep_local_state_comment'"
   register: wsrep_state

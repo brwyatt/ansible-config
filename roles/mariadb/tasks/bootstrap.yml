@@ -1,0 +1,88 @@
+---
+- name: Collect service facts
+  ansible.builtin.service_facts:
+- name: Check Cluster Status
+  when:
+    - ansible_facts.services[mariadb_service ~ '.service'] is defined
+    - ansible_facts.services[mariadb_service ~ '.service'].state == 'running'
+  ansible.builtin.command: mariadb -NBe "SHOW STATUS LIKE 'wsrep_cluster_status'"
+  register: wsrep_cluster_status
+  failed_when: false
+  changed_when: false
+- name: Determine if bootstrap is needed
+  ansible.builtin.set_fact:
+    mariadb_needs_bootstrap: >-
+      {{
+        inventory_hostname == groups['mariadb'][0] and
+        (
+          ansible_facts.services[mariadb_service ~ '.service'] is not defined or
+          ansible_facts.services[mariadb_service ~ '.service'].state != 'running' or
+          (
+            wsrep_cluster_status.rc == 0 and
+            not (wsrep_cluster_status.stdout | regex_search('\tPrimary$') is not none)
+          )
+        )
+      }}
+- name: Stop MariaDB for Bootstrap
+  when:
+    - mariadb_needs_bootstrap
+    - ansible_facts.services[mariadb_service ~ '.service'] is defined
+    - ansible_facts.services[mariadb_service ~ '.service'].state == 'running'
+  ansible.builtin.service:
+    name: "{{ mariadb_service }}"
+    state: stopped
+  register: stop_result
+- name: Force safe_to_bootstrap in grastate.dat
+  when: mariadb_needs_bootstrap
+  ansible.builtin.replace:
+    path: "{{ mariadb_datadir }}/grastate.dat"
+    regexp: 'safe_to_bootstrap: 0'
+    replace: 'safe_to_bootstrap: 1'
+  failed_when: false
+- name: Temporarily set bootstrap config (gcomm://)
+  when: mariadb_needs_bootstrap
+  ansible.builtin.template:
+    src: 50-server.cnf.j2
+    dest: "{{ mariadb_config_file }}"
+    owner: root
+    group: mysql
+    mode: '0640'
+  vars:
+    mariadb_cluster_address: "gcomm://"
+- name: Start MariaDB (Bootstrap)
+  when: mariadb_needs_bootstrap
+  ansible.builtin.service:
+    name: "{{ mariadb_service }}"
+    state: started
+  register: bootstrap_result
+- name: Wait for MariaDB to be ready
+  when: mariadb_needs_bootstrap
+  ansible.builtin.wait_for:
+    port: 3306
+    timeout: 30
+- name: Update wsrep_cluster_address dynamically
+  when: mariadb_needs_bootstrap
+  ansible.builtin.command: >-
+    mariadb -e "SET GLOBAL wsrep_cluster_address='gcomm://{{ mariadb_cluster_nodes | join(',') }}'"
+  changed_when: true
+- name: Restore production config
+  when: mariadb_needs_bootstrap
+  ansible.builtin.template:
+    src: 50-server.cnf.j2
+    dest: "{{ mariadb_config_file }}"
+    owner: root
+    group: mysql
+    mode: '0640'
+- name: Check Cluster Status After Start
+  when: inventory_hostname == groups['mariadb'][0]
+  ansible.builtin.command: mariadb -NBe "SHOW STATUS LIKE 'wsrep_cluster_status'"
+  register: wsrep_cluster_status_after
+  changed_when: false
+  failed_when: false
+- name: Recover Primary Component (Force Bootstrap)
+  when:
+    - inventory_hostname == groups['mariadb'][0]
+    - wsrep_cluster_status_after.rc == 0
+    - wsrep_cluster_status_after.stdout | regex_search('\tNon-Primary$') is not none
+  ansible.builtin.command: mariadb -e "SET GLOBAL wsrep_provider_options='pc.bootstrap=YES'"
+  changed_when: true
