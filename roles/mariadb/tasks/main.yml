@@ -8,6 +8,13 @@
       - "{{ mariadb_xinetd_package }}"
       - "{{ mariadb_python_package }}"
     state: present
+- name: Create .my.cnf for root
+  ansible.builtin.template:
+    src: root-my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: '0600'
 - name: Ensure MariaDB data directory exists
   ansible.builtin.file:
     path: "{{ mariadb_datadir }}"
