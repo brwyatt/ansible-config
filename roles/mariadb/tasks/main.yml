@@ -195,3 +195,9 @@
     host: "localhost"
     state: present
     login_unix_socket: /run/mysqld/mysqld.sock
+- name: Update wsrep_cluster_address dynamically on Primary (Post-Join)
+  when: inventory_hostname == groups['mariadb'][0]
+  ansible.builtin.command: >-
+    mariadb -e "SET GLOBAL wsrep_cluster_address='gcomm://{{ mariadb_cluster_nodes | join(',') }}'"
+  changed_when: true
+  failed_when: false

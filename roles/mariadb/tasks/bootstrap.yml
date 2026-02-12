@@ -60,11 +60,6 @@
   ansible.builtin.wait_for:
     port: 3306
     timeout: 30
-- name: Update wsrep_cluster_address dynamically
-  when: mariadb_needs_bootstrap
-  ansible.builtin.command: >-
-    mariadb -e "SET GLOBAL wsrep_cluster_address='gcomm://{{ mariadb_cluster_nodes | join(',') }}'"
-  changed_when: true
 - name: Restore production config
   when: mariadb_needs_bootstrap
   ansible.builtin.template:
