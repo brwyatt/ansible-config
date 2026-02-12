@@ -120,7 +120,7 @@
     - inventory_hostname == groups['mariadb'][0]
     - ansible_facts.services[mariadb_service ~ '.service'] is defined
     - ansible_facts.services[mariadb_service ~ '.service'].state == 'running'
-    - wsrep_status.rc != 0 or (wsrep_status.stdout | regex_search('\t(0|1)$'))
+    - wsrep_status.rc != 0 or (wsrep_status.stdout | regex_search('\t(0|1)$')) is not none
   ansible.builtin.service:
     name: "{{ mariadb_service }}"
     state: stopped
