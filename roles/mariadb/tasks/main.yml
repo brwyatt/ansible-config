@@ -181,7 +181,7 @@
 - name: Wait for MariaDB to be Synced
   ansible.builtin.command: mariadb -NBe "SHOW STATUS LIKE 'wsrep_local_state_comment'"
   register: wsrep_state
-  until: (wsrep_state.stdout | regex_search('\tSynced$')) is not None
+  until: wsrep_state.stdout | regex_search('\tSynced$') != ""
   retries: 30
   delay: 2
   changed_when: false
