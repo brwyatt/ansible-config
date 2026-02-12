@@ -131,7 +131,7 @@
           ansible_facts.services[mariadb_service ~ '.service'].state != 'running' or
           (
             wsrep_cluster_status.rc == 0 and
-            not (wsrep_cluster_status.stdout | regex_search('\tPrimary$'))
+            not (wsrep_cluster_status.stdout | regex_search('\tPrimary$') is not none)
           )
         )
       }}
@@ -180,10 +180,22 @@
     name: "{{ mariadb_service }}"
     state: started
     enabled: true
+- name: Check Cluster Status After Start
+  ansible.builtin.command: mariadb -NBe "SHOW STATUS LIKE 'wsrep_cluster_status'"
+  register: wsrep_cluster_status_after
+  changed_when: false
+  failed_when: false
+- name: Recover Primary Component (Force Bootstrap)
+  when:
+    - inventory_hostname == groups['mariadb'][0]
+    - wsrep_cluster_status_after.rc == 0
+    - wsrep_cluster_status_after.stdout | regex_search('\tNon-Primary$')
+  ansible.builtin.command: mariadb -e "SET GLOBAL wsrep_provider_options='pc.bootstrap=YES'"
+  changed_when: true
 - name: Wait for MariaDB to be Synced
   ansible.builtin.command: mariadb -NBe "SHOW STATUS LIKE 'wsrep_local_state_comment'"
   register: wsrep_state
-  until: wsrep_state.stdout | regex_search('\tSynced$') != ""
+  until: wsrep_state.stdout | regex_search('\tSynced$') is not none
   retries: 30
   delay: 2
   changed_when: false
