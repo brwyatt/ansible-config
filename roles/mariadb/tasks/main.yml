@@ -189,7 +189,7 @@
   when:
     - inventory_hostname == groups['mariadb'][0]
     - wsrep_cluster_status_after.rc == 0
-    - wsrep_cluster_status_after.stdout | regex_search('\tNon-Primary$')
+    - wsrep_cluster_status_after.stdout | regex_search('\tNon-Primary$') is not none
   ansible.builtin.command: mariadb -e "SET GLOBAL wsrep_provider_options='pc.bootstrap=YES'"
   changed_when: true
 - name: Wait for MariaDB to be Synced
