@@ -120,6 +120,15 @@
 - name: Update service facts after stop  # noqa: no-handler
   when: stop_result.changed
   ansible.builtin.service_facts:
+- name: Force safe_to_bootstrap in grastate.dat (Node 0)
+  when:
+    - inventory_hostname == groups['mariadb'][0]
+    - ansible_facts.services[mariadb_service ~ '.service'].state != 'running'
+  ansible.builtin.replace:
+    path: "{{ mariadb_datadir }}/grastate.dat"
+    regexp: 'safe_to_bootstrap: 0'
+    replace: 'safe_to_bootstrap: 1'
+  failed_when: false
 - name: Bootstrap Cluster on Primary Node
   when:
     - inventory_hostname == groups['mariadb'][0]
