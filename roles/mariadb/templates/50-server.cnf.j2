@@ -1,0 +1,48 @@
+[mysqld]
+user                    = mysql
+pid-file                = /run/mysqld/mysqld.pid
+socket                  = /run/mysqld/mysqld.sock
+port                    = 3306
+basedir                 = /usr
+datadir                 = {{ mariadb_datadir }}
+tmpdir                  = /tmp
+lc-messages-dir         = /usr/share/mysql
+
+bind-address            = 0.0.0.0
+
+# TLS Configuration (Client Facing - Let's Encrypt)
+ssl-ca                  = {{ mariadb_ca_cert_path }}
+ssl-cert                = {{ mariadb_cert_path }}
+ssl-key                 = {{ mariadb_key_path }}
+
+# Logs
+log_error = /var/log/mysql/error.log
+
+# InnoDB Tuning
+default_storage_engine  = InnoDB
+innodb_buffer_pool_size = 512M
+innodb_log_file_size    = 128M
+innodb_file_per_table   = 1
+innodb_flush_log_at_trx_commit = 2
+
+# Galera Provider Configuration
+[galera]
+wsrep_on                 = ON
+wsrep_provider           = /usr/lib/galera/libgalera_smm.so
+wsrep_cluster_address    = {{ mariadb_cluster_address }}
+wsrep_cluster_name       = {{ mariadb_cluster_name }}
+wsrep_node_address       = {{ ansible_default_ipv4.address }}
+wsrep_node_name          = {{ inventory_hostname }}
+
+# Galera Synchronization Configuration
+wsrep_sst_method         = mariabackup
+wsrep_sst_auth           = root:{{ mysql_root_password }}
+
+# Galera TLS Configuration (Inter-Node - IPA Certs)
+wsrep_provider_options   = "socket.ssl=yes;socket.ssl_key={{ mariadb_ipa_key_path }};socket.ssl_cert={{ mariadb_ipa_cert_path }};socket.ssl_ca={{ mariadb_ipa_ca_cert_path }}"
+
+[sst]
+encrypt=4
+tkey={{ mariadb_ipa_key_path }}
+tcert={{ mariadb_ipa_cert_path }}
+tca={{ mariadb_ipa_ca_cert_path }}

@@ -1,0 +1,49 @@
+---
+cert: []
+certbot_certs: []
+haproxy_certbot_certs: "{{ undef() }}"
+
+haproxy_resolvers:
+  localdns:
+    nameservers:
+      dns1:
+        host: "127.0.0.53"
+        port: "53"
+    options:
+      - "accepted_payload_size 8192"
+haproxy_frontends:
+  stats:
+    bind:
+      port: 8404
+    options:
+      - "stats enable"
+      - "stats uri /"
+      - "stats refresh 5s"
+  mariadb:
+    mode: tcp
+    bind:
+      port: 3306
+    backend: mariadb-backend
+    client_timeout: "3h"
+
+haproxy_backends:
+  mariadb-backend:
+    mode: tcp
+    balance: leastconn
+    server_timeout: "3h"
+    options:
+      - "option httpchk GET /"
+      - "http-check expect status 200"
+      - "default-server check port 9200 inter 2s"
+      - "server-template mariadb 1-5 _mysql._tcp.mariadb.server.home.brwyatt.net resolvers localdns init-addr none"
+
+keepalived_check_scripts:
+  haproxy:
+    type: haproxy
+
+keepalived_instances:
+  mariadb:
+    virtual_ip: "172.17.30.207/24"
+    auth_pass: "{{ keepalived_auth_pass }}"
+    check_scripts:
+      - haproxy

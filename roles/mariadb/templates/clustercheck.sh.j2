@@ -1,0 +1,24 @@
+#!/bin/bash
+# Cluster check script for HAProxy
+# Checks if wsrep_local_state is Synced (4)
+
+MYSQL_USER="{{ mariadb_clustercheck_user }}"
+MYSQL_PASS="{{ mysql_clustercheck_password }}"
+MYSQL_CMD="mariadb -nNE -u$MYSQL_USER -p$MYSQL_PASS"
+
+# Check if mariadb is running
+if ! systemctl is-active --quiet mariadb; then
+    echo -e "HTTP/1.1 503 Service Unavailable\r\nContent-Type: text/plain\r\n\r\nMariaDB Service Down"
+    exit 1
+fi
+
+# Check Galera status
+WSREP_STATUS=$($MYSQL_CMD -e "SHOW STATUS LIKE 'wsrep_local_state';" 2>/dev/null | awk '{print $2}')
+
+if [ "$WSREP_STATUS" == "4" ]; then
+    echo -e "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nNode is Synced."
+    exit 0
+else
+    echo -e "HTTP/1.1 503 Service Unavailable\r\nContent-Type: text/plain\r\n\r\nNode not Synced (State: $WSREP_STATUS)."
+    exit 1
+fi

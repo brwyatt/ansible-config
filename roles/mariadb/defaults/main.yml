@@ -1,0 +1,31 @@
+---
+mariadb_package: mariadb-server
+mariadb_galera_package: galera-4
+mariadb_rsync_package: rsync
+mariadb_xinetd_package: xinetd
+mariadb_python_package: python3-pymysql
+
+mariadb_service: mariadb
+
+mariadb_datadir: /var/lib/mysql
+
+mariadb_config_dir: /etc/mysql/mariadb.conf.d
+mariadb_config_file: "{{ mariadb_config_dir }}/50-server.cnf"
+
+mariadb_cert_dir: /etc/mysql/certs
+mariadb_ca_cert_path: "/etc/ssl/certs/ca-certificates.crt"
+mariadb_cert_path: "{{ mariadb_cert_dir }}/cert.pem"
+mariadb_key_path: "{{ mariadb_cert_dir }}/key.pem"
+
+mariadb_ipa_cert_name: "mariadb-replication"
+mariadb_ipa_cert_dir: "/etc/mysql/certs-ipa"
+mariadb_ipa_cert_path: "{{ mariadb_ipa_cert_dir }}/{{ mariadb_ipa_cert_name }}.crt"
+mariadb_ipa_key_path: "{{ mariadb_ipa_cert_dir }}/{{ mariadb_ipa_cert_name }}.key"
+mariadb_ipa_ca_cert_path: "/etc/ipa/ca.crt"
+mariadb_ipa_reload_script: "/usr/local/bin/mariadb-ipa-reload.sh"
+
+mariadb_cluster_nodes: []
+mariadb_cluster_address: "gcomm://{{ mariadb_cluster_nodes | join(',') }}"
+
+mariadb_clustercheck_user: "clustercheck"
+mariadb_clustercheck_port: 9200

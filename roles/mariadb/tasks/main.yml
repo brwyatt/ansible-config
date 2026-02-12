@@ -1,0 +1,137 @@
+---
+- name: Install MariaDB and dependencies
+  ansible.builtin.package:
+    name:
+      - "{{ mariadb_package }}"
+      - "{{ mariadb_galera_package }}"
+      - "{{ mariadb_rsync_package }}"
+      - "{{ mariadb_xinetd_package }}"
+      - "{{ mariadb_python_package }}"
+    state: present
+- name: Ensure MariaDB data directory exists
+  ansible.builtin.file:
+    path: "{{ mariadb_datadir }}"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: '0750'
+- name: Ensure MariaDB cert directory exists
+  ansible.builtin.file:
+    path: "{{ mariadb_cert_dir }}"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: '0750'
+- name: Ensure MariaDB IPA cert directory exists
+  ansible.builtin.file:
+    path: "{{ mariadb_ipa_cert_dir }}"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: '0750'
+- name: Deploy IPA renewal hook for MariaDB
+  ansible.builtin.copy:
+    content: |
+      #!/bin/bash
+      # Reload MariaDB to pick up new IPA certs
+      systemctl is-active --quiet mariadb && mariadb -e "FLUSH SSL;"
+    dest: "{{ mariadb_ipa_reload_script }}"
+    owner: root
+    group: root
+    mode: '0755'
+- name: Request IPA certificate for MariaDB Replication
+  ansible.builtin.include_role:
+    name: ipacert
+  vars:
+    ipacert_certs:
+      "{{ mariadb_ipa_cert_name }}":
+        cert_path: "{{ mariadb_ipa_cert_path }}"
+        cert_owner: mysql
+        cert_perms: "0644"
+        key_path: "{{ mariadb_ipa_key_path }}"
+        key_owner: mysql
+        key_perms: "0600"
+        after_command: "{{ mariadb_ipa_reload_script }}"
+- name: Deploy Certbot renewal hook for MariaDB
+  ansible.builtin.template:
+    src: mariadb-cert-deploy.sh.j2
+    dest: /etc/letsencrypt/renewal-hooks/deploy/mariadb
+    owner: root
+    group: root
+    mode: '0755'
+- name: Check if Let's Encrypt certificates are deployed
+  ansible.builtin.stat:
+    path: "{{ mariadb_cert_path }}"
+  register: cert_stat
+- name: Initial Let's Encrypt certificate deployment
+  when: not cert_stat.stat.exists
+  ansible.builtin.command:
+    argv:
+      - "/etc/letsencrypt/renewal-hooks/deploy/mariadb"
+    creates: "{{ mariadb_cert_path }}"
+  environment:
+    RENEWED_LINEAGE: "/etc/letsencrypt/live/{{ inventory_hostname }}"
+- name: Deploy clustercheck script
+  ansible.builtin.template:
+    src: clustercheck.sh.j2
+    dest: /usr/local/bin/clustercheck
+    owner: nobody
+    group: nogroup
+    mode: '0755'
+- name: Deploy xinetd config for mysqlchk
+  ansible.builtin.template:
+    src: mysqlchk.j2
+    dest: /etc/xinetd.d/mysqlchk
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload Xinetd
+- name: Deploy MariaDB Server Configuration
+  ansible.builtin.template:
+    src: 50-server.cnf.j2
+    dest: "{{ mariadb_config_file }}"
+    owner: root
+    group: mysql
+    mode: '0640'
+  notify: Restart MariaDB
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+- name: Collect service facts
+  ansible.builtin.service_facts:
+- name: Bootstrap Cluster on Primary Node
+  when:
+    - inventory_hostname == groups['mariadb'][0]
+    - ansible_facts.services[mariadb_service ~ '.service'] is defined
+    - ansible_facts.services[mariadb_service ~ '.service'].state != 'running'
+  ansible.builtin.command: galera_new_cluster
+  register: bootstrap_result
+  changed_when: bootstrap_result.rc == 0
+- name: Start MariaDB on all nodes
+  ansible.builtin.service:
+    name: "{{ mariadb_service }}"
+    state: started
+    enabled: true
+- name: Wait for MariaDB to be ready
+  ansible.builtin.command: mariadb -e "SELECT 1"
+  register: mysql_ready
+  until: mysql_ready.rc == 0
+  retries: 30
+  delay: 2
+  changed_when: false
+- name: Create Cluster Check User
+  when: inventory_hostname == groups['mariadb'][0]
+  community.mysql.mysql_user:
+    name: "{{ mariadb_clustercheck_user }}"
+    password: "{{ mysql_clustercheck_password }}"
+    priv: "*.*:PROCESS"
+    host: "localhost"
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
+- name: Set MariaDB Root Password
+  when: inventory_hostname == groups['mariadb'][0]
+  community.mysql.mysql_user:
+    name: root
+    password: "{{ mysql_root_password }}"
+    host: "localhost"
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock

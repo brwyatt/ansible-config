@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+
+DOMAIN="{{ inventory_hostname }}"
+LE_DIR="/etc/letsencrypt/live/$DOMAIN"
+TARGET_DIR="{{ mariadb_cert_dir }}"
+
+mkdir -p "$TARGET_DIR"
+
+if [ -f "$LE_DIR/privkey.pem" ] && [ -f "$LE_DIR/fullchain.pem" ]; then
+    cp -L "$LE_DIR/privkey.pem" "$TARGET_DIR/key.pem"
+    cp -L "$LE_DIR/fullchain.pem" "$TARGET_DIR/cert.pem"
+
+    chown -R mysql:mysql "$TARGET_DIR"
+    chmod 0600 "$TARGET_DIR/key.pem"
+    chmod 0644 "$TARGET_DIR/cert.pem"
+
+    # Reload MariaDB SSL non-disruptively if running
+    if systemctl is-active --quiet mariadb; then
+        mariadb -e "FLUSH SSL;" || echo "Warning: Failed to FLUSH SSL, certificates updated on disk only."
+    fi
+else
+    echo "Certificates not found in $LE_DIR"
+    exit 1
+fi

@@ -1,0 +1,7 @@
+---
+certbot_certs:
+  - ["{{ inventory_hostname }}", "mariadb.server.home.brwyatt.net"]
+
+mariadb_cluster_name: "brnet-home-mariadb"
+mariadb_cluster_nodes: "{{ groups['mariadb'] }}"
+mariadb_datadir: /mnt/data
