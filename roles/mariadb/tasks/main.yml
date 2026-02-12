@@ -15,6 +15,14 @@
     owner: mysql
     group: mysql
     mode: '0750'
+- name: Check if MariaDB data directory is initialized
+  ansible.builtin.stat:
+    path: "{{ mariadb_datadir }}/mysql"
+  register: mariadb_data_state
+- name: Initialize MariaDB data directory
+  when: not mariadb_data_state.stat.exists
+  ansible.builtin.command: mariadb-install-db --user=mysql --datadir="{{ mariadb_datadir }}"
+  changed_when: true
 - name: Ensure MariaDB cert directory exists
   ansible.builtin.file:
     path: "{{ mariadb_cert_dir }}"
@@ -129,14 +137,41 @@
     regexp: 'safe_to_bootstrap: 0'
     replace: 'safe_to_bootstrap: 1'
   failed_when: false
-- name: Bootstrap Cluster on Primary Node
+- name: Temporarily set bootstrap config (gcomm://)
   when:
     - inventory_hostname == groups['mariadb'][0]
     - ansible_facts.services[mariadb_service ~ '.service'] is defined
     - ansible_facts.services[mariadb_service ~ '.service'].state != 'running'
-  ansible.builtin.command: galera_new_cluster
+  ansible.builtin.template:
+    src: 50-server.cnf.j2
+    dest: "{{ mariadb_config_file }}"
+    owner: root
+    group: mysql
+    mode: '0640'
+  vars:
+    mariadb_cluster_address: "gcomm://"
+- name: Start MariaDB (Bootstrap)
+  when:
+    - inventory_hostname == groups['mariadb'][0]
+    - ansible_facts.services[mariadb_service ~ '.service'] is defined
+    - ansible_facts.services[mariadb_service ~ '.service'].state != 'running'
+  ansible.builtin.service:
+    name: "{{ mariadb_service }}"
+    state: started
   register: bootstrap_result
-  changed_when: bootstrap_result.rc == 0
+- name: Restore production config  # noqa: no-handler
+  when: bootstrap_result.changed
+  ansible.builtin.template:
+    src: 50-server.cnf.j2
+    dest: "{{ mariadb_config_file }}"
+    owner: root
+    group: mysql
+    mode: '0640'
+- name: Update Global Cluster Address at Runtime  # noqa: no-handler
+  when: bootstrap_result.changed
+  ansible.builtin.command: |
+    mysql -e "SET GLOBAL wsrep_cluster_address='{{ mariadb_cluster_address }}'"
+  changed_when: true
 - name: Start MariaDB on all nodes
   ansible.builtin.service:
     name: "{{ mariadb_service }}"
