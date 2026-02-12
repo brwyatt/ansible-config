@@ -121,6 +121,24 @@
     name: "{{ mariadb_service }}"
     state: started
     enabled: true
+# Set Root Password IMMEDIATELY after start so SST works
+- name: Set MariaDB Root Password
+  when: inventory_hostname == groups['mariadb'][0]
+  community.mysql.mysql_user:
+    name: root
+    password: "{{ mysql_root_password }}"
+    host: "localhost"
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
+- name: Create Cluster Check User
+  when: inventory_hostname == groups['mariadb'][0]
+  community.mysql.mysql_user:
+    name: "{{ mariadb_clustercheck_user }}"
+    password: "{{ mysql_clustercheck_password }}"
+    priv: "*.*:PROCESS"
+    host: "localhost"
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
 # Secondary Node Handling
 - name: Collect service facts (Secondary)
   when: inventory_hostname != groups['mariadb'][0]
@@ -178,23 +196,6 @@
   retries: 30
   delay: 2
   changed_when: false
-- name: Create Cluster Check User
-  when: inventory_hostname == groups['mariadb'][0]
-  community.mysql.mysql_user:
-    name: "{{ mariadb_clustercheck_user }}"
-    password: "{{ mysql_clustercheck_password }}"
-    priv: "*.*:PROCESS"
-    host: "localhost"
-    state: present
-    login_unix_socket: /run/mysqld/mysqld.sock
-- name: Set MariaDB Root Password
-  when: inventory_hostname == groups['mariadb'][0]
-  community.mysql.mysql_user:
-    name: root
-    password: "{{ mysql_root_password }}"
-    host: "localhost"
-    state: present
-    login_unix_socket: /run/mysqld/mysqld.sock
 - name: Update wsrep_cluster_address dynamically on Primary (Post-Join)
   when: inventory_hostname == groups['mariadb'][0]
   ansible.builtin.command: >-
