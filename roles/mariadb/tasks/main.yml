@@ -106,42 +106,46 @@
   ansible.builtin.meta: flush_handlers
 - name: Collect service facts
   ansible.builtin.service_facts:
-- name: Check Cluster Status (Node 0)
+- name: Check Cluster Status
   when:
-    - inventory_hostname == groups['mariadb'][0]
     - ansible_facts.services[mariadb_service ~ '.service'] is defined
     - ansible_facts.services[mariadb_service ~ '.service'].state == 'running'
-  ansible.builtin.command: mariadb -NBe "SHOW STATUS LIKE 'wsrep_cluster_size'"
-  register: wsrep_status
+  ansible.builtin.command: mariadb -NBe "SHOW STATUS LIKE 'wsrep_cluster_status'"
+  register: wsrep_cluster_status
   failed_when: false
   changed_when: false
-- name: Stop MariaDB for Bootstrap (Node 0)
+- name: Determine if bootstrap is needed
+  ansible.builtin.set_fact:
+    mariadb_needs_bootstrap: >-
+      {{
+        inventory_hostname == groups['mariadb'][0] and
+        (
+          ansible_facts.services[mariadb_service ~ '.service'] is not defined or
+          ansible_facts.services[mariadb_service ~ '.service'].state != 'running' or
+          (
+            wsrep_cluster_status.rc == 0 and
+            not (wsrep_cluster_status.stdout | regex_search('\tPrimary$'))
+          )
+        )
+      }}
+- name: Stop MariaDB for Bootstrap
   when:
-    - inventory_hostname == groups['mariadb'][0]
+    - mariadb_needs_bootstrap
     - ansible_facts.services[mariadb_service ~ '.service'] is defined
     - ansible_facts.services[mariadb_service ~ '.service'].state == 'running'
-    - wsrep_status.rc != 0 or (wsrep_status.stdout | regex_search('\t(0|1)$')) is not none
   ansible.builtin.service:
     name: "{{ mariadb_service }}"
     state: stopped
   register: stop_result
-- name: Update service facts after stop  # noqa: no-handler
-  when: stop_result.changed
-  ansible.builtin.service_facts:
-- name: Force safe_to_bootstrap in grastate.dat (Node 0)
-  when:
-    - inventory_hostname == groups['mariadb'][0]
-    - ansible_facts.services[mariadb_service ~ '.service'].state != 'running'
+- name: Force safe_to_bootstrap in grastate.dat
+  when: mariadb_needs_bootstrap
   ansible.builtin.replace:
     path: "{{ mariadb_datadir }}/grastate.dat"
     regexp: 'safe_to_bootstrap: 0'
     replace: 'safe_to_bootstrap: 1'
   failed_when: false
 - name: Temporarily set bootstrap config (gcomm://)
-  when:
-    - inventory_hostname == groups['mariadb'][0]
-    - ansible_facts.services[mariadb_service ~ '.service'] is defined
-    - ansible_facts.services[mariadb_service ~ '.service'].state != 'running'
+  when: mariadb_needs_bootstrap
   ansible.builtin.template:
     src: 50-server.cnf.j2
     dest: "{{ mariadb_config_file }}"
@@ -151,24 +155,21 @@
   vars:
     mariadb_cluster_address: "gcomm://"
 - name: Start MariaDB (Bootstrap)
-  when:
-    - inventory_hostname == groups['mariadb'][0]
-    - ansible_facts.services[mariadb_service ~ '.service'] is defined
-    - ansible_facts.services[mariadb_service ~ '.service'].state != 'running'
+  when: mariadb_needs_bootstrap
   ansible.builtin.service:
     name: "{{ mariadb_service }}"
     state: started
   register: bootstrap_result
-- name: Restore production config  # noqa: no-handler
-  when: bootstrap_result.changed
+- name: Restore production config
+  when: mariadb_needs_bootstrap
   ansible.builtin.template:
     src: 50-server.cnf.j2
     dest: "{{ mariadb_config_file }}"
     owner: root
     group: mysql
     mode: '0640'
-- name: Update Global Cluster Address at Runtime  # noqa: no-handler
-  when: bootstrap_result.changed
+- name: Update Global Cluster Address at Runtime
+  when: mariadb_needs_bootstrap
   ansible.builtin.command: |
     mysql -e "SET GLOBAL wsrep_cluster_address='{{ mariadb_cluster_address }}'"
   changed_when: true
@@ -177,10 +178,10 @@
     name: "{{ mariadb_service }}"
     state: started
     enabled: true
-- name: Wait for MariaDB to be ready
-  ansible.builtin.command: mariadb -e "SELECT 1"
-  register: mysql_ready
-  until: mysql_ready.rc == 0
+- name: Wait for MariaDB to be Synced
+  ansible.builtin.command: mariadb -NBe "SHOW STATUS LIKE 'wsrep_local_state_comment'"
+  register: wsrep_state
+  until: wsrep_state.stdout | regex_search('\tSynced$')
   retries: 30
   delay: 2
   changed_when: false
