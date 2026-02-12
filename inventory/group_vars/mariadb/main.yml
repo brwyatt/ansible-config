@@ -5,3 +5,7 @@ certbot_certs:
 mariadb_cluster_name: "brnet-home-mariadb"
 mariadb_cluster_nodes: "{{ groups['mariadb'] }}"
 mariadb_datadir: /mnt/data
+mariadb_proxy_protocol_networks:
+  - "172.17.30.207/32"  # VIP
+  - "172.17.30.198/32"  # HAProxy01
+  - "172.17.30.188/32"  # HAProxy02

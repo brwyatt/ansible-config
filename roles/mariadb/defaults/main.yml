@@ -30,3 +30,5 @@ mariadb_cluster_address: "gcomm://{{ mariadb_cluster_nodes | join(',') }}"
 
 mariadb_clustercheck_user: "clustercheck"
 mariadb_clustercheck_port: 9200
+
+mariadb_proxy_protocol_networks: []

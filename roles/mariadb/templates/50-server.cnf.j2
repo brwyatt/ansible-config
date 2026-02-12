@@ -11,6 +11,11 @@ lc-messages-dir         = /usr/share/mysql
 binlog_format           = ROW
 
 bind-address            = 0.0.0.0
+{% if mariadb_proxy_protocol_networks %}
+
+# PROXY protocol configuration
+proxy_protocol_networks = {{ mariadb_proxy_protocol_networks | join(',') }}
+{% endif %}
 
 # TLS Configuration (Client Facing - Let's Encrypt)
 ssl-ca                  = {{ mariadb_ca_cert_path }}
