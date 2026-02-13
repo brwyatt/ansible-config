@@ -19,6 +19,7 @@
   become: true
   roles:
     - role: renderer
+    - role: dffmpeg
 - name: SeedBox
   hosts: seedbox
   become: true

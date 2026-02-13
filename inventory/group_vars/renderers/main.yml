@@ -1,5 +1,21 @@
 ---
 cephclient_automount: false
+dffmpeg_enable_worker: true
+dffmpeg_user: jellyfin
+dffmpeg_group: jellyfin
+dffmpeg_hmac_key: "{{ dffmpeg_hmac_keys[dffmpeg_client_id]}}"
+dffmpeg_rabbitmq_user: "dffmpeg-{{ dffmpeg_client_id }}"
+dffmpeg_rabbitmq_password: "{{ dffmpeg_rabbitmq_passwords[inventory_hostname_short] }}"
+dffmpeg_paths:
+  JellyfinCache: "/mnt/jellyfin/cache"
+  JellyfinHome: "/var/lib/jellyfin"
+  Media: "/mnt/media"
+dffmpeg_mounts:
+  - path: "/var/lib/jellyfin"
+  - path: "/mnt/media_original"
+  - path: "/mnt/media"
+    dependencies:
+      - "/mnt/media_original"
 cephclient_mounts:
   - user: "jellyfin-render"
     fs_name: "Media_EC"
