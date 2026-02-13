@@ -33,6 +33,11 @@
     mode: '0644'
   become: true
   notify: Restart DFFmpeg Worker
+- name: Ensure the target directory and all parents exist
+  ansible.builtin.file:
+    path: /etc/polkit-1/rules.d/
+    state: directory
+    mode: '0755'
 - name: Deploy Polkit rules for DFFmpeg mounts
   ansible.builtin.template:
     src: 10-dffmpeg-mount.rules.j2
