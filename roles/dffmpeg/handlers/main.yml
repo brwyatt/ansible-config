@@ -1,0 +1,12 @@
+---
+- name: Restart DFFmpeg Coordinator
+  ansible.builtin.service:
+    name: dffmpeg-coordinator
+    state: restarted
+  become: true
+
+- name: Restart DFFmpeg Worker
+  ansible.builtin.service:
+    name: dffmpeg-worker
+    state: restarted
+  become: true

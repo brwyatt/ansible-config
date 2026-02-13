@@ -1,0 +1,40 @@
+---
+- name: Create Coordinator directory
+  ansible.builtin.file:
+    path: "{{ dffmpeg_base_dir }}/coordinator"
+    state: directory
+    owner: "{{ dffmpeg_user }}"
+    group: "{{ dffmpeg_group }}"
+    mode: '0750'
+  become: true
+- name: Create Coordinator venv and install package
+  ansible.builtin.pip:
+    name: "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_coordinator_package }}"
+    virtualenv: "{{ dffmpeg_base_dir }}/coordinator/venv"
+    virtualenv_command: python3 -m venv
+  become: true
+  become_user: "{{ dffmpeg_user }}"
+- name: Deploy Coordinator configuration
+  ansible.builtin.template:
+    src: coordinator.yaml.j2
+    dest: "{{ dffmpeg_base_dir }}/coordinator/dffmpeg-coordinator.yaml"
+    owner: "{{ dffmpeg_user }}"
+    group: "{{ dffmpeg_group }}"
+    mode: '0640'
+  become: true
+  notify: Restart DFFmpeg Coordinator
+- name: Deploy Coordinator systemd service
+  ansible.builtin.template:
+    src: dffmpeg-coordinator.service.j2
+    dest: /etc/systemd/system/dffmpeg-coordinator.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart DFFmpeg Coordinator
+- name: Ensure Coordinator is started and enabled
+  ansible.builtin.service:
+    name: dffmpeg-coordinator
+    state: started
+    enabled: true
+  become: true

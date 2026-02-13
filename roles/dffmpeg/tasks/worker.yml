@@ -1,0 +1,53 @@
+---
+- name: Create Worker directory
+  ansible.builtin.file:
+    path: "{{ dffmpeg_base_dir }}/worker"
+    state: directory
+    owner: "{{ dffmpeg_user }}"
+    group: "{{ dffmpeg_group }}"
+    mode: '0750'
+  become: true
+
+- name: Create Worker venv and install package
+  ansible.builtin.pip:
+    name: "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_worker_package }}"
+    virtualenv: "{{ dffmpeg_base_dir }}/worker/venv"
+    virtualenv_command: python3 -m venv
+  become: true
+  become_user: "{{ dffmpeg_user }}"
+
+- name: Deploy Worker configuration
+  ansible.builtin.template:
+    src: worker.yaml.j2
+    dest: "{{ dffmpeg_base_dir }}/worker/dffmpeg-worker.yaml"
+    owner: "{{ dffmpeg_user }}"
+    group: "{{ dffmpeg_group }}"
+    mode: '0640'
+  become: true
+  notify: Restart DFFmpeg Worker
+
+- name: Deploy Worker systemd service
+  ansible.builtin.template:
+    src: dffmpeg-worker.service.j2
+    dest: /etc/systemd/system/dffmpeg-worker.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart DFFmpeg Worker
+
+- name: Deploy Polkit rules for DFFmpeg mounts
+  ansible.builtin.template:
+    src: 10-dffmpeg-mount.rules.j2
+    dest: /etc/polkit-1/rules.d/10-dffmpeg-mount.rules
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+- name: Ensure Worker is started and enabled
+  ansible.builtin.service:
+    name: dffmpeg-worker
+    state: started
+    enabled: true
+  become: true

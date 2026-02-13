@@ -1,0 +1,48 @@
+client_id: "{{ dffmpeg_client_id }}"
+{% if dffmpeg_hmac_key is defined %}
+hmac_key: "{{ dffmpeg_hmac_key }}"
+{% endif %}
+coordinator:
+{% if dffmpeg_coordinator_host is defined %}
+  host: "{{ dffmpeg_coordinator_host }}"
+{% endif %}
+{% if dffmpeg_coordinator_port is defined %}
+  port: {{ dffmpeg_coordinator_port }}
+{% endif %}
+{% if dffmpeg_coordinator_scheme is defined %}
+  scheme: "{{ dffmpeg_coordinator_scheme }}"
+{% endif %}
+paths: {{ dffmpeg_paths | to_nice_yaml(indent=2) | indent(2) | trim }}
+transports:
+  enabled_transports: {{ dffmpeg_enabled_transports | to_nice_yaml(indent=2) | indent(4) | trim }}
+  transport_settings:
+{% if 'rabbitmq' in dffmpeg_enabled_transports %}
+    rabbitmq:
+{% if dffmpeg_rabbitmq_host is defined %}
+      host: "{{ dffmpeg_rabbitmq_host }}"
+{% endif %}
+      use_tls: {{ dffmpeg_rabbitmq_use_tls | default(true) | lower }}
+      use_srv: {{ dffmpeg_rabbitmq_use_srv | default(true) | lower }}
+      username: "{{ dffmpeg_transport_user | default('dffmpeg-' + (dffmpeg_client_id | default(inventory_hostname_short))) }}"
+{% if dffmpeg_transport_password is defined %}
+      password: "{{ dffmpeg_transport_password }}"
+{% endif %}
+{% if dffmpeg_rabbitmq_vhost is defined %}
+      vhost: "{{ dffmpeg_rabbitmq_vhost }}"
+{% endif %}
+{% endif %}
+{% if 'mqtt' in dffmpeg_enabled_transports %}
+    mqtt:
+{% if dffmpeg_mqtt_host is defined %}
+      host: "{{ dffmpeg_mqtt_host }}"
+{% endif %}
+{% if dffmpeg_mqtt_port is defined %}
+      port: {{ dffmpeg_mqtt_port }}
+{% endif %}
+      use_tls: {{ dffmpeg_mqtt_use_tls | default(true) | lower }}
+      username: "{{ dffmpeg_transport_user | default('dffmpeg-' + (dffmpeg_client_id | default(inventory_hostname_short))) }}"
+{% if dffmpeg_transport_password is defined %}
+      password: "{{ dffmpeg_transport_password }}"
+{% endif %}
+      topic_prefix: "{{ dffmpeg_mqtt_topic_prefix | default('dffmpeg') }}"
+{% endif %}

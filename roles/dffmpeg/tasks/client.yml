@@ -1,0 +1,41 @@
+---
+- name: Create Client directory
+  ansible.builtin.file:
+    path: "{{ dffmpeg_base_dir }}/client"
+    state: directory
+    owner: "{{ dffmpeg_user }}"
+    group: "{{ dffmpeg_group }}"
+    mode: '0750'
+  become: true
+
+- name: Create Client venv and install package
+  ansible.builtin.pip:
+    name: "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_client_package }}"
+    virtualenv: "{{ dffmpeg_base_dir }}/client/venv"
+    virtualenv_command: python3 -m venv
+  become: true
+  become_user: "{{ dffmpeg_user }}"
+
+- name: Deploy Client configuration
+  ansible.builtin.template:
+    src: client.yaml.j2
+    dest: "{{ dffmpeg_base_dir }}/client/dffmpeg-client.yaml"
+    owner: "{{ dffmpeg_user }}"
+    group: "{{ dffmpeg_group }}"
+    mode: '0640'
+  become: true
+
+- name: Setup dffmpeg_proxy symlink
+  ansible.builtin.file:
+    src: "{{ dffmpeg_base_dir }}/client/venv/bin/dffmpeg_proxy"
+    dest: /usr/local/bin/dffmpeg
+    state: link
+  become: true
+
+- name: Setup ffmpeg replacement symlink (optional/configurable)
+  ansible.builtin.file:
+    src: "{{ dffmpeg_base_dir }}/client/venv/bin/dffmpeg_proxy"
+    dest: /usr/local/bin/ffmpeg
+    state: link
+  become: true
+  when: dffmpeg_client_replace_ffmpeg | default(false)

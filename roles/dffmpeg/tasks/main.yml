@@ -1,0 +1,31 @@
+---
+- name: Ensure DFFmpeg group exists
+  ansible.builtin.group:
+    name: "{{ dffmpeg_group }}"
+    state: present
+  become: true
+- name: Ensure DFFmpeg user exists
+  ansible.builtin.user:
+    name: "{{ dffmpeg_user }}"
+    group: "{{ dffmpeg_group }}"
+    shell: /bin/false
+    system: true
+    state: present
+  become: true
+- name: Create DFFmpeg base directory
+  ansible.builtin.file:
+    path: "{{ dffmpeg_base_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+- name: Install DFFmpeg Coordinator
+  ansible.builtin.include_tasks: coordinator.yml
+  when: dffmpeg_enable_coordinator
+- name: Install DFFmpeg Worker
+  ansible.builtin.include_tasks: worker.yml
+  when: dffmpeg_enable_worker
+- name: Install DFFmpeg Client
+  ansible.builtin.include_tasks: client.yml
+  when: dffmpeg_enable_client

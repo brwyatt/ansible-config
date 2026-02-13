@@ -1,0 +1,17 @@
+---
+dffmpeg_coordinator_host: "dffmpeg.server.home.brwyatt.net"
+dffmpeg_coordinator_port: 443
+dffmpeg_coordinator_scheme: "https"
+
+dffmpeg_mysql_host: "mariadb.server.home.brwyatt.net"
+dffmpeg_mysql_port: 3306
+dffmpeg_mysql_database: "dffmpeg"
+
+dffmpeg_enabled_transports:
+  - "rabbitmq"
+
+dffmpeg_rabbitmq_host: "rabbitmq.server.home.brwyatt.net"
+dffmpeg_rabbitmq_vhost: "dffmpeg"
+
+dffmpeg_mqtt_host: "mqtt.iot.home.brwyatt.net"
+dffmpeg_mqtt_port: 8883

@@ -1,0 +1,59 @@
+database:
+  defaults:
+    engine: "mysql"
+  engine_defaults:
+    mysql:
+{% if dffmpeg_mysql_host is defined %}
+      host: "{{ dffmpeg_mysql_host }}"
+{% endif %}
+{% if dffmpeg_mysql_port is defined %}
+      port: {{ dffmpeg_mysql_port }}
+{% endif %}
+{% if dffmpeg_mysql_user is defined %}
+      user: "{{ dffmpeg_mysql_user }}"
+{% endif %}
+{% if dffmpeg_mysql_password is defined %}
+      password: "{{ dffmpeg_mysql_password }}"
+{% endif %}
+{% if dffmpeg_mysql_database is defined %}
+      database: "{{ dffmpeg_mysql_database }}"
+{% endif %}
+      use_ssl: true
+transports:
+  enabled_transports: {{ dffmpeg_enabled_transports | to_nice_yaml(indent=2) | indent(4) | trim }}
+  transport_settings:
+{% if 'rabbitmq' in dffmpeg_enabled_transports %}
+    rabbitmq:
+{% if dffmpeg_rabbitmq_host is defined %}
+      host: "{{ dffmpeg_rabbitmq_host }}"
+{% endif %}
+      use_tls: {{ dffmpeg_rabbitmq_use_tls | default(true) | lower }}
+      use_srv: {{ dffmpeg_rabbitmq_use_srv | default(true) | lower }}
+      username: "{{ dffmpeg_transport_user | default('dffmpeg-coordinator') }}"
+{% if dffmpeg_transport_password is defined %}
+      password: "{{ dffmpeg_transport_password }}"
+{% endif %}
+{% if dffmpeg_rabbitmq_vhost is defined %}
+      vhost: "{{ dffmpeg_rabbitmq_vhost }}"
+{% endif %}
+      workers_exchange: "dffmpeg.workers"
+      jobs_exchange: "dffmpeg.jobs"
+{% endif %}
+{% if 'mqtt' in dffmpeg_enabled_transports %}
+    mqtt:
+{% if dffmpeg_mqtt_host is defined %}
+      host: "{{ dffmpeg_mqtt_host }}"
+{% endif %}
+{% if dffmpeg_mqtt_port is defined %}
+      port: {{ dffmpeg_mqtt_port }}
+{% endif %}
+      use_tls: {{ dffmpeg_mqtt_use_tls | default(true) | lower }}
+      username: "{{ dffmpeg_transport_user | default('dffmpeg-coordinator') }}"
+{% if dffmpeg_transport_password is defined %}
+      password: "{{ dffmpeg_transport_password }}"
+{% endif %}
+      topic_prefix: "{{ dffmpeg_mqtt_topic_prefix | default('dffmpeg') }}"
+{% endif %}
+web_dashboard_enabled: true
+host: "0.0.0.0"
+port: 8000

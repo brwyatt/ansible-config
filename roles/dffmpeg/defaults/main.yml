@@ -1,0 +1,50 @@
+---
+dffmpeg_base_dir: /opt/dffmpeg
+dffmpeg_user: dffmpeg
+dffmpeg_group: dffmpeg
+
+dffmpeg_client_id: "{{ inventory_hostname_short }}"
+
+dffmpeg_repo_url: "https://github.com/brwyatt/dffmpeg.git"
+dffmpeg_version: "main"
+
+dffmpeg_coordinator_package: "dffmpeg-coordinator"
+dffmpeg_worker_package: "dffmpeg-worker"
+dffmpeg_client_package: "dffmpeg-client"
+
+# Infrastructure hostnames and settings (defaults to generic examples)
+dffmpeg_coordinator_host: "dffmpeg.example.net"
+dffmpeg_coordinator_port: 8000
+dffmpeg_coordinator_scheme: "http"
+
+dffmpeg_mysql_host: "mysql.example.net"
+dffmpeg_mysql_port: 3306
+dffmpeg_mysql_database: "dffmpeg"
+
+dffmpeg_rabbitmq_host: "rabbitmq.example.net"
+dffmpeg_rabbitmq_vhost: "dffmpeg"
+
+dffmpeg_mqtt_host: "mqtt.example.net"
+dffmpeg_mqtt_port: 8883
+
+# Paths mapping for the components
+dffmpeg_paths: {}
+
+# Mounts for the worker to monitor/manage
+dffmpeg_mounts: []
+
+# Transports configuration
+dffmpeg_enabled_transports:
+  - "rabbitmq"
+
+dffmpeg_rabbitmq_use_tls: true
+dffmpeg_rabbitmq_use_srv: true
+
+dffmpeg_mqtt_use_tls: true
+dffmpeg_mqtt_topic_prefix: "dffmpeg"
+
+dffmpeg_enable_coordinator: false
+dffmpeg_enable_worker: false
+dffmpeg_enable_client: false
+
+dffmpeg_client_replace_ffmpeg: false

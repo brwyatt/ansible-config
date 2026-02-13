@@ -1,0 +1,55 @@
+---
+cert:
+  - dffmpeg.server.home.brwyatt.net
+haproxy_certbot_certs:
+  - "{{ cert[0] }}"
+haproxy_options:
+  - "forwardfor"
+  - "http-server-close"
+haproxy_resolvers:
+  localdns:
+    nameservers:
+      dns1:
+        host: "127.0.0.53"
+        port: "53"
+    options:
+      - "accepted_payload_size 8192"
+haproxy_frontends:
+  stats:
+    bind:
+      port: 8404
+    options:
+      - "stats enable"
+      - "stats uri /"
+      - "stats refresh 5s"
+  www-http:
+    bind:
+      port: 80
+    options:
+      - "http-request redirect scheme https code 301"
+  www-https:
+    bind:
+      port: 443
+      ssl_cert: "/etc/haproxy/certs/{{ cert[0] }}.pem"
+    backend: "dffmpeg-backend"
+    options:
+      - "http-request set-header X-Forwarded-Proto https"
+haproxy_backends:
+  dffmpeg-backend:
+    balance: "roundrobin"
+    options:
+      - "cookie SERVER insert indirect nocache dynamic"
+      - "dynamic-cookie-key {{ dffmpeg_haproxy_cookie_key }}"
+      - "option httpchk GET /health?deep=true"
+      - "http-check expect status 200"
+      - "default-server check inter 2s ssl verify none"
+      - "server-template dffmpeg 1-2 _https._tcp.dffmpeg.server.home.brwyatt.net resolvers localdns init-addr none"
+keepalived_check_scripts:
+  haproxy:
+    type: haproxy
+keepalived_instances:
+  dffmpeg:
+    virtual_ip: "172.17.30.208/24"
+    auth_pass: "{{ keepalived_auth_pass }}"
+    check_scripts:
+      - haproxy
