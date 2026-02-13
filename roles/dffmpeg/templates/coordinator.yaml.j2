@@ -20,7 +20,8 @@ database:
 {% endif %}
       use_ssl: true
 transports:
-  enabled_transports: {{ dffmpeg_enabled_transports | to_nice_yaml(indent=2) | indent(4) | trim }}
+  enabled_transports:
+    {{ dffmpeg_enabled_transports | to_nice_yaml(indent=2) | indent(4) | trim }}
   transport_settings:
 {% if 'rabbitmq' in dffmpeg_enabled_transports %}
     rabbitmq:
