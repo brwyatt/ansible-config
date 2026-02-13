@@ -18,7 +18,7 @@ binaries:
   ffmpeg: "/usr/local/bin/ffmpeg"
 mount_management:
   recovery: true
-  sudo: false
+  sudo: {{ dffmpeg_mounts_sudo }}
   mounts:
     {{ dffmpeg_mounts | to_nice_yaml(indent=2) | indent(4) | trim }}
 transports:

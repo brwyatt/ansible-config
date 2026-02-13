@@ -33,18 +33,14 @@
     mode: '0644'
   become: true
   notify: Restart DFFmpeg Worker
-- name: Ensure the target directory and all parents exist
-  ansible.builtin.file:
-    path: /etc/polkit-1/rules.d/
-    state: directory
-    mode: '0755'
-- name: Deploy Polkit rules for DFFmpeg mounts
+- name: Deploy sudoers rule for DFFmpeg mounts
   ansible.builtin.template:
-    src: 10-dffmpeg-mount.rules.j2
-    dest: /etc/polkit-1/rules.d/10-dffmpeg-mount.rules
+    src: dffmpeg-sudoers.j2
+    dest: /etc/sudoers.d/dffmpeg
     owner: root
     group: root
-    mode: '0644'
+    mode: '0440'
+    validate: /usr/sbin/visudo -cf %s
   become: true
 - name: Ensure Worker is started and enabled
   ansible.builtin.service:

@@ -33,6 +33,7 @@ dffmpeg_paths: {}
 
 # Mounts for the worker to monitor/manage
 dffmpeg_mounts: []
+dffmpeg_mounts_sudo: false
 
 # Transports configuration
 dffmpeg_enabled_transports:

@@ -16,6 +16,7 @@ dffmpeg_mounts:
   - path: "/mnt/media"
     dependencies:
       - "/mnt/media_original"
+dffmpeg_mounts_sudo: true
 cephclient_mounts:
   - user: "jellyfin-render"
     fs_name: "Media_EC"
