@@ -1,4 +1,4 @@
 ---
 dffmpeg_enable_coordinator: true
-dffmpeg_mysql_user: dffmpegcoordinator
+dffmpeg_mysql_user: dffmpeg-coordinator
 proxy_port: 8000
