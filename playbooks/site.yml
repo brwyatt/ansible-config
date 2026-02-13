@@ -44,7 +44,7 @@
   roles:
     - role: proxmoxdcm
 - name: DFFmpeg Coordinator
-  hosts: dffmpeg_coordinators
+  hosts: dffmpegcoordinators
   roles:
     - role: dffmpeg
 - name: PXE Servers
