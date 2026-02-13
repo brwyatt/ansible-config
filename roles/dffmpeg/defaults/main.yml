@@ -8,6 +8,7 @@ dffmpeg_client_id: "{{ inventory_hostname_short }}"
 dffmpeg_repo_url: "https://github.com/brwyatt/dffmpeg.git"
 dffmpeg_version: "main"
 
+dffmpeg_common_package: "dffmpeg-common"
 dffmpeg_coordinator_package: "dffmpeg-coordinator"
 dffmpeg_worker_package: "dffmpeg-worker"
 dffmpeg_client_package: "dffmpeg-client"

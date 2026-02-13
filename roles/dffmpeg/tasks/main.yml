@@ -20,6 +20,13 @@
     group: root
     mode: '0755'
   become: true
+- name: Install Git and Python venv
+  ansible.builtin.package:
+    name:
+      - python3-venv
+      - git
+    state: present
+  become: true
 - name: Install DFFmpeg Coordinator
   ansible.builtin.include_tasks: coordinator.yml
   when: dffmpeg_enable_coordinator
