@@ -40,9 +40,11 @@ haproxy_backends:
     options:
       - "cookie SERVER insert indirect nocache dynamic"
       - "dynamic-cookie-key {{ dffmpeg_haproxy_cookie_key }}"
-      - "option httpchk GET /health?deep=true HTTP/1.0"
+      - "option httpchk"
+      - "http-check connect ssl"
+      - "http-check send meth GET uri /health?deep=true ver HTTP/1.1 hdr Host check hdr Connection close"
       - "http-check expect status 200"
-      - "default-server check inter 2s ssl verify none"
+      - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
       - "server-template dffmpeg 1-5 _https._tcp.dffmpeg.server.home.brwyatt.net resolvers localdns init-addr none"
 keepalived_check_scripts:
   haproxy:
