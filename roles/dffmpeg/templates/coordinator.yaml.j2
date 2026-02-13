@@ -30,9 +30,9 @@ transports:
 {% endif %}
       use_tls: {{ dffmpeg_rabbitmq_use_tls | default(true) | lower }}
       use_srv: {{ dffmpeg_rabbitmq_use_srv | default(true) | lower }}
-      username: "{{ dffmpeg_transport_user | default('dffmpeg-coordinator') }}"
-{% if dffmpeg_transport_password is defined %}
-      password: "{{ dffmpeg_transport_password }}"
+      username: "{{ dffmpeg_rabbitmq_user | default('dffmpeg-coordinator') }}"
+{% if dffmpeg_rabbitmq_password is defined %}
+      password: "{{ dffmpeg_rabbitmq_password }}"
 {% endif %}
 {% if dffmpeg_rabbitmq_vhost is defined %}
       vhost: "{{ dffmpeg_rabbitmq_vhost }}"
@@ -49,9 +49,9 @@ transports:
       port: {{ dffmpeg_mqtt_port }}
 {% endif %}
       use_tls: {{ dffmpeg_mqtt_use_tls | default(true) | lower }}
-      username: "{{ dffmpeg_transport_user | default('dffmpeg-coordinator') }}"
-{% if dffmpeg_transport_password is defined %}
-      password: "{{ dffmpeg_transport_password }}"
+      username: "{{ dffmpeg_mqtt_user | default('dffmpeg-coordinator') }}"
+{% if dffmpeg_mqtt_password is defined %}
+      password: "{{ dffmpeg_mqtt_password }}"
 {% endif %}
       topic_prefix: "{{ dffmpeg_mqtt_topic_prefix | default('dffmpeg') }}"
 {% endif %}
