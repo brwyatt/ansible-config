@@ -40,7 +40,7 @@ haproxy_backends:
     options:
       - "cookie SERVER insert indirect nocache dynamic"
       - "dynamic-cookie-key {{ dffmpeg_haproxy_cookie_key }}"
-      - "option httpchk GET /health?deep=true"
+      - "option httpchk GET /health?deep=true HTTP/1.0"
       - "http-check expect status 200"
       - "default-server check inter 2s ssl verify none"
       - "server-template dffmpeg 1-5 _https._tcp.dffmpeg.server.home.brwyatt.net resolvers localdns init-addr none"
