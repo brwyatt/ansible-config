@@ -4,6 +4,12 @@
     name: "{{ dffmpeg_group }}"
     state: present
   become: true
+- name: Check if the DFFmpeg user exists
+  # This is to handle LDAP-based accounts we don't need to create
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ dffmpeg_user }}"
+    fail_key: false
 - name: Ensure DFFmpeg user exists
   ansible.builtin.user:
     name: "{{ dffmpeg_user }}"
@@ -12,6 +18,7 @@
     system: true
     state: present
   become: true
+  when: ansible_facts.getent_passwd[dffmpeg_user] is none
 - name: Create DFFmpeg base directory
   ansible.builtin.file:
     path: "{{ dffmpeg_base_dir }}"
