@@ -43,7 +43,7 @@ haproxy_backends:
       - "option httpchk GET /health?deep=true"
       - "http-check expect status 200"
       - "default-server check inter 2s ssl verify none"
-      - "server-template dffmpeg 1-2 _https._tcp.dffmpeg.server.home.brwyatt.net resolvers localdns init-addr none"
+      - "server-template dffmpeg 1-5 _https._tcp.dffmpeg.server.home.brwyatt.net resolvers localdns init-addr none"
 keepalived_check_scripts:
   haproxy:
     type: haproxy
