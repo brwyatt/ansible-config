@@ -13,7 +13,6 @@
     virtualenv: "{{ dffmpeg_base_dir }}/coordinator/venv"
     virtualenv_command: python3 -m venv
   become: true
-  become_user: "{{ dffmpeg_user }}"
 - name: Deploy Coordinator configuration
   ansible.builtin.template:
     src: coordinator.yaml.j2
