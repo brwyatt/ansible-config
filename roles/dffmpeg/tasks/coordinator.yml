@@ -7,6 +7,11 @@
     group: "{{ dffmpeg_group }}"
     mode: '0750'
   become: true
+- name: Install Python venv
+  ansible.builtin.package:
+    name: python3-venv
+    state: present
+  become: true
 - name: Create Coordinator venv and install package
   ansible.builtin.pip:
     name: "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_coordinator_package }}"
