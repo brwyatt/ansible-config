@@ -25,7 +25,7 @@
   become: true
 - name: Setup dffmpeg_proxy symlink
   ansible.builtin.file:
-    src: "{{ dffmpeg_base_dir }}/client/bin/dffmpeg_proxy"
+    src: "{{ dffmpeg_base_dir }}/client/bin/dffmpeg-client"
     dest: /usr/local/bin/dffmpeg
     state: link
   become: true
