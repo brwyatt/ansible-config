@@ -38,8 +38,6 @@ haproxy_backends:
   dffmpeg-backend:
     balance: "roundrobin"
     options:
-      - "cookie SERVER insert indirect nocache dynamic"
-      - "dynamic-cookie-key {{ dffmpeg_haproxy_cookie_key }}"
       - "option httpchk"
       - "http-check connect ssl"
       - "http-check send meth GET uri /health?deep=true ver HTTP/1.1 hdr Host check hdr Connection close"
