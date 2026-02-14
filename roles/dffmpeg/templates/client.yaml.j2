@@ -12,7 +12,8 @@ coordinator:
 {% if dffmpeg_coordinator_scheme is defined %}
   scheme: "{{ dffmpeg_coordinator_scheme }}"
 {% endif %}
-paths: {{ dffmpeg_paths | to_nice_yaml(indent=2) | indent(2) | trim }}
+paths:
+  {{ dffmpeg_paths | to_nice_yaml(indent=2) | indent(2) | trim }}
 transports:
   enabled_transports:
     {{ dffmpeg_enabled_transports | to_nice_yaml(indent=2) | indent(4) | trim }}

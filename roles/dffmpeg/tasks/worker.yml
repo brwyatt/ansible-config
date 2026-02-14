@@ -12,7 +12,7 @@
     name:
       - "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_common_package }}"
       - "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_worker_package }}"
-    virtualenv: "{{ dffmpeg_base_dir }}/worker/venv"
+    virtualenv: "{{ dffmpeg_base_dir }}/worker"
     virtualenv_command: python3 -m venv
   become: true
 - name: Deploy Worker configuration

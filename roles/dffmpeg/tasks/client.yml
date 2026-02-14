@@ -12,7 +12,7 @@
     name:
       - "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_common_package }}"
       - "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_client_package }}"
-    virtualenv: "{{ dffmpeg_base_dir }}/client/venv"
+    virtualenv: "{{ dffmpeg_base_dir }}/client"
     virtualenv_command: python3 -m venv
   become: true
 - name: Deploy Client configuration
@@ -25,13 +25,13 @@
   become: true
 - name: Setup dffmpeg_proxy symlink
   ansible.builtin.file:
-    src: "{{ dffmpeg_base_dir }}/client/venv/bin/dffmpeg_proxy"
+    src: "{{ dffmpeg_base_dir }}/client/bin/dffmpeg_proxy"
     dest: /usr/local/bin/dffmpeg
     state: link
   become: true
 - name: Setup ffmpeg replacement symlink (optional/configurable)
   ansible.builtin.file:
-    src: "{{ dffmpeg_base_dir }}/client/venv/bin/dffmpeg_proxy"
+    src: "{{ dffmpeg_base_dir }}/client/bin/dffmpeg_proxy"
     dest: /usr/local/bin/ffmpeg
     state: link
   become: true

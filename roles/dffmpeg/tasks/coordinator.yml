@@ -12,7 +12,7 @@
     name:
       - "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_common_package }}"
       - "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_coordinator_package }}"
-    virtualenv: "{{ dffmpeg_base_dir }}/coordinator/venv"
+    virtualenv: "{{ dffmpeg_base_dir }}/coordinator"
     virtualenv_command: python3 -m venv
   become: true
 - name: Deploy Coordinator configuration
