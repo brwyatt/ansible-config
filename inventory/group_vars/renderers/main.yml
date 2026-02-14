@@ -8,9 +8,11 @@ dffmpeg_rabbitmq_user: "dffmpeg-{{ dffmpeg_client_id }}"
 dffmpeg_rabbitmq_password: "{{ dffmpeg_rabbitmq_passwords[inventory_hostname_short] }}"
 dffmpeg_paths:
   JellyfinCache: "/mnt/jellyfin/cache"
+  JellyfinMetadata: "/mnt/jellyfin/metadata"
   JellyfinHome: "/var/lib/jellyfin"
   Media: "/mnt/media"
 dffmpeg_mounts:
+  - path: "/mnt/jellyfin"
   - path: "/var/lib/jellyfin"
   - path: "/mnt/media_original"
   - path: "/mnt/media"

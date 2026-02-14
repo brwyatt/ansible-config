@@ -20,6 +20,7 @@ dffmpeg_group: jellyfin
 dffmpeg_rabbitmq_user: "dffmpeg-{{ dffmpeg_client_id }}"
 dffmpeg_paths:
   JellyfinCache: "/mnt/jellyfin/cache"
+  JellyfinMetadata: "/mnt/jellyfin/metadata"
   JellyfinHome: "/var/lib/jellyfin"
   Media: "/mnt/media"
 bindfs_mounts:
