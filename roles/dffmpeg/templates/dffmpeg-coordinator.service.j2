@@ -7,8 +7,8 @@ Type=simple
 User={{ dffmpeg_user }}
 Group={{ dffmpeg_group }}
 WorkingDirectory={{ dffmpeg_base_dir }}/coordinator
-Environment="PATH={{ dffmpeg_base_dir }}/coordinator/venv/bin:/usr/local/bin:/usr/bin:/bin"
-ExecStart={{ dffmpeg_base_dir }}/coordinator/venv/bin/dffmpeg-coordinator --config {{ dffmpeg_base_dir }}/coordinator/dffmpeg-coordinator.yaml
+Environment="PATH={{ dffmpeg_base_dir }}/coordinator/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart={{ dffmpeg_base_dir }}/coordinator/bin/dffmpeg-coordinator --config {{ dffmpeg_base_dir }}/coordinator/dffmpeg-coordinator.yaml
 Restart=on-failure
 RestartSec=5s
 
