@@ -28,6 +28,9 @@ dffmpeg_rabbitmq_vhost: "dffmpeg"
 dffmpeg_mqtt_host: "mqtt.example.net"
 dffmpeg_mqtt_port: 8883
 
+dffmpeg_binaries:
+  ffmpeg: "/usr/local/bin/ffmpeg"
+
 # Paths mapping for the components
 dffmpeg_paths: {}
 

@@ -36,3 +36,10 @@
     state: link
   become: true
   when: dffmpeg_client_replace_ffmpeg | default(false)
+- name: Setup ffprobe replacement symlink (optional/configurable)
+  ansible.builtin.file:
+    src: "{{ dffmpeg_base_dir }}/client/bin/dffmpeg_proxy"
+    dest: /usr/local/bin/ffprobe
+    state: link
+  become: true
+  when: dffmpeg_client_replace_ffmpeg | default(false)

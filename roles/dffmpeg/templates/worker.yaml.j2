@@ -15,7 +15,7 @@ coordinator:
 paths:
   {{ dffmpeg_paths | to_nice_yaml(indent=2) | indent(2) | trim }}
 binaries:
-  ffmpeg: "/usr/local/bin/ffmpeg"
+  {{ dffmpeg_binaries | to_nice_yaml(indent=2) | indent(2) | trim }}
 mount_management:
   recovery: true
   sudo: {{ dffmpeg_mounts_sudo }}
