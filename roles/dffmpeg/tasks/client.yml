@@ -5,7 +5,7 @@
     state: directory
     owner: "{{ dffmpeg_user }}"
     group: "{{ dffmpeg_group }}"
-    mode: '0750'
+    mode: '0755'
   become: true
 - name: Create Client venv and install package
   ansible.builtin.pip:
