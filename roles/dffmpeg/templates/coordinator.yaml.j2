@@ -19,11 +19,11 @@ database:
       database: "{{ dffmpeg_mysql_database }}"
 {% endif %}
       use_ssl: true
-{% if dffmpeg_auth_encryption_keys %}
+{% if dffmpeg_auth_encryption_keys is defined %}
   repositories:
     auth:
       encryption_keys_file: "{{ dffmpeg_auth_encryption_keys_file }}"
-{% if dffmpeg_auth_default_key_id %}
+{% if dffmpeg_auth_default_key_id is defined %}
       default_encryption_key_id: "{{ dffmpeg_auth_default_key_id }}"
 {% endif %}
 {% endif %}

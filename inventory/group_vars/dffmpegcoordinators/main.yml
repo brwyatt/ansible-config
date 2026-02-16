@@ -3,5 +3,5 @@ dffmpeg_enable_coordinator: true
 dffmpeg_mysql_user: dffmpegcoordinator
 dffmpeg_rabbitmq_user: dffmpeg-coordinator
 dffmpeg_coordinator_listen_address: "127.0.0.1"
-default_encryption_key_id: "20260215"
+dffmpeg_auth_default_encryption_key_id: "20260215"
 proxy_port: 8000
