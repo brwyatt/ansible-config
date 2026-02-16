@@ -19,6 +19,14 @@ database:
       database: "{{ dffmpeg_mysql_database }}"
 {% endif %}
       use_ssl: true
+{% if dffmpeg_auth_encryption_keys %}
+  repositories:
+    auth:
+      encryption_keys_file: "{{ dffmpeg_auth_encryption_keys_file }}"
+{% if dffmpeg_auth_default_key_id %}
+      default_encryption_key_id: "{{ dffmpeg_auth_default_key_id }}"
+{% endif %}
+{% endif %}
 transports:
   enabled_transports:
     {{ dffmpeg_enabled_transports | to_nice_yaml(indent=2) | indent(4) | trim }}
@@ -56,5 +64,5 @@ transports:
       topic_prefix: "{{ dffmpeg_mqtt_topic_prefix | default('dffmpeg') }}"
 {% endif %}
 web_dashboard_enabled: true
-host: "0.0.0.0"
-port: 8000
+host: "{{ dffmpeg_coordinator_listen_address }}"
+port: {{ dffmpeg_coordinator_listen_port }}

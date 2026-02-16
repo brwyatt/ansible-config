@@ -14,9 +14,13 @@ dffmpeg_worker_package: "dffmpeg-worker"
 dffmpeg_client_package: "dffmpeg-client"
 
 # Infrastructure hostnames and settings (defaults to generic examples)
+dffmpeg_coordinator_listen_address: "0.0.0.0"
+dffmpeg_coordinator_listen_port: 8000
 dffmpeg_coordinator_host: "dffmpeg.example.net"
-dffmpeg_coordinator_port: 8000
+dffmpeg_coordinator_port: "{{ dffmpeg_coordinator_listen_port }}"
 dffmpeg_coordinator_scheme: "http"
+
+dffmpeg_auth_encryption_keys_file: "{{ dffmpeg_base_dir }}/coordinator/keys.yaml"
 
 dffmpeg_mysql_host: "mysql.example.net"
 dffmpeg_mysql_port: 3306

@@ -24,6 +24,16 @@
     mode: '0640'
   become: true
   notify: Restart DFFmpeg Coordinator
+- name: Deploy Coordinator encryption keys file
+  ansible.builtin.template:
+    src: keys.yaml.j2
+    dest: "{{ dffmpeg_auth_encryption_keys_file }}"
+    owner: "{{ dffmpeg_user }}"
+    group: "{{ dffmpeg_group }}"
+    mode: '0600'
+  become: true
+  when: dffmpeg_auth_encryption_keys is defined
+  notify: Restart DFFmpeg Coordinator
 - name: Deploy Coordinator systemd service
   ansible.builtin.template:
     src: dffmpeg-coordinator.service.j2
