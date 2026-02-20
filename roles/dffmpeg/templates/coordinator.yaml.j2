@@ -68,5 +68,5 @@ host: "{{ dffmpeg_coordinator_listen_address }}"
 port: {{ dffmpeg_coordinator_listen_port }}
 {% if dffmpeg_trusted_proxies is defined %}
 trusted_proxies:
-    {{ dffmpeg_trusted_proxies | to_nice_yaml(indent=2) | indent(2) | trim }}
+  {{ dffmpeg_trusted_proxies | to_nice_yaml(indent=2) | indent(2) | trim }}
 {% endif %}
