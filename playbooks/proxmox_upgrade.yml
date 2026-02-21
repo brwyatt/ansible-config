@@ -20,12 +20,13 @@
         - "'HEALTH_ERR' in ceph_health.stdout"
         - "'HEALTH_WARN' in ceph_health.stdout and 'noout' not in ceph_health.stdout"
       changed_when: false
-    - name: Get initial HA resource count
-      ansible.builtin.shell: |
-        set -o pipefail
-        pvesh get /cluster/ha/resources --output-format json | jq -r '.[] | select(.node == "{{ inventory_hostname_short }}") | .sid' | wc -l
-      register: initial_ha_count
+    - name: Get initial HA resources
+      ansible.builtin.command: pvesh get /cluster/ha/resources --output-format json
+      register: ha_resources_init
       changed_when: false
+    - name: Set initial HA count fact
+      ansible.builtin.set_fact:
+        initial_ha_count: "{{ ha_resources_init.stdout | from_json | selectattr('node', 'equalto', inventory_hostname_short) | list | length }}"
     - name: Check current maintenance state
       ansible.builtin.shell: |
         set -o pipefail
@@ -38,29 +39,23 @@
       when: "'maintenance' not in current_maintenance_state.stdout"
       changed_when: "'Requesting' in maintenance_mode.stdout"
     - name: Wait for HA resources to drain
-      ansible.builtin.shell: |
-        set -o pipefail
-        pvesh get /cluster/ha/resources --output-format json | jq -r '.[] | select(.node == "{{ inventory_hostname_short }}") | .sid' | wc -l
-      register: ha_count
-      until: ha_count.stdout | int == 0
+      ansible.builtin.command: pvesh get /cluster/ha/resources --output-format json
+      register: ha_drain_check
+      until: (ha_drain_check.stdout | from_json | selectattr('node', 'equalto', inventory_hostname_short) | list | length) == 0
       retries: 60
       delay: 10
       changed_when: false
     - name: Get list of remaining running VMs
-      ansible.builtin.shell: |
-        set -o pipefail
-        pvesh get /nodes/{{ inventory_hostname }}/qemu --output-format json | jq -r '.[] | select(.status == \"running\") | .vmid'
-      register: running_vms
+      ansible.builtin.command: pvesh get /nodes/{{ inventory_hostname }}/qemu --output-format json
+      register: qemu_list
       changed_when: false
     - name: Get list of remaining running CTs
-      ansible.builtin.shell: |
-        set -o pipefail
-        pvesh get /nodes/{{ inventory_hostname }}/lxc --output-format json | jq -r '.[] | select(.status == \"running\") | .vmid'
-      register: running_cts
+      ansible.builtin.command: pvesh get /nodes/{{ inventory_hostname }}/lxc --output-format json
+      register: lxc_list
       changed_when: false
     - name: Shutdown remaining VMs
-      ansible.builtin.command: "qm shutdown {{ item }}"
-      loop: "{{ running_vms.stdout_lines }}"
+      ansible.builtin.command: "qm shutdown {{ item.vmid }}"
+      loop: "{{ qemu_list.stdout | from_json | selectattr('status', 'equalto', 'running') | list }}"
       register: shutdown_vm_result
       failed_when:
         - shutdown_vm_result.rc != 0
@@ -68,22 +63,25 @@
         - "'does not exist' not in shutdown_vm_result.stderr"
       changed_when: shutdown_vm_result.rc == 0
     - name: Shutdown remaining CTs
-      ansible.builtin.command: "pct shutdown {{ item }}"
-      loop: "{{ running_cts.stdout_lines }}"
+      ansible.builtin.command: "pct shutdown {{ item.vmid }}"
+      loop: "{{ lxc_list.stdout | from_json | selectattr('status', 'equalto', 'running') | list }}"
       register: shutdown_ct_result
       failed_when:
         - shutdown_ct_result.rc != 0
         - "'is not running' not in shutdown_ct_result.stderr"
         - "'does not exist' not in shutdown_ct_result.stderr"
       changed_when: shutdown_ct_result.rc == 0
-    - name: Wait for all VMs/CTs to stop
-      ansible.builtin.shell: |
-        set -o pipefail
-        vms=$(pvesh get /nodes/{{ inventory_hostname }}/qemu --output-format json | jq '.[] | select(.status == "running") | .vmid' | wc -l)
-        cts=$(pvesh get /nodes/{{ inventory_hostname }}/lxc --output-format json | jq '.[] | select(.status == "running") | .vmid' | wc -l)
-        echo $((vms + cts))
-      register: running_count
-      until: running_count.stdout | int == 0
+    - name: Wait for all VMs to stop
+      ansible.builtin.command: pvesh get /nodes/{{ inventory_hostname }}/qemu --output-format json
+      register: qemu_check
+      until: (qemu_check.stdout | from_json | selectattr('status', 'equalto', 'running') | list | length) == 0
+      retries: 30
+      delay: 5
+      changed_when: false
+    - name: Wait for all CTs to stop
+      ansible.builtin.command: pvesh get /nodes/{{ inventory_hostname }}/lxc --output-format json
+      register: lxc_check
+      until: (lxc_check.stdout | from_json | selectattr('status', 'equalto', 'running') | list | length) == 0
       retries: 30
       delay: 5
       changed_when: false
@@ -111,15 +109,13 @@
       delay: 5
       changed_when: false
     - name: Wait for HA resources to return (if any were present initially)
-      ansible.builtin.shell: |
-        set -o pipefail
-        pvesh get /cluster/ha/resources --output-format json | jq -r '.[] | select(.node == "{{ inventory_hostname_short }}") | .sid' | wc -l
-      register: ha_return_count
-      until: ha_return_count.stdout | int >= 1
+      ansible.builtin.command: pvesh get /cluster/ha/resources --output-format json
+      register: ha_return_check
+      until: (ha_return_check.stdout | from_json | selectattr('node', 'equalto', inventory_hostname_short) | list | length) >= 1
       retries: 60
       delay: 10
       changed_when: false
-      when: initial_ha_count.stdout | int > 0
+      when: initial_ha_count | int > 0
     - name: Wait for Ceph to be healthy (ignoring noout)
       ansible.builtin.command: ceph health detail
       register: ceph_health_post
