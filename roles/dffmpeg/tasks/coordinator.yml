@@ -10,9 +10,9 @@
 - name: Create Coordinator venv and install package
   ansible.builtin.pip:
     name:
-      - "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_common_package }}"
-      - "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_coordinator_package }}"
-    state: latest
+      - "{{ dffmpeg_download_dir }}/{{ dffmpeg_common_package | replace('-', '_') }}-{{ dffmpeg_file_version }}-py3-none-any.whl"
+      - "{{ dffmpeg_download_dir }}/{{ dffmpeg_coordinator_package | replace('-', '_') }}-{{ dffmpeg_file_version }}-py3-none-any.whl"
+    state: present
     virtualenv: "{{ dffmpeg_base_dir }}/coordinator"
     virtualenv_command: python3 -m venv
   become: true

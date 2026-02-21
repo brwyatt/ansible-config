@@ -1,0 +1,42 @@
+---
+- name: Set dffmpeg file version
+  ansible.builtin.set_fact:
+    dffmpeg_file_version: "{{ dffmpeg_version | regex_search('^(\\d+\\.\\d+\\.\\d+)') }}"
+- name: Ensure dffmpeg download directory exists
+  ansible.builtin.file:
+    path: "{{ dffmpeg_download_dir }}"
+    state: directory
+    mode: '0755'
+  become: true
+- name: Download dffmpeg common wheel
+  ansible.builtin.get_url:
+    url: "https://github.com/brwyatt/dffmpeg/releases/download/v{{ dffmpeg_version }}/{{ dffmpeg_common_package | replace('-', '_') }}-{{ dffmpeg_file_version }}-py3-none-any.whl"
+    dest: "{{ dffmpeg_download_dir }}/{{ dffmpeg_common_package | replace('-', '_') }}-{{ dffmpeg_file_version }}-py3-none-any.whl"
+    mode: '0644'
+  become: true
+  when: dffmpeg_enable_coordinator or dffmpeg_enable_worker or dffmpeg_enable_client
+  register: dffmpeg_common_wheel
+- name: Download dffmpeg coordinator wheel
+  ansible.builtin.get_url:
+    url: "https://github.com/brwyatt/dffmpeg/releases/download/v{{ dffmpeg_version }}/{{ dffmpeg_coordinator_package | replace('-', '_') }}-{{ dffmpeg_file_version }}-py3-none-any.whl"
+    dest: "{{ dffmpeg_download_dir }}/{{ dffmpeg_coordinator_package | replace('-', '_') }}-{{ dffmpeg_file_version }}-py3-none-any.whl"
+    mode: '0644'
+  become: true
+  when: dffmpeg_enable_coordinator
+  register: dffmpeg_coordinator_wheel
+- name: Download dffmpeg worker wheel
+  ansible.builtin.get_url:
+    url: "https://github.com/brwyatt/dffmpeg/releases/download/v{{ dffmpeg_version }}/{{ dffmpeg_worker_package | replace('-', '_') }}-{{ dffmpeg_file_version }}-py3-none-any.whl"
+    dest: "{{ dffmpeg_download_dir }}/{{ dffmpeg_worker_package | replace('-', '_') }}-{{ dffmpeg_file_version }}-py3-none-any.whl"
+    mode: '0644'
+  become: true
+  when: dffmpeg_enable_worker
+  register: dffmpeg_worker_wheel
+- name: Download dffmpeg client wheel
+  ansible.builtin.get_url:
+    url: "https://github.com/brwyatt/dffmpeg/releases/download/v{{ dffmpeg_version }}/{{ dffmpeg_client_package | replace('-', '_') }}-{{ dffmpeg_file_version }}-py3-none-any.whl"
+    dest: "{{ dffmpeg_download_dir }}/{{ dffmpeg_client_package | replace('-', '_') }}-{{ dffmpeg_file_version }}-py3-none-any.whl"
+    mode: '0644'
+  become: true
+  when: dffmpeg_enable_client
+  register: dffmpeg_client_wheel

@@ -10,9 +10,9 @@
 - name: Create Worker venv and install package
   ansible.builtin.pip:
     name:
-      - "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_common_package }}"
-      - "git+{{ dffmpeg_repo_url }}@{{ dffmpeg_version }}#subdirectory=packages/{{ dffmpeg_worker_package }}"
-    state: latest
+      - "{{ dffmpeg_download_dir }}/{{ dffmpeg_common_package | replace('-', '_') }}-{{ dffmpeg_file_version }}-py3-none-any.whl"
+      - "{{ dffmpeg_download_dir }}/{{ dffmpeg_worker_package | replace('-', '_') }}-{{ dffmpeg_file_version }}-py3-none-any.whl"
+    state: present
     virtualenv: "{{ dffmpeg_base_dir }}/worker"
     virtualenv_command: python3 -m venv
   become: true

@@ -34,6 +34,9 @@
       - git
     state: present
   become: true
+- name: Download DFFmpeg components
+  ansible.builtin.include_tasks: github_release_install.yml
+  when: dffmpeg_enable_coordinator or dffmpeg_enable_worker or dffmpeg_enable_client
 - name: Install DFFmpeg Coordinator
   ansible.builtin.include_tasks: coordinator.yml
   when: dffmpeg_enable_coordinator
