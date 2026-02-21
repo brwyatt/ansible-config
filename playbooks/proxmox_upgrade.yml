@@ -1,0 +1,147 @@
+---
+- name: Prepare Cluster for Updates
+  hosts: proxmox
+  gather_facts: false
+  run_once: true
+  tasks:
+    - name: Set Ceph noout flag
+      ansible.builtin.command: ceph osd set noout
+      changed_when: false
+      delegate_to: "{{ groups['proxmox'][0] }}"
+- name: Update Proxmox Hosts
+  hosts: proxmox
+  serial: 1
+  gather_facts: true
+  tasks:
+    - name: Check Ceph Health
+      ansible.builtin.command: ceph health detail
+      register: ceph_health
+      failed_when:
+        - "'HEALTH_ERR' in ceph_health.stdout"
+        - "'HEALTH_WARN' in ceph_health.stdout and 'noout' not in ceph_health.stdout"
+      changed_when: false
+    - name: Get initial HA resource count
+      ansible.builtin.shell: |
+        set -o pipefail
+        pvesh get /cluster/ha/resources --output-format json | jq -r '.[] | select(.node == "{{ inventory_hostname_short }}") | .sid' | wc -l
+      register: initial_ha_count
+      changed_when: false
+    - name: Check current maintenance state
+      ansible.builtin.shell: |
+        set -o pipefail
+        ha-manager status | grep "node '{{ inventory_hostname_short }}': maintenance" || true
+      register: current_maintenance_state
+      changed_when: false
+    - name: Enable Maintenance Mode
+      ansible.builtin.command: "ha-manager crm-command node-maintenance enable {{ inventory_hostname_short }}"
+      register: maintenance_mode
+      when: "'maintenance' not in current_maintenance_state.stdout"
+      changed_when: "'Requesting' in maintenance_mode.stdout"
+    - name: Wait for HA resources to drain
+      ansible.builtin.shell: |
+        set -o pipefail
+        pvesh get /cluster/ha/resources --output-format json | jq -r '.[] | select(.node == "{{ inventory_hostname_short }}") | .sid' | wc -l
+      register: ha_count
+      until: ha_count.stdout | int == 0
+      retries: 60
+      delay: 10
+      changed_when: false
+    - name: Get list of remaining running VMs
+      ansible.builtin.shell: |
+        set -o pipefail
+        pvesh get /nodes/{{ inventory_hostname }}/qemu --output-format json | jq -r '.[] | select(.status == \"running\") | .vmid'
+      register: running_vms
+      changed_when: false
+    - name: Get list of remaining running CTs
+      ansible.builtin.shell: |
+        set -o pipefail
+        pvesh get /nodes/{{ inventory_hostname }}/lxc --output-format json | jq -r '.[] | select(.status == \"running\") | .vmid'
+      register: running_cts
+      changed_when: false
+    - name: Shutdown remaining VMs
+      ansible.builtin.command: "qm shutdown {{ item }}"
+      loop: "{{ running_vms.stdout_lines }}"
+      register: shutdown_vm_result
+      failed_when:
+        - shutdown_vm_result.rc != 0
+        - "'is not running' not in shutdown_vm_result.stderr"
+        - "'does not exist' not in shutdown_vm_result.stderr"
+      changed_when: shutdown_vm_result.rc == 0
+    - name: Shutdown remaining CTs
+      ansible.builtin.command: "pct shutdown {{ item }}"
+      loop: "{{ running_cts.stdout_lines }}"
+      register: shutdown_ct_result
+      failed_when:
+        - shutdown_ct_result.rc != 0
+        - "'is not running' not in shutdown_ct_result.stderr"
+        - "'does not exist' not in shutdown_ct_result.stderr"
+      changed_when: shutdown_ct_result.rc == 0
+    - name: Wait for all VMs/CTs to stop
+      ansible.builtin.shell: |
+        set -o pipefail
+        vms=$(pvesh get /nodes/{{ inventory_hostname }}/qemu --output-format json | jq '.[] | select(.status == "running") | .vmid' | wc -l)
+        cts=$(pvesh get /nodes/{{ inventory_hostname }}/lxc --output-format json | jq '.[] | select(.status == "running") | .vmid' | wc -l)
+        echo $((vms + cts))
+      register: running_count
+      until: running_count.stdout | int == 0
+      retries: 30
+      delay: 5
+      changed_when: false
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+    - name: Run dist-upgrade
+      ansible.builtin.apt:
+        upgrade: dist
+        autoremove: true
+    - name: Reboot host
+      ansible.builtin.reboot:
+        reboot_timeout: 600
+    - name: Disable Maintenance Mode
+      ansible.builtin.command: "ha-manager crm-command node-maintenance disable {{ inventory_hostname_short }}"
+      register: maintenance_disable
+      changed_when: "'Requesting' in maintenance_disable.stdout"
+    - name: Verify node is active in HA manager
+      ansible.builtin.shell: |
+        set -o pipefail
+        ha-manager status | grep "node '{{ inventory_hostname_short }}': active"
+      register: node_active_check
+      until: node_active_check.rc == 0
+      retries: 30
+      delay: 5
+      changed_when: false
+    - name: Wait for HA resources to return (if any were present initially)
+      ansible.builtin.shell: |
+        set -o pipefail
+        pvesh get /cluster/ha/resources --output-format json | jq -r '.[] | select(.node == "{{ inventory_hostname_short }}") | .sid' | wc -l
+      register: ha_return_count
+      until: ha_return_count.stdout | int >= 1
+      retries: 60
+      delay: 10
+      changed_when: false
+      when: initial_ha_count.stdout | int > 0
+    - name: Wait for Ceph to be healthy (ignoring noout)
+      ansible.builtin.command: ceph health detail
+      register: ceph_health_post
+      until:
+        - "'HEALTH_ERR' not in ceph_health_post.stdout"
+        - "('HEALTH_OK' in ceph_health_post.stdout) or ('HEALTH_WARN' in ceph_health_post.stdout and 'noout' in ceph_health_post.stdout)"
+      retries: 60
+      delay: 10
+      changed_when: false
+    - name: Wait for Ceph peering to finish
+      ansible.builtin.command: ceph status
+      register: ceph_status
+      until: "'peering' not in ceph_status.stdout"
+      retries: 60
+      delay: 10
+      changed_when: false
+- name: Cleanup Cluster After Updates
+  hosts: proxmox
+  gather_facts: false
+  run_once: true
+  tasks:
+    - name: Unset Ceph noout flag
+      ansible.builtin.command: ceph osd unset noout
+      changed_when: false
+      delegate_to: "{{ groups['proxmox'][0] }}"
