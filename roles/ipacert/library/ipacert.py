@@ -4,6 +4,7 @@ import os
 from typing import Optional, TypedDict
 import re
 import subprocess
+import stat
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -163,6 +164,14 @@ def request_cert(cert_name, cert_path, key_path, principal, domain,
         result = subprocess.run(cmd, capture_output=True, text=True, check=True)
     except (FileNotFoundError, subprocess.CalledProcessError) as e:
         raise RuntimeError(f"ipa-getcert failed: {e.stderr if hasattr(e, 'stderr') else e}")
+
+
+def get_file_perms(filepath: str) -> Optional[str]:
+    try:
+        mode = os.stat(filepath).st_mode
+        return format(mode & 0o777, '04o')
+    except OSError:
+        return None
 
 
 def get_host_principal():
@@ -328,22 +337,37 @@ def main():
                 
     # Failed if the new state doesn't match what we wanted for the fields we care about
     failed = False
+    failed_msg = ""
     if new_state['present'] != requested_state['present']:
         failed = True
+        failed_msg = f"State mismatch: present expected {requested_state['present']}, got {new_state['present']}"
     elif requested_state['present']:
         for field in ['cert_path', 'key_path', 'domain']:
             if new_state.get(field) != requested_state.get(field):
                 failed = True
+                failed_msg = f"State mismatch: {field} expected {requested_state.get(field)}, got {new_state.get(field)}"
                 break
         if not failed:
             for field in ['cert_owner', 'cert_perms', 'key_owner', 'key_perms', 'after_command']:
-                if module.params[field] is not None and new_state.get(field) != module.params[field]:
-                    failed = True
-                    break
+                if module.params[field] is not None:
+                    actual_val = new_state.get(field)
+                    
+                    # Fallback check for missing file permissions if ipa-getcert omits them
+                    if actual_val is None:
+                        if field == 'cert_perms' and new_state.get('cert_path'):
+                            actual_val = get_file_perms(new_state['cert_path'])
+                        elif field == 'key_perms' and new_state.get('key_path'):
+                            actual_val = get_file_perms(new_state['key_path'])
+                            
+                    if actual_val != module.params[field]:
+                        failed = True
+                        failed_msg = f"State mismatch: {field} expected {module.params[field]}, got {actual_val}"
+                        break
 
     module.exit_json(**{
         'changed': changed,
         'failed': failed,
+        'msg': failed_msg if failed else "Success",
         'original_state': original_state,
         'new_state': new_state,
         'requested_state': requested_state,
