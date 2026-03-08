@@ -1,0 +1,4 @@
+---
+certbot_certs:
+  - - "{{ inventory_hostname }}"
+    - "mqtt.iot.home.brwyatt.net"

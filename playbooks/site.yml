@@ -99,6 +99,12 @@
     - role: aws_creds
     - role: certbot
     - role: reverseproxy
+- name: MQTT Servers
+  hosts: mqttservers
+  become: true
+  roles:
+    - role: aws_creds
+    - role: certbot
 - name: RabbitMQ Cluster
   hosts: rabbitmq
   become: true
