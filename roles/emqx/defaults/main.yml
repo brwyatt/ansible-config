@@ -1,0 +1,2 @@
+---
+emqx_cert_name: "{{ inventory_hostname }}"

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cp /etc/letsencrypt/live/{{ emqx_cert_name }}/fullchain.pem /etc/emqx/certs/cert.pem
+cp /etc/letsencrypt/live/{{ emqx_cert_name }}/privkey.pem /etc/emqx/certs/key.pem
+chown emqx /etc/emqx/certs/*

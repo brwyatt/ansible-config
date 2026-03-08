@@ -105,6 +105,7 @@
   roles:
     - role: aws_creds
     - role: certbot
+    - role: emqx
 - name: RabbitMQ Cluster
   hosts: rabbitmq
   become: true

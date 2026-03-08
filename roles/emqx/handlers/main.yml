@@ -1,0 +1,5 @@
+---
+- name: Run EMQX Certbot Deploy
+  ansible.builtin.command:
+    cmd: /etc/letsencrypt/renewal-hooks/deploy/emqx.sh
+  changed_when: true

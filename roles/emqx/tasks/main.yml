@@ -1,0 +1,11 @@
+---
+- name: Add Certbot deploy hooks
+  when: certbot_certs is defined
+  ansible.builtin.template:
+    src: certbot-deploy-hook.sh.j2
+    dest: /etc/letsencrypt/renewal-hooks/deploy/emqx.sh
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+  notify: Run EMQX Certbot Deploy

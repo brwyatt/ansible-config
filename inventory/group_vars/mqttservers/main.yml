@@ -2,3 +2,5 @@
 certbot_certs:
   - - "{{ inventory_hostname }}"
     - "mqtt.iot.home.brwyatt.net"
+
+emqx_cert_name: "{{ certbot_certs[0][0] }}"
