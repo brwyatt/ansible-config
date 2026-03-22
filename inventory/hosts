@@ -124,9 +124,6 @@ cephiscsi:
 otbr:
   hosts:
     thread-br.iot.home.brwyatt.net:
-n8n:
-  hosts:
-    n8n.server.home.brwyatt.net:
 app_proxy:
   children:
     radarr:
@@ -136,7 +133,6 @@ app_proxy:
     uptimekuma:
     zwave:
     zigbee:
-    n8n:
     homebox:
     proxmoxdcm:
     dffmpegcoordinators:
