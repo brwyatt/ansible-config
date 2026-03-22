@@ -6,7 +6,7 @@ dffmpeg_group: dffmpeg
 dffmpeg_client_id: "{{ inventory_hostname_short }}"
 
 dffmpeg_gh_release_url: "https://github.com/brwyatt/dffmpeg/releases/download"
-dffmpeg_version: "0.1.1"
+dffmpeg_version: "0.2.0"
 dffmpeg_download_dir: "/var/cache/dffmpeg"
 
 dffmpeg_common_package: "dffmpeg-common"
