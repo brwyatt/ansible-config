@@ -11,6 +11,7 @@ dffmpeg_enabled_transports:
   - "rabbitmq"
 
 dffmpeg_rabbitmq_host: "rabbitmq.server.home.brwyatt.net"
+dffmpeg_rabbitmq_port: 5671
 dffmpeg_rabbitmq_vhost: "dffmpeg"
 dffmpeg_rabbitmq_use_srv: false
 

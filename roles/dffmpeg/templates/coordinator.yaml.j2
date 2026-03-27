@@ -36,6 +36,9 @@ transports:
 {% if dffmpeg_rabbitmq_host is defined %}
       host: "{{ dffmpeg_rabbitmq_host }}"
 {% endif %}
+{% if dffmpeg_rabbitmq_port is defined %}
+      port: "{{ dffmpeg_rabbitmq_port }}"
+{% endif %}
       use_tls: {{ dffmpeg_rabbitmq_use_tls | default(true) | lower }}
       use_srv: {{ dffmpeg_rabbitmq_use_srv | default(true) | lower }}
       username: "{{ dffmpeg_rabbitmq_user | default('dffmpeg-coordinator') }}"
