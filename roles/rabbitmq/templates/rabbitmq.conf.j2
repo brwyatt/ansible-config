@@ -7,6 +7,7 @@ listeners.tcp.default = 5672
 
 # TLS Listeners
 listeners.ssl.default = 5671
+proxy_protocol = true
 
 ssl_options.cacertfile = {{ rabbitmq_ca_cert_path }}
 ssl_options.certfile   = {{ rabbitmq_cert_path }}

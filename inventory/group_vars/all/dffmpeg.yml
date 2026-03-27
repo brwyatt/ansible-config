@@ -12,6 +12,7 @@ dffmpeg_enabled_transports:
 
 dffmpeg_rabbitmq_host: "rabbitmq.server.home.brwyatt.net"
 dffmpeg_rabbitmq_vhost: "dffmpeg"
+dffmpeg_rabbitmq_use_srv: false
 
 dffmpeg_mqtt_host: "mqtt.iot.home.brwyatt.net"
 dffmpeg_mqtt_port: 8883

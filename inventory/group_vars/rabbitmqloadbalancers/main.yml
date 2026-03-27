@@ -60,7 +60,7 @@ haproxy_backends:
     balance: "roundrobin"
     server_timeout: "3h"
     options:
-      - "default-server check inter 2s ssl ca-file /etc/ssl/certs/ca-certificates.crt"
+      - "default-server check inter 2s ssl ca-file /etc/ssl/certs/ca-certificates.crt send-proxy-v2"
       - "server-template rabbitmq-amqps 1-5 _amqps._tcp.rabbitmq.server.home.brwyatt.net resolvers localdns init-addr none"
 
 keepalived_check_scripts:
