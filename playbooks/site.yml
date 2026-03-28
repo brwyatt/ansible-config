@@ -93,6 +93,11 @@
     - role: certbot
     - role: sspasswd
     - role: keepalived
+- name: Guacamole Server
+  hosts: guacamole
+  become: true
+  roles:
+    - role: guacamole
 - name: App Proxy Config
   hosts: app_proxy
   roles:

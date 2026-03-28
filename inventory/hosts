@@ -16,6 +16,7 @@ loadbalancers:
     rabbitmqloadbalancers:
     mariadbloadbalancers:
     dffmpegloadbalancers:
+    guacamoleloadbalancers:
 mqttloadbalancers:
   hosts:
     mqtt-haproxy[01:02].iot.home.brwyatt.net:
@@ -121,6 +122,12 @@ acmecertpusher:
 cephiscsi:
   hosts:
     iscsigw[01:02].server.home.brwyatt.net:
+guacamole:
+  hosts:
+    guacamole[01:02].server.home.brwyatt.net:
+guacamoleloadbalancers:
+  hosts:
+    guacamole-haproxy[01:02].server.home.brwyatt.net:
 otbr:
   hosts:
     thread-br.iot.home.brwyatt.net:
@@ -136,6 +143,7 @@ app_proxy:
     homebox:
     proxmoxdcm:
     dffmpegcoordinators:
+    guacamole:
 ceph_clients:
   children:
     jellyfin:

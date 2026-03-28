@@ -1,0 +1,23 @@
+---
+# Guacamole Port
+proxy_port: 8080
+
+# LDAP Connection (FreeIPA)
+guacamole_ldap_hostname: ipa.home.brwyatt.net
+guacamole_ldap_port: 636
+guacamole_ldap_encryption_method: ssl
+guacamole_ldap_search_bind_dn: "uid=guacamole,cn=users,cn=accounts,dc=home,dc=brwyatt,dc=net"
+guacamole_ldap_user_base_dn: "cn=users,cn=accounts,dc=home,dc=brwyatt,dc=net"
+guacamole_ldap_group_base_dn: "cn=groups,cn=accounts,dc=home,dc=brwyatt,dc=net"
+
+# MariaDB Connection
+guacamole_mysql_hostname: mariadb.server.home.brwyatt.net
+guacamole_mysql_port: 3306
+guacamole_mysql_database: guacamole
+guacamole_mysql_username: guacamole
+
+# Nginx Configuration for trusted proxies
+# The IPs of guacamole-haproxy nodes go here
+reverseproxy_trusted_proxies:
+  - "172.17.30.x"
+  - "172.17.30.x"

@@ -1,0 +1,22 @@
+---
+# Package names
+guacamole_packages:
+  - guacd
+  - tomcat9
+  - libmariadb-java
+
+# Guacamole Version for downloads
+guacamole_version: "1.5.4"
+
+# Paths
+guacamole_home: /etc/guacamole
+guacamole_extensions_path: "{{ guacamole_home }}/extensions"
+guacamole_lib_path: "{{ guacamole_home }}/lib"
+guacamole_install_root: "/opt/guacamole-{{ guacamole_version }}"
+
+# URLs (Guacamole Download mirrors)
+guacamole_mirror: "https://archive.apache.org/dist/guacamole"
+
+guacamole_war_url: "{{ guacamole_mirror }}/{{ guacamole_version }}/binary/guacamole-{{ guacamole_version }}.war"
+guacamole_auth_ldap_url: "{{ guacamole_mirror }}/{{ guacamole_version }}/binary/guacamole-auth-ldap-{{ guacamole_version }}.tar.gz"
+guacamole_auth_jdbc_mysql_url: "{{ guacamole_mirror }}/{{ guacamole_version }}/binary/guacamole-auth-jdbc-{{ guacamole_version }}.tar.gz"

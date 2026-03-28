@@ -1,0 +1,9 @@
+---
+- name: Restart Tomcat
+  ansible.builtin.service:
+    name: tomcat9
+    state: restarted
+- name: Restart guacd
+  ansible.builtin.service:
+    name: guacd
+    state: restarted

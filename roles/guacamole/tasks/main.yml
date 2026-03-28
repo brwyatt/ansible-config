@@ -1,0 +1,111 @@
+---
+- name: Install dependencies
+  ansible.builtin.package:
+    name: "{{ guacamole_packages }}"
+    state: present
+- name: Ensure configuration and install directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: guacamole
+    group: guacamole
+    mode: '0755'
+  loop:
+    - "{{ guacamole_home }}"
+    - "{{ guacamole_extensions_path }}"
+    - "{{ guacamole_lib_path }}"
+    - "{{ guacamole_install_root }}"
+- name: Download Guacamole web application
+  ansible.builtin.get_url:
+    url: "{{ guacamole_war_url }}"
+    dest: "{{ guacamole_install_root }}/guacamole-{{ guacamole_version }}.war"
+    owner: guacamole
+    group: guacamole
+    mode: '0644'
+- name: Link Guacamole web application to Tomcat
+  ansible.builtin.file:
+    src: "{{ guacamole_install_root }}/guacamole-{{ guacamole_version }}.war"
+    dest: /var/lib/tomcat9/webapps/guacamole.war
+    state: link
+    owner: tomcat
+    group: tomcat
+  notify: Restart Tomcat
+- name: Download Guacamole LDAP extension
+  ansible.builtin.get_url:
+    url: "{{ guacamole_auth_ldap_url }}"
+    dest: "{{ guacamole_install_root }}/guacamole-auth-ldap-{{ guacamole_version }}.tar.gz"
+    owner: guacamole
+    group: guacamole
+    mode: '0644'
+- name: Extract Guacamole LDAP extension
+  ansible.builtin.unarchive:
+    src: "{{ guacamole_install_root }}/guacamole-auth-ldap-{{ guacamole_version }}.tar.gz"
+    dest: "{{ guacamole_install_root }}/"
+    remote_src: true
+    owner: guacamole
+    group: guacamole
+    mode: '0755'
+    creates: "{{ guacamole_install_root }}/guacamole-auth-ldap-{{ guacamole_version }}/guacamole-auth-ldap-{{ guacamole_version }}.jar"
+- name: Link LDAP extension
+  ansible.builtin.file:
+    src: "{{ guacamole_install_root }}/guacamole-auth-ldap-{{ guacamole_version }}/guacamole-auth-ldap-{{ guacamole_version }}.jar"
+    dest: "{{ guacamole_extensions_path }}/guacamole-auth-ldap.jar"
+    state: link
+    owner: guacamole
+    group: guacamole
+  notify: Restart Tomcat
+- name: Download Guacamole MySQL extension
+  ansible.builtin.get_url:
+    url: "{{ guacamole_auth_jdbc_mysql_url }}"
+    dest: "{{ guacamole_install_root }}/guacamole-auth-jdbc-mysql-{{ guacamole_version }}.tar.gz"
+    owner: guacamole
+    group: guacamole
+    mode: '0644'
+- name: Extract Guacamole MySQL extension
+  ansible.builtin.unarchive:
+    src: "{{ guacamole_install_root }}/guacamole-auth-jdbc-mysql-{{ guacamole_version }}.tar.gz"
+    dest: "{{ guacamole_install_root }}/"
+    remote_src: true
+    owner: guacamole
+    group: guacamole
+    mode: '0755'
+    creates: "{{ guacamole_install_root }}/guacamole-auth-jdbc-{{ guacamole_version }}/mysql/guacamole-auth-jdbc-mysql-{{ guacamole_version }}.jar"
+- name: Link MySQL extension
+  ansible.builtin.file:
+    src: "{{ guacamole_install_root }}/guacamole-auth-jdbc-{{ guacamole_version }}/mysql/guacamole-auth-jdbc-mysql-{{ guacamole_version }}.jar"
+    dest: "{{ guacamole_extensions_path }}/guacamole-auth-jdbc-mysql.jar"
+    state: link
+    owner: guacamole
+    group: guacamole
+  notify: Restart Tomcat
+- name: Link MariaDB Java Connector
+  ansible.builtin.file:
+    src: /usr/share/java/mariadb-java-client.jar
+    dest: "{{ guacamole_lib_path }}/mariadb-java-client.jar"
+    state: link
+- name: Deploy guacamole.properties
+  ansible.builtin.template:
+    src: guacamole.properties.j2
+    dest: "{{ guacamole_home }}/guacamole.properties"
+    owner: guacamole
+    group: guacamole
+    mode: '0640'
+  notify: Restart Tomcat
+- name: Configure Tomcat for proxy support
+  ansible.builtin.template:
+    src: server.xml.j2
+    dest: /etc/tomcat9/server.xml
+    owner: root
+    group: tomcat
+    mode: '0640'
+  notify: Restart Tomcat
+- name: Ensure guacd is running and enabled
+  ansible.builtin.service:
+    name: guacd
+    state: started
+    enabled: true
+- name: Ensure Tomcat is running and enabled
+  ansible.builtin.service:
+    name: tomcat9
+    state: started
+    enabled: true

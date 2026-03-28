@@ -1,0 +1,24 @@
+# Guacd connection
+guacd-hostname: localhost
+guacd-port: 4822
+
+# MySQL connection
+mysql-hostname: {{ guacamole_mysql_hostname }}
+mysql-port: {{ guacamole_mysql_port }}
+mysql-database: {{ guacamole_mysql_database }}
+mysql-username: {{ guacamole_mysql_username }}
+mysql-password: {{ guacamole_mysql_password }}
+mysql-driver: mariadb
+
+# LDAP connection
+ldap-hostname: {{ guacamole_ldap_hostname }}
+ldap-port: {{ guacamole_ldap_port }}
+ldap-encryption-method: {{ guacamole_ldap_encryption_method }}
+ldap-search-bind-dn: {{ guacamole_ldap_search_bind_dn }}
+ldap-search-bind-password: {{ guacamole_ldap_search_bind_password }}
+ldap-user-base-dn: {{ guacamole_ldap_user_base_dn }}
+ldap-group-base-dn: {{ guacamole_ldap_group_base_dn }}
+
+# Authentication order
+auth-provider: net.sourceforge.guacamole.net.auth.mysql.MySQLAuthenticationProvider
+auth-provider: net.sourceforge.guacamole.net.auth.ldap.LDAPAuthenticationProvider
