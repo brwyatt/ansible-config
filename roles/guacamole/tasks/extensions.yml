@@ -3,6 +3,7 @@
   ansible.builtin.get_url:
     url: "{{ guacamole_auth_ldap_url }}"
     dest: "{{ guacamole_install_root }}/guacamole-auth-ldap-{{ guacamole_version }}.tar.gz"
+    checksum: "{{ guacamole_auth_ldap_checksum }}"
     owner: guacamole
     group: guacamole
     mode: '0644'
@@ -27,6 +28,7 @@
   ansible.builtin.get_url:
     url: "{{ guacamole_auth_jdbc_mysql_url }}"
     dest: "{{ guacamole_install_root }}/guacamole-auth-jdbc-mysql-{{ guacamole_version }}.tar.gz"
+    checksum: "{{ guacamole_auth_jdbc_checksum }}"
     owner: guacamole
     group: guacamole
     mode: '0644'
@@ -54,7 +56,6 @@
     state: link
     owner: guacamole
     group: guacamole
-
 - name: Deploy guacamole.properties
   ansible.builtin.template:
     src: guacamole.properties.j2
