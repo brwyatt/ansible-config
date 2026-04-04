@@ -1,0 +1,66 @@
+---
+- name: Download Guacamole LDAP extension
+  ansible.builtin.get_url:
+    url: "{{ guacamole_auth_ldap_url }}"
+    dest: "{{ guacamole_install_root }}/guacamole-auth-ldap-{{ guacamole_version }}.tar.gz"
+    checksum: "{{ guacamole_auth_ldap_checksum }}"
+    owner: guacamole
+    group: guacamole
+    mode: '0644'
+- name: Extract Guacamole LDAP extension
+  ansible.builtin.unarchive:
+    src: "{{ guacamole_install_root }}/guacamole-auth-ldap-{{ guacamole_version }}.tar.gz"
+    dest: "{{ guacamole_install_root }}/"
+    remote_src: true
+    owner: guacamole
+    group: guacamole
+    mode: '0755'
+    creates: "{{ guacamole_install_root }}/guacamole-auth-ldap-{{ guacamole_version }}/guacamole-auth-ldap-{{ guacamole_version }}.jar"
+- name: Link LDAP extension
+  ansible.builtin.file:
+    src: "{{ guacamole_install_root }}/guacamole-auth-ldap-{{ guacamole_version }}/guacamole-auth-ldap-{{ guacamole_version }}.jar"
+    dest: "{{ guacamole_extensions_path }}/guacamole-auth-ldap.jar"
+    state: link
+    owner: guacamole
+    group: guacamole
+  notify: Restart Tomcat
+- name: Download Guacamole MySQL extension
+  ansible.builtin.get_url:
+    url: "{{ guacamole_auth_jdbc_mysql_url }}"
+    dest: "{{ guacamole_install_root }}/guacamole-auth-jdbc-mysql-{{ guacamole_version }}.tar.gz"
+    checksum: "{{ guacamole_auth_jdbc_checksum }}"
+    owner: guacamole
+    group: guacamole
+    mode: '0644'
+- name: Extract Guacamole MySQL extension
+  ansible.builtin.unarchive:
+    src: "{{ guacamole_install_root }}/guacamole-auth-jdbc-mysql-{{ guacamole_version }}.tar.gz"
+    dest: "{{ guacamole_install_root }}/"
+    remote_src: true
+    owner: guacamole
+    group: guacamole
+    mode: '0755'
+    creates: "{{ guacamole_install_root }}/guacamole-auth-jdbc-{{ guacamole_version }}/mysql/guacamole-auth-jdbc-mysql-{{ guacamole_version }}.jar"
+- name: Link MySQL extension
+  ansible.builtin.file:
+    src: "{{ guacamole_install_root }}/guacamole-auth-jdbc-{{ guacamole_version }}/mysql/guacamole-auth-jdbc-mysql-{{ guacamole_version }}.jar"
+    dest: "{{ guacamole_extensions_path }}/guacamole-auth-jdbc-mysql.jar"
+    state: link
+    owner: guacamole
+    group: guacamole
+  notify: Restart Tomcat
+- name: Link MariaDB Java Connector
+  ansible.builtin.file:
+    src: /usr/share/java/mariadb-java-client.jar
+    dest: "{{ guacamole_lib_path }}/mariadb-java-client.jar"
+    state: link
+    owner: guacamole
+    group: guacamole
+- name: Deploy guacamole.properties
+  ansible.builtin.template:
+    src: guacamole.properties.j2
+    dest: "{{ guacamole_home }}/guacamole.properties"
+    owner: guacamole
+    group: guacamole
+    mode: '0640'
+  notify: Restart Tomcat

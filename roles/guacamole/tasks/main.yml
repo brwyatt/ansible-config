@@ -1,0 +1,23 @@
+---
+- name: Import prepare tasks
+  ansible.builtin.import_tasks: prepare.yml
+- name: Import build tasks
+  ansible.builtin.import_tasks: build.yml
+- name: Import tomcat tasks
+  ansible.builtin.import_tasks: tomcat.yml
+- name: Import extension tasks
+  ansible.builtin.import_tasks: extensions.yml
+- name: Import database tasks
+  ansible.builtin.import_tasks: database.yml
+- name: Import cleanup tasks
+  ansible.builtin.import_tasks: cleanup.yml
+- name: Ensure guacd is running and enabled
+  ansible.builtin.service:
+    name: guacd
+    state: started
+    enabled: true
+- name: Ensure Tomcat is running and enabled
+  ansible.builtin.service:
+    name: tomcat
+    state: started
+    enabled: true

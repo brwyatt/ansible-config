@@ -1,0 +1,54 @@
+---
+- name: Install build and runtime dependencies
+  ansible.builtin.package:
+    name: "{{ guacamole_runtime_packages }}"
+    state: present
+- name: Create build directory
+  ansible.builtin.file:
+    path: "/usr/src/guacamole-server-{{ guacamole_version }}"
+    state: directory
+    mode: '0755'
+- name: Download Guacamole Server source
+  ansible.builtin.get_url:
+    url: "{{ guacamole_server_url }}"
+    dest: "/usr/src/guacamole-server-{{ guacamole_version }}.tar.gz"
+    checksum: "{{ guacamole_server_checksum }}"
+    mode: '0644'
+- name: Extract Guacamole Server source
+  ansible.builtin.unarchive:
+    src: "/usr/src/guacamole-server-{{ guacamole_version }}.tar.gz"
+    dest: "/usr/src/"
+    remote_src: true
+    creates: "/usr/src/guacamole-server-{{ guacamole_version }}/configure"
+- name: Initialize build environment (autoreconf)
+  ansible.builtin.command:
+    cmd: autoreconf -fi
+    chdir: "/usr/src/guacamole-server-{{ guacamole_version }}"
+    creates: "/usr/src/guacamole-server-{{ guacamole_version }}/config.sub"
+- name: Configure Guacamole Server
+  ansible.builtin.command:
+    cmd: ./configure --with-init-dir=/etc/init.d --enable-allow-freerdp-snapshots
+    chdir: "/usr/src/guacamole-server-{{ guacamole_version }}"
+    creates: "/usr/src/guacamole-server-{{ guacamole_version }}/config.status"
+- name: Make Guacamole Server
+  ansible.builtin.command:
+    cmd: make
+    chdir: "/usr/src/guacamole-server-{{ guacamole_version }}"
+    creates: "/usr/src/guacamole-server-{{ guacamole_version }}/src/guacd/guacd"
+- name: Install Guacamole Server
+  ansible.builtin.command:
+    cmd: make install
+    chdir: "/usr/src/guacamole-server-{{ guacamole_version }}"
+    creates: "/usr/src/guacamole-server-{{ guacamole_version }}/.install_done"
+  register: guacd_install
+  notify:
+    - Run ldconfig
+    - Restart guacd
+- name: Create install stamp
+  ansible.builtin.file:
+    path: "/usr/src/guacamole-server-{{ guacamole_version }}/.install_done"
+    state: touch
+    mode: '0644'
+  when:
+    - not ansible_check_mode
+    - guacd_install is changed

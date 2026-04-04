@@ -1,0 +1,13 @@
+---
+- name: Ensure configuration and install directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: guacamole
+    group: guacamole
+    mode: '0755'
+  loop:
+    - "{{ guacamole_home }}"
+    - "{{ guacamole_extensions_path }}"
+    - "{{ guacamole_lib_path }}"
+    - "{{ guacamole_install_root }}"

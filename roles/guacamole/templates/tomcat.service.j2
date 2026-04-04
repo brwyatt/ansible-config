@@ -1,0 +1,26 @@
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=network.target
+
+[Service]
+Type=forking
+
+User=tomcat
+Group=tomcat
+
+Environment="JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64"
+Environment="JAVA_OPTS=-Djava.security.egd=file:///dev/./urandom -Djava.awt.headless=true"
+
+Environment="CATALINA_BASE={{ guacamole_tomcat_install_root }}"
+Environment="CATALINA_HOME={{ guacamole_tomcat_install_root }}"
+Environment="CATALINA_PID={{ guacamole_tomcat_install_root }}/temp/tomcat.pid"
+Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseG1GC"
+
+ExecStart={{ guacamole_tomcat_install_root }}/bin/startup.sh
+ExecStop={{ guacamole_tomcat_install_root }}/bin/shutdown.sh
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
