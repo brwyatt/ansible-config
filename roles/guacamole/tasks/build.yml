@@ -39,14 +39,14 @@
   ansible.builtin.command:
     cmd: make install
     chdir: "/usr/src/guacamole-server-{{ guacamole_version }}"
-    creates: "{{ guacamole_install_root }}/.install_done"
+    creates: "/usr/src/guacamole-server-{{ guacamole_version }}/.install_done"
   register: guacd_install
   notify:
     - Run ldconfig
     - Restart guacd
 - name: Create install stamp
   ansible.builtin.file:
-    path: "{{ guacamole_install_root }}/.install_done"
+    path: "/usr/src/guacamole-server-{{ guacamole_version }}/.install_done"
     state: touch
     mode: '0644'
   when:

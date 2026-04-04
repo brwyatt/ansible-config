@@ -1,4 +1,6 @@
 ---
+- name: Import prepare tasks
+  ansible.builtin.import_tasks: prepare.yml
 - name: Import build tasks
   ansible.builtin.import_tasks: build.yml
 - name: Import tomcat tasks

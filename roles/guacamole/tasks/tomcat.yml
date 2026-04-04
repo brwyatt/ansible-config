@@ -43,18 +43,6 @@
     shell: /bin/false
     system: true
   when: guacamole_user_check.rc != 0
-- name: Ensure configuration directories exist
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    owner: guacamole
-    group: guacamole
-    mode: '0755'
-  loop:
-    - "{{ guacamole_home }}"
-    - "{{ guacamole_extensions_path }}"
-    - "{{ guacamole_lib_path }}"
-    - "{{ guacamole_install_root }}"
 - name: Download Guacamole web application
   ansible.builtin.get_url:
     url: "{{ guacamole_war_url }}"
