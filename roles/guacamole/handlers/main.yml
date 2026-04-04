@@ -7,3 +7,7 @@
   ansible.builtin.service:
     name: guacd
     state: restarted
+- name: Run ldconfig
+  ansible.builtin.command:
+    cmd: ldconfig
+  changed_when: false

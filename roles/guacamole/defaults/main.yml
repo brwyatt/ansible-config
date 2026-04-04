@@ -50,9 +50,9 @@ guacamole_tomcat_mirror: "https://archive.apache.org/dist/tomcat"
 guacamole_tomcat_major_version: "{{ guacamole_tomcat_version.split('.')[0] }}"
 guacamole_tomcat_download_url: "{{ guacamole_tomcat_mirror }}/tomcat-{{ guacamole_tomcat_major_version }}/v{{ guacamole_tomcat_version }}/bin/apache-tomcat-{{ guacamole_tomcat_version }}.tar.gz" # noqa: yaml[line-length]
 
-# SHA256 Checksums
-guacamole_server_checksum: "sha256:6ef8e810f643e2e50529d3810280f555f9f69747209772a81831c03e2df95c47"
-guacamole_war_checksum: "sha256:d556859580436d418659103e670d8a6352932a3928156e7e0083cc4b66970bc3"
-guacamole_auth_ldap_checksum: "sha256:2c51f4961502446777c0f1357564d74f26ca4467d16560965e6f6630f94f9999"
-guacamole_auth_jdbc_checksum: "sha256:2f43d6b055964f5260c6d70a1a547a46973950669f33776b9f42583804899999"
-guacamole_tomcat_checksum: "sha256:685f091f0449942a17621c8b320d41829e08eb6758416d8601c0f1f912e52467"
+# SHA256 Checksums (Look up correct values for version)
+guacamole_server_checksum: "sha256:REPLACE_ME_GUACAMOLE_SERVER_1_5_4_SHA256"
+guacamole_war_checksum: "sha256:REPLACE_ME_GUACAMOLE_WAR_1_5_4_SHA256"
+guacamole_auth_ldap_checksum: "sha256:REPLACE_ME_GUACAMOLE_AUTH_LDAP_1_5_4_SHA256"
+guacamole_auth_jdbc_checksum: "sha256:REPLACE_ME_GUACAMOLE_AUTH_JDBC_1_5_4_SHA256"
+guacamole_tomcat_checksum: "sha256:REPLACE_ME_TOMCAT_9_0_86_SHA256"

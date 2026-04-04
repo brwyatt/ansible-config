@@ -24,10 +24,7 @@
   ansible.builtin.command:
     cmd: autoreconf -fi
     chdir: "/usr/src/guacamole-server-{{ guacamole_version }}"
-    creates: "/usr/src/guacamole-server-{{ guacamole_version }}/configure.ac" # autoreconf touch
-  # We use a trick here, autoreconf updates configure, so we might want a different check
-  # But the requirement is to run it.
-
+    creates: "/usr/src/guacamole-server-{{ guacamole_version }}/config.sub"
 - name: Configure Guacamole Server
   ansible.builtin.command:
     cmd: ./configure --with-init-dir=/etc/init.d --enable-allow-freerdp-snapshots
@@ -42,9 +39,16 @@
   ansible.builtin.command:
     cmd: make install
     chdir: "/usr/src/guacamole-server-{{ guacamole_version }}"
-    creates: /usr/local/sbin/guacd
-- name: Run ldconfig
-  ansible.builtin.command:
-    cmd: ldconfig
-  changed_when: false
-  notify: Restart guacd
+    creates: "{{ guacamole_install_root }}/.install_done"
+  register: guacd_install
+  notify:
+    - Run ldconfig
+    - Restart guacd
+- name: Create install stamp
+  ansible.builtin.file:
+    path: "{{ guacamole_install_root }}/.install_done"
+    state: touch
+    mode: '0644'
+  when:
+    - not ansible_check_mode
+    - guacd_install is changed

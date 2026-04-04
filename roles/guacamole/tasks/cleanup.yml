@@ -1,0 +1,23 @@
+---
+- name: Find old Guacamole Server tarballs
+  ansible.builtin.find:
+    paths: /usr/src
+    patterns: "guacamole-server-*.tar.gz"
+  register: found_guacd_tarballs
+- name: Remove old Guacamole Server tarballs
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ found_guacd_tarballs.files }}"
+  when: item.path != "/usr/src/guacamole-server-" + guacamole_version + ".tar.gz"
+- name: Find old Tomcat tarballs
+  ansible.builtin.find:
+    paths: /tmp
+    patterns: "apache-tomcat-*.tar.gz"
+  register: found_tomcat_tarballs
+- name: Remove old Tomcat tarballs
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ found_tomcat_tarballs.files }}"
+  when: item.path != "/tmp/apache-tomcat-" + guacamole_tomcat_version + ".tar.gz"
