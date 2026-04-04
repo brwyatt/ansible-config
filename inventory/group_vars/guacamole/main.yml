@@ -19,5 +19,5 @@ guacamole_mysql_username: guacamole
 # Nginx Configuration for trusted proxies
 # The IPs of guacamole-haproxy nodes go here
 reverseproxy_trusted_proxies:
-  - "172.17.30.x"
-  - "172.17.30.x"
+  - "172.17.30.82"
+  - "172.17.30.107"
