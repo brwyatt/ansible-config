@@ -47,7 +47,7 @@ keepalived_check_scripts:
     type: haproxy
 keepalived_instances:
   guacamole:
-    virtual_ip: "172.17.20.x/24"
+    virtual_ip: "172.17.30.209/24"
     auth_pass: "{{ keepalived_auth_pass }}"
     check_scripts:
       - haproxy
