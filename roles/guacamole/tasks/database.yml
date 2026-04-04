@@ -1,0 +1,42 @@
+---
+- name: Ensure Guacamole database exists
+  community.mysql.mysql_db:
+    name: "{{ guacamole_mysql_database }}"
+    state: present
+    login_host: "{{ guacamole_mysql_hostname }}"
+    login_user: "{{ guacamole_mysql_username }}"
+    login_password: "{{ guacamole_mysql_password }}"
+  run_once: true
+- name: Ensure Guacamole database user exists
+  community.mysql.mysql_user:
+    name: "{{ guacamole_mysql_username }}"
+    password: "{{ guacamole_mysql_password }}"
+    host: "%"
+    priv: "{{ guacamole_mysql_database }}.*:ALL"
+    state: present
+    login_host: "{{ guacamole_mysql_hostname }}"
+    login_user: "{{ guacamole_mysql_username }}"
+    login_password: "{{ guacamole_mysql_password }}"
+  run_once: true
+- name: Check if Guacamole schema is already initialized
+  community.mysql.mysql_query:
+    login_host: "{{ guacamole_mysql_hostname }}"
+    login_user: "{{ guacamole_mysql_username }}"
+    login_password: "{{ guacamole_mysql_password }}"
+    login_db: "{{ guacamole_mysql_database }}"
+    query: "SHOW TABLES LIKE 'guacamole_user';"
+  register: guacamole_schema_check
+  run_once: true
+- name: Import Guacamole schema
+  community.mysql.mysql_db:
+    name: "{{ guacamole_mysql_database }}"
+    state: import
+    target: "{{ item }}"
+    login_host: "{{ guacamole_mysql_hostname }}"
+    login_user: "{{ guacamole_mysql_username }}"
+    login_password: "{{ guacamole_mysql_password }}"
+  loop:
+    - "{{ guacamole_install_root }}/guacamole-auth-jdbc-mysql-{{ guacamole_version }}/schema/001-create-schema.sql"
+    - "{{ guacamole_install_root }}/guacamole-auth-jdbc-mysql-{{ guacamole_version }}/schema/002-create-admin-user.sql"
+  when: guacamole_schema_check.query_result[0] | length == 0
+  run_once: true

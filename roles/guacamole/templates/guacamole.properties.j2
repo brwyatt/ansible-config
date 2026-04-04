@@ -20,5 +20,4 @@ ldap-user-base-dn: {{ guacamole_ldap_user_base_dn }}
 ldap-group-base-dn: {{ guacamole_ldap_group_base_dn }}
 
 # Authentication order
-auth-provider: net.sourceforge.guacamole.net.auth.mysql.MySQLAuthenticationProvider
-auth-provider: net.sourceforge.guacamole.net.auth.ldap.LDAPAuthenticationProvider
+extension-priority: mysql, ldap

@@ -1,22 +1,51 @@
 ---
-# Package names
-guacamole_packages:
-  - guacd
-  - tomcat9
-  - libmariadb-java
-
 # Guacamole Version for downloads
 guacamole_version: "1.5.4"
+
+# Tomcat Version for downloads
+tomcat_version: "9.0.86"
+
+# Package names
+guacamole_runtime_packages:
+  - openjdk-17-jdk-headless
+  - libmariadb-java
+  - libavcodec-dev
+  - libavformat-dev
+  - libavutil-dev
+  - libswscale-dev
+  - libpango1.0-dev
+  - libpulse-dev
+  - libssh2-1-dev
+  - libvncserver-dev
+  - libwebsockets-dev
+  - libwebp-dev
+  - libssl-dev
+  - libvorbis-dev
+  - libjpeg-turbo8-dev
+  - libpng-dev
+  - libtool-bin
+  - libcairo2-dev
+  - libossp-uuid-dev
+  - build-essential
+  - autoconf
+  - automake
+  - make
 
 # Paths
 guacamole_home: /etc/guacamole
 guacamole_extensions_path: "{{ guacamole_home }}/extensions"
 guacamole_lib_path: "{{ guacamole_home }}/lib"
 guacamole_install_root: "/opt/guacamole-{{ guacamole_version }}"
+tomcat_install_root: "/opt/apache-tomcat-{{ tomcat_version }}"
 
 # URLs (Guacamole Download mirrors)
 guacamole_mirror: "https://archive.apache.org/dist/guacamole"
-
+guacamole_server_url: "{{ guacamole_mirror }}/{{ guacamole_version }}/source/guacamole-server-{{ guacamole_version }}.tar.gz"
 guacamole_war_url: "{{ guacamole_mirror }}/{{ guacamole_version }}/binary/guacamole-{{ guacamole_version }}.war"
 guacamole_auth_ldap_url: "{{ guacamole_mirror }}/{{ guacamole_version }}/binary/guacamole-auth-ldap-{{ guacamole_version }}.tar.gz"
 guacamole_auth_jdbc_mysql_url: "{{ guacamole_mirror }}/{{ guacamole_version }}/binary/guacamole-auth-jdbc-{{ guacamole_version }}.tar.gz"
+
+# Tomcat Download URL
+tomcat_mirror: "https://archive.apache.org/dist/tomcat"
+tomcat_major_version: "{{ tomcat_version.split('.')[0] }}"
+tomcat_download_url: "{{ tomcat_mirror }}/tomcat-{{ tomcat_major_version }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"

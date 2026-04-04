@@ -1,0 +1,10 @@
+[Unit]
+Description=Guacamole Proxy Daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/local/sbin/guacd -f
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

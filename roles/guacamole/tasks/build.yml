@@ -1,0 +1,32 @@
+---
+- name: Install build and runtime dependencies
+  ansible.builtin.package:
+    name: "{{ guacamole_runtime_packages }}"
+    state: present
+- name: Create build directory
+  ansible.builtin.file:
+    path: "/usr/src/guacamole-server-{{ guacamole_version }}"
+    state: directory
+    mode: '0755'
+- name: Download Guacamole Server source
+  ansible.builtin.get_url:
+    url: "{{ guacamole_server_url }}"
+    dest: "/usr/src/guacamole-server-{{ guacamole_version }}.tar.gz"
+    mode: '0644'
+- name: Extract Guacamole Server source
+  ansible.builtin.unarchive:
+    src: "/usr/src/guacamole-server-{{ guacamole_version }}.tar.gz"
+    dest: "/usr/src/"
+    remote_src: true
+    creates: "/usr/src/guacamole-server-{{ guacamole_version }}/configure"
+- name: Configure, make, and install Guacamole Server
+  ansible.builtin.shell:
+    cmd: |
+      ./configure --with-init-dir=/etc/init.d
+      make
+      make install
+      ldconfig
+    chdir: "/usr/src/guacamole-server-{{ guacamole_version }}"
+  args:
+    creates: /usr/local/sbin/guacd
+  notify: Restart guacd

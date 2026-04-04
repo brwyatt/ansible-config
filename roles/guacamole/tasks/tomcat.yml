@@ -1,0 +1,88 @@
+---
+- name: Create tomcat group
+  ansible.builtin.group:
+    name: tomcat
+    state: present
+- name: Create tomcat user
+  ansible.builtin.user:
+    name: tomcat
+    group: tomcat
+    shell: /bin/false
+    home: "{{ tomcat_install_root }}"
+    system: true
+- name: Create tomcat installation directory
+  ansible.builtin.file:
+    path: "{{ tomcat_install_root }}"
+    state: directory
+    owner: tomcat
+    group: tomcat
+    mode: '0755'
+- name: Download Apache Tomcat
+  ansible.builtin.get_url:
+    url: "{{ tomcat_download_url }}"
+    dest: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    mode: '0644'
+- name: Extract Apache Tomcat
+  ansible.builtin.unarchive:
+    src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    dest: /opt/
+    remote_src: true
+    owner: tomcat
+    group: tomcat
+    creates: "{{ tomcat_install_root }}/bin/startup.sh"
+- name: Create Guacamole user
+  ansible.builtin.user:
+    name: guacamole
+    shell: /bin/false
+    system: true
+- name: Ensure configuration directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: guacamole
+    group: guacamole
+    mode: '0755'
+  loop:
+    - "{{ guacamole_home }}"
+    - "{{ guacamole_extensions_path }}"
+    - "{{ guacamole_lib_path }}"
+    - "{{ guacamole_install_root }}"
+- name: Download Guacamole web application
+  ansible.builtin.get_url:
+    url: "{{ guacamole_war_url }}"
+    dest: "{{ guacamole_install_root }}/guacamole-{{ guacamole_version }}.war"
+    owner: guacamole
+    group: guacamole
+    mode: '0644'
+- name: Link Guacamole web application to Tomcat
+  ansible.builtin.file:
+    src: "{{ guacamole_install_root }}/guacamole-{{ guacamole_version }}.war"
+    dest: "{{ tomcat_install_root }}/webapps/guacamole.war"
+    state: link
+    owner: tomcat
+    group: tomcat
+  notify: Restart Tomcat
+- name: Deploy Tomcat server.xml
+  ansible.builtin.template:
+    src: server.xml.j2
+    dest: "{{ tomcat_install_root }}/conf/server.xml"
+    owner: tomcat
+    group: tomcat
+    mode: '0640'
+  notify: Restart Tomcat
+- name: Deploy Tomcat systemd unit
+  ansible.builtin.template:
+    src: tomcat.service.j2
+    dest: /etc/systemd/system/tomcat.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Tomcat
+- name: Deploy guacd systemd unit
+  ansible.builtin.template:
+    src: guacd.service.j2
+    dest: /etc/systemd/system/guacd.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart guacd
