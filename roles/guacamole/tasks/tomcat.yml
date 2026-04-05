@@ -12,7 +12,7 @@
     shell: /bin/false
     home: "{{ guacamole_tomcat_install_root }}"
     system: true
-  notfy: Restart Tomcat
+  notify: Restart Tomcat
 - name: Create tomcat installation directory
   ansible.builtin.file:
     path: "{{ guacamole_tomcat_install_root }}"
