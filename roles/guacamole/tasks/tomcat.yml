@@ -50,14 +50,16 @@
     owner: guacamole
     group: guacamole
     mode: '0644'
-- name: Link Guacamole web application to Tomcat
+- name: Link Guacamole web application to Tomcat ROOT
   ansible.builtin.file:
     src: "{{ guacamole_install_root }}/guacamole-{{ guacamole_version }}.war"
-    dest: "{{ guacamole_tomcat_install_root }}/webapps/guacamole.war"
+    dest: "{{ guacamole_tomcat_install_root }}/webapps/ROOT.war"
     state: link
     owner: tomcat
     group: tomcat
-  notify: Restart Tomcat
+  notify:
+    - Cleanup Exploded WARs
+    - Restart Tomcat
 - name: Deploy Tomcat server.xml
   ansible.builtin.template:
     src: server.xml.j2

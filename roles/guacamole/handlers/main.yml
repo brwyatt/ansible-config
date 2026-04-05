@@ -1,4 +1,11 @@
 ---
+- name: Cleanup Exploded WARs
+  ansible.builtin.file:
+    path: "{{ guacamole_tomcat_install_root }}/webapps/{{ item }}"
+    state: absent
+  loop:
+    - ROOT
+    - guacamole
 - name: Restart Tomcat
   ansible.builtin.service:
     name: tomcat
