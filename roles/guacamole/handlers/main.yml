@@ -15,7 +15,9 @@
   ansible.builtin.service:
     name: tomcat
     state: restarted
+    daemon_reload: true
 - name: Restart guacd
   ansible.builtin.service:
     name: guacd
     state: restarted
+    daemon_reload: true

@@ -16,8 +16,10 @@
     name: guacd
     state: started
     enabled: true
+    daemon_reload: true
 - name: Ensure Tomcat is running and enabled
   ansible.builtin.service:
     name: tomcat
     state: started
     enabled: true
+    daemon_reload: true
