@@ -1,6 +1,6 @@
 ---
 # Guacamole Version for downloads
-guacamole_version: "1.5.4"
+guacamole_version: "1.6.0"
 
 # Tomcat Version for downloads
 guacamole_tomcat_version: "9.0.86"
@@ -51,9 +51,9 @@ guacamole_tomcat_major_version: "{{ guacamole_tomcat_version.split('.')[0] }}"
 guacamole_tomcat_download_url: "{{ guacamole_tomcat_mirror }}/tomcat-{{ guacamole_tomcat_major_version }}/v{{ guacamole_tomcat_version }}/bin/apache-tomcat-{{ guacamole_tomcat_version }}.tar.gz" # noqa: yaml[line-length]
 
 # SHA256 Checksums (Look up correct values for version)
-guacamole_server_checksum: "sha256:4c0add552b1fc387c23a35c430155e01f2dfcf9daa0f96fbf805d0ace756729e"
-guacamole_war_checksum: "sha256:5728b563911bd64bce0a0b81c74ea8ccb2190d1785bff34030fc6885a8273d3e"
-guacamole_auth_ldap_checksum: "sha256:f912fe921cd0d429a752709e31a37b931e95d88a47bc4007ab49377d1c1a6336"
-guacamole_auth_jdbc_checksum: "sha256:f45736b28eb6647b7eb0d2b48331e12e5a432661f61115b63d1a05a5bd20244d"
+guacamole_server_checksum: "sha256:8bc45675da96d7b6f39728160181e3d4ff3c08f460f6d26de5805b642bf13f2b"
+guacamole_war_checksum: "sha256:b41ceb1e2df010b54db563e0b00edb8d5fe9f073c6168462e4c978df0fc6e716"
+guacamole_auth_ldap_checksum: "sha256:b07f27adc370324108527b6929f61d93880026d57c1033064bd1c55b881c7497"
+guacamole_auth_jdbc_checksum: "sha256:97bc5fd3d67d25c0e98a475d1dfd308a037859f549fac47171c723b7a7039366"
 guacamole_tomcat_checksum: >-
   sha512:e8a8000dbeba5ee266ec4bf77217574364ffd114c8b913816f2e7a5e4eab4d01d0be3f05c8fccefcb5c5d770308efe1983be80279b6ef6d122d6183288a8ee9c
