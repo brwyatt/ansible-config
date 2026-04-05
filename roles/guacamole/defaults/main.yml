@@ -32,6 +32,8 @@ guacamole_runtime_packages:
   - autoconf
   - automake
   - make
+  - fonts-noto-color-emoji
+  - fonts-liberation
 
 # Paths
 guacamole_home: /etc/guacamole
