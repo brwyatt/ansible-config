@@ -28,11 +28,6 @@
     owner: guacamole
     group: guacamole
     mode: '0644'
-- name: Remove default Tomcat ROOT application
-  ansible.builtin.file:
-    path: "{{ guacamole_tomcat_install_root }}/webapps/ROOT"
-    state: absent
-  notify: Restart Tomcat
 - name: Link Guacamole web application to Tomcat ROOT
   ansible.builtin.file:
     src: "{{ guacamole_install_root }}/guacamole-{{ guacamole_version }}.war"
