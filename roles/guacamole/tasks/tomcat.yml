@@ -7,9 +7,12 @@
   ansible.builtin.user:
     name: tomcat
     group: tomcat
+    groups: guacamole
+    append: true
     shell: /bin/false
     home: "{{ guacamole_tomcat_install_root }}"
     system: true
+  notfy: Restart Tomcat
 - name: Create tomcat installation directory
   ansible.builtin.file:
     path: "{{ guacamole_tomcat_install_root }}"
@@ -31,17 +34,6 @@
     owner: tomcat
     group: tomcat
     creates: "{{ guacamole_tomcat_install_root }}/bin/startup.sh"
-- name: Check for guacamole user (Managed by LDAP)
-  ansible.builtin.getent:
-    database: passwd
-    key: guacamole
-    fail_key: false
-- name: Create local Guacamole user if not in LDAP
-  ansible.builtin.user:
-    name: guacamole
-    shell: /bin/false
-    system: true
-  when: ansible_facts.getent_passwd['guacamole'] is none
 - name: Download Guacamole web application
   ansible.builtin.get_url:
     url: "{{ guacamole_war_url }}"

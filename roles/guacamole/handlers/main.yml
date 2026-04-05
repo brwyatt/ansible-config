@@ -6,6 +6,7 @@
   loop:
     - ROOT
     - guacamole
+    - guacamole.war
 - name: Restart Tomcat
   ansible.builtin.service:
     name: tomcat

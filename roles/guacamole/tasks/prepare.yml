@@ -1,4 +1,15 @@
 ---
+- name: Check for guacamole user (Managed by LDAP)
+  ansible.builtin.getent:
+    database: passwd
+    key: guacamole
+    fail_key: false
+- name: Create local Guacamole user if not in LDAP
+  ansible.builtin.user:
+    name: guacamole
+    shell: /bin/false
+    system: true
+  when: ansible_facts.getent_passwd['guacamole'] is none
 - name: Ensure configuration and install directories exist
   ansible.builtin.file:
     path: "{{ item }}"
