@@ -18,6 +18,9 @@ ldap-search-bind-dn: {{ guacamole_ldap_search_bind_dn }}
 ldap-search-bind-password: {{ guacamole_ldap_search_bind_password }}
 ldap-user-base-dn: {{ guacamole_ldap_user_base_dn }}
 ldap-group-base-dn: {{ guacamole_ldap_group_base_dn }}
+{% if guacamole_ldap_user_search_filter is defined %}
+ldap-user-search-filter: {{ guacamole_ldap_user_search_filter }}
+{% endif %}
 
 # Authentication order
 extension-priority: mysql, ldap
