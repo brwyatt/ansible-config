@@ -7,6 +7,10 @@
     - ROOT
     - guacamole
     - guacamole.war
+- name: Run ldconfig
+  ansible.builtin.command:
+    cmd: ldconfig
+  changed_when: false
 - name: Restart Tomcat
   ansible.builtin.service:
     name: tomcat
@@ -15,7 +19,3 @@
   ansible.builtin.service:
     name: guacd
     state: restarted
-- name: Run ldconfig
-  ansible.builtin.command:
-    cmd: ldconfig
-  changed_when: false
