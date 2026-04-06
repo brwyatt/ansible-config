@@ -58,11 +58,11 @@
   ansible.builtin.command:
     cmd: mvn clean package
     chdir: /usr/src/guacamole-auth-sshkey
-    creates: /usr/src/guacamole-auth-sshkey/target/guacamole-auth-sshkey-1.5.0.jar
+    creates: /usr/src/guacamole-auth-sshkey/target/guacamole-auth-sshkey-1.0.0.jar
 - name: Copy Guacamole SSH Key extension to install root
   ansible.builtin.copy:
-    src: /usr/src/guacamole-auth-sshkey/target/guacamole-auth-sshkey-1.5.0.jar
-    dest: "{{ guacamole_install_root }}/guacamole-auth-sshkey-1.5.0.jar"
+    src: /usr/src/guacamole-auth-sshkey/target/guacamole-auth-sshkey-1.0.0.jar
+    dest: "{{ guacamole_install_root }}/guacamole-auth-sshkey-1.0.0.jar"
     remote_src: true
     owner: guacamole
     group: guacamole
