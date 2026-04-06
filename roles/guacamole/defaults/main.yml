@@ -10,6 +10,8 @@ guacamole_runtime_packages:
   - mariadb-client
   - python3-pymysql
   - openjdk-17-jdk-headless
+  - maven
+  - git
   - libmariadb-java
   - libavcodec-dev
   - libavformat-dev

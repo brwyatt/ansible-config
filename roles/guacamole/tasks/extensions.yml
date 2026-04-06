@@ -49,6 +49,32 @@
     owner: guacamole
     group: guacamole
   notify: Restart Tomcat
+- name: Clone Guacamole SSH Key extension
+  ansible.builtin.git:
+    repo: https://github.com/necouchman/guacamole-auth-sshkey.git
+    dest: /usr/src/guacamole-auth-sshkey
+    version: master
+- name: Build Guacamole SSH Key extension
+  ansible.builtin.command:
+    cmd: mvn clean package
+    chdir: /usr/src/guacamole-auth-sshkey
+    creates: /usr/src/guacamole-auth-sshkey/target/guacamole-auth-sshkey-1.5.0.jar
+- name: Copy Guacamole SSH Key extension to install root
+  ansible.builtin.copy:
+    src: /usr/src/guacamole-auth-sshkey/target/guacamole-auth-sshkey-1.5.0.jar
+    dest: "{{ guacamole_install_root }}/guacamole-auth-sshkey-1.5.0.jar"
+    remote_src: true
+    owner: guacamole
+    group: guacamole
+    mode: '0644'
+- name: Link SSH Key extension
+  ansible.builtin.file:
+    src: "{{ guacamole_install_root }}/guacamole-auth-sshkey-1.5.0.jar"
+    dest: "{{ guacamole_extensions_path }}/guacamole-auth-sshkey.jar"
+    state: link
+    owner: guacamole
+    group: guacamole
+  notify: Restart Tomcat
 - name: Link MariaDB Java Connector
   ansible.builtin.file:
     src: /usr/share/java/mariadb-java-client.jar
