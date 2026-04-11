@@ -17,6 +17,7 @@ loadbalancers:
     mariadbloadbalancers:
     dffmpegloadbalancers:
     guacamoleloadbalancers:
+    authelialoadbalancers:
 mqttloadbalancers:
   hosts:
     mqtt-haproxy[01:02].iot.home.brwyatt.net:
@@ -125,14 +126,21 @@ cephiscsi:
 guacamole:
   hosts:
     guacamole[01:02].server.home.brwyatt.net:
+autheliaservers:
+  hosts:
+    authelia[01:02].server.home.brwyatt.net:
 guacamoleloadbalancers:
   hosts:
     guacamole-haproxy[01:02].server.home.brwyatt.net:
+authelialoadbalancers:
+  hosts:
+    authelia-haproxy[01:02].server.home.brwyatt.net:
 otbr:
   hosts:
     thread-br.iot.home.brwyatt.net:
 app_proxy:
   children:
+    autheliaservers:
     radarr:
     sonarr:
     prowlarr:
@@ -144,6 +152,7 @@ app_proxy:
     proxmoxdcm:
     dffmpegcoordinators:
     guacamole:
+    seedbox:
 ceph_clients:
   children:
     jellyfin:

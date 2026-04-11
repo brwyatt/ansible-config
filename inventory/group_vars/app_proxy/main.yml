@@ -5,3 +5,4 @@ certbot_certs:
 reverseproxy_sites:
   - server_names: "{{ certbot_certs[0] }}"
     destination: "{{ proxy_destination | default('http://127.0.0.1:' + (proxy_port | string)) }}"
+    sso_enabled: "{{ proxy_sso_enabled | default(false) }}"

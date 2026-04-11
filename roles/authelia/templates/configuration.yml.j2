@@ -1,0 +1,68 @@
+###############################################################
+#                   Authelia Configuration                    #
+###############################################################
+
+host: {{ authelia_host }}
+port: {{ authelia_port }}
+
+log:
+  level: {{ authelia_log_level }}
+
+authentication_backend:
+  ldap:
+    implementation: custom
+    url: {{ authelia_ldap_url }}
+    skip_verify: false
+    base_dn: {{ authelia_ldap_base_dn }}
+    additional_users_dn: cn=users,cn=accounts
+    users_filter: "(&(|(memberOf=cn=authelia-users,cn=groups,cn=accounts,{{ authelia_ldap_base_dn }})(memberOf=cn=admins,cn=groups,cn=accounts,{{ authelia_ldap_base_dn }}))(uid={input}))"
+    additional_groups_dn: cn=groups,cn=accounts
+    groups_filter: "(member={dn})"
+    attributes:
+      display_name: displayName
+      username: uid
+      mail: mail
+    user: {{ authelia_ldap_user }}
+    password: {{ authelia_ldap_password }}
+
+session:
+  name: {{ authelia_session_name }}
+  domain: {{ authelia_session_domain }}
+  same_site: lax
+  expiration: {{ authelia_session_expiration }}
+  inactivity: {{ authelia_session_inactivity }}
+  remember_me_duration: {{ authelia_session_remember_me_duration }}
+  secret: {{ authelia_session_secret }}
+
+storage:
+  encryption_key: {{ authelia_storage_encryption_key }}
+  mysql:
+    host: {{ authelia_database_host }}
+    port: 3306
+    database: {{ authelia_database_name }}
+    username: {{ authelia_database_user }}
+    password: {{ authelia_database_password }}
+
+notifier:
+  filesystem:
+    filename: {{ authelia_config_path }}/notification.txt
+
+access_control:
+  default_policy: deny
+  rules:
+{% for rule in authelia_access_control_rules %}
+    - domain: {{ rule.domain }}
+      policy: {{ rule.policy }}
+{% if rule.subject is defined %}
+      subject: {{ rule.subject }}
+{% endif %}
+{% endfor %}
+
+regulation:
+  max_retries: 3
+  find_time: 2m
+  ban_time: 5m
+
+identity_validation:
+  reset_password:
+    jwt_secret: {{ authelia_jwt_secret }}

@@ -1,0 +1,18 @@
+---
+proxy_port: 9091
+
+authelia_session_domain: "home.brwyatt.net"
+
+authelia_ldap_url: "ldaps://ipa.server.home.brwyatt.net"
+authelia_ldap_base_dn: "dc=home,dc=brwyatt,dc=net"
+authelia_ldap_user: "uid=authelia-service,cn=users,cn=accounts,{{ authelia_ldap_base_dn }}"
+
+authelia_database_type: "mysql"
+authelia_database_host: "mariadb.server.home.brwyatt.net"
+authelia_database_name: "authelia"
+authelia_database_user: "authelia"
+
+authelia_access_control_rules:
+  - domain: "seedbox.server.home.brwyatt.net"
+    policy: "one_factor"
+    subject: "group:seedboxusers"

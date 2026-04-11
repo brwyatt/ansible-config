@@ -1,0 +1,21 @@
+---
+certbot_certs:
+  - ["auth.home.brwyatt.net"]
+keepalived_instances:
+  authelia:
+    virtual_ip: 172.17.30.210/24
+    auth_pass: "{{ authelia_keepalived_auth_pass }}"
+    check_scripts:
+      - haproxy
+haproxy_frontends:
+  - name: authelia-https
+    bind:
+      - "{{ keepalived_instances.authelia.virtual_ip | ipaddr('address') }}:443 ssl crt /etc/letsencrypt/live/auth.home.brwyatt.net/haproxy.pem"
+    default_backend: authelia-backend
+haproxy_backends:
+  - name: authelia-backend
+    options:
+      - "forwardfor"
+      - "http-server-close"
+    health_check: "option httpchk GET /api/health"
+    server_template: "authelia 5 _https._tcp.auth.home.brwyatt.net check ssl verify none"
