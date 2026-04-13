@@ -39,8 +39,8 @@ haproxy_backends:
     balance: "roundrobin"
     options:
       - "option httpchk"
-      - "http-check send meth GET uri /api/health"
       - "http-check connect ssl"
+      - "http-check send meth GET uri /api/health"
       - "http-check expect status 200"
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
       - "server-template authelia 1-5 _https._tcp.auth.home.brwyatt.net resolvers localdns init-addr none"
