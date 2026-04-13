@@ -10,12 +10,12 @@ log:
 
 authentication_backend:
   ldap:
-    implementation: custom
+    implementation: freeipa
     url: {{ authelia_ldap_url }}
     skip_verify: false
     base_dn: {{ authelia_ldap_base_dn }}
     additional_users_dn: cn=users,cn=accounts
-    users_filter: "(&(|(memberOf=cn=authelia-users,cn=groups,cn=accounts,{{ authelia_ldap_base_dn }})(memberOf=cn=admins,cn=groups,cn=accounts,{{ authelia_ldap_base_dn }}))(uid={input}))"
+    users_filter: "(&(!(memberOf=cn=service-accounts,cn=groups,cn=accounts,{{ authelia_ldap_base_dn }}))(uid={input}))"
     additional_groups_dn: cn=groups,cn=accounts
     groups_filter: "(member={dn})"
     attributes:
@@ -38,7 +38,7 @@ storage:
   encryption_key: {{ authelia_storage_encryption_key }}
   mysql:
     host: {{ authelia_database_host }}
-    port: 3306
+    port: {{ authelia_database_port }}
     database: {{ authelia_database_name }}
     username: {{ authelia_database_user }}
     password: {{ authelia_database_password }}
