@@ -2,8 +2,8 @@
 #                   Authelia Configuration                    #
 ###############################################################
 
-host: {{ authelia_host }}
-port: {{ authelia_port }}
+server:
+  address: 'tcp://{{ authelia_host }}:{{ authelia_port }}/'
 
 log:
   level: {{ authelia_log_level }}
@@ -11,11 +11,12 @@ log:
 authentication_backend:
   ldap:
     implementation: freeipa
-    url: {{ authelia_ldap_url }}
-    skip_verify: false
+    address: {{ authelia_ldap_url }}
+    tls:
+      skip_verify: false
     base_dn: {{ authelia_ldap_base_dn }}
     additional_users_dn: cn=users,cn=accounts
-    users_filter: "(&(!(memberOf=cn=service-accounts,cn=groups,cn=accounts,{{ authelia_ldap_base_dn }}))(uid={input}))"
+    users_filter: "(&(!(memberOf=cn=service-accounts,cn=groups,cn=accounts,{{ authelia_ldap_base_dn }}))({username_attribute}={input}))"
     additional_groups_dn: cn=groups,cn=accounts
     groups_filter: "(member={dn})"
     attributes:
@@ -27,18 +28,19 @@ authentication_backend:
 
 session:
   name: {{ authelia_session_name }}
-  domain: {{ authelia_session_domain }}
-  same_site: lax
-  expiration: {{ authelia_session_expiration }}
-  inactivity: {{ authelia_session_inactivity }}
-  remember_me_duration: {{ authelia_session_remember_me_duration }}
   secret: {{ authelia_session_secret }}
+  cookies:
+    - domain: {{ authelia_session_domain }}
+      authelia_url: 'https://auth.home.brwyatt.net'
+      same_site: lax
+      expiration: {{ authelia_session_expiration }}
+      inactivity: {{ authelia_session_inactivity }}
+      remember_me: {{ authelia_session_remember_me_duration }}
 
 storage:
   encryption_key: {{ authelia_storage_encryption_key }}
   mysql:
-    host: {{ authelia_database_host }}
-    port: {{ authelia_database_port }}
+    address: 'tcp://{{ authelia_database_host }}:{{ authelia_database_port }}'
     database: {{ authelia_database_name }}
     username: {{ authelia_database_user }}
     password: {{ authelia_database_password }}
