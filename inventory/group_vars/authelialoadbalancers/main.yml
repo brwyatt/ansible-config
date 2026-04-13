@@ -38,7 +38,8 @@ haproxy_backends:
   authelia-backend:
     balance: "roundrobin"
     options:
-      - "option httpchk GET /api/health"
+      - "option httpchk"
+      - "http-check send meth GET uri /api/health"
       - "http-check connect ssl"
       - "http-check expect status 200"
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
