@@ -4,7 +4,7 @@ authelia_version: "4.38.0"
 authelia_config_path: "/etc/authelia"
 authelia_config_file: "{{ authelia_config_path }}/configuration.yml"
 
-authelia_host: "0.0.0.0"
+authelia_host: "127.0.0.1"
 authelia_port: 9091
 
 authelia_log_level: "info"
