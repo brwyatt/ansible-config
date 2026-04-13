@@ -1,7 +1,7 @@
 ---
 authelia_session_domain: "home.brwyatt.net"
 
-authelia_ldap_url: "ldaps://ipa.server.home.brwyatt.net"
+authelia_ldap_url: "ldaps://ipa.home.brwyatt.net"
 authelia_ldap_base_dn: "dc=home,dc=brwyatt,dc=net"
 authelia_ldap_user: "uid=authelia,cn=users,cn=accounts,{{ authelia_ldap_base_dn }}"
 
