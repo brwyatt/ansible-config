@@ -16,3 +16,7 @@ authelia_access_control_rules:
     subject: "group:seedboxusers"
 
 proxy_port: 9091
+
+reverseproxy_trusted_proxies:
+  - "172.17.30.121"
+  - "172.17.30.172"
