@@ -1,6 +1,4 @@
 ---
-proxy_port: 9091
-
 authelia_session_domain: "home.brwyatt.net"
 
 authelia_ldap_url: "ldaps://ipa.server.home.brwyatt.net"
@@ -16,3 +14,5 @@ authelia_access_control_rules:
   - domain: "seedbox.server.home.brwyatt.net"
     policy: "one_factor"
     subject: "group:seedboxusers"
+
+proxy_port: 9091
