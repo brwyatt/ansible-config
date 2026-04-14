@@ -19,6 +19,31 @@
     mode: '0644'
   become: true
   notify: Restart Nginx
+- name: "Authelia SSO Config"
+  ansible.builtin.template:
+    src: authelia-auth.conf.j2
+    dest: /etc/nginx/snippets/authelia-auth.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart Nginx
+- name: "Configure Nginx Caching for Auth"
+  ansible.builtin.lineinfile:
+    path: /etc/nginx/nginx.conf
+    insertafter: "http {"
+    line: "    proxy_cache_path /var/cache/nginx/auth levels=1:2 keys_zone=auth_cache:10m max_size=100m inactive=60m use_temp_path=off;"
+    state: present
+  become: true
+  notify: Restart Nginx
+- name: Ensure Nginx cache directory exists
+  ansible.builtin.file:
+    path: /var/cache/nginx/auth
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+  become: true
 - name: "Nginx default config"
   ansible.builtin.copy:
     src: default.conf

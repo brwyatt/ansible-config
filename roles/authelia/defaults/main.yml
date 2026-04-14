@@ -1,0 +1,23 @@
+---
+authelia_version: "4.39.19"
+authelia_checksum: "sha256:f6f8d2450533071076f1f2bbf4abfc5b4885be0cc3565e5362bc2ac2470677a3"
+
+authelia_user: "authelia"
+authelia_config_path: "/etc/authelia"
+authelia_config_file: "{{ authelia_config_path }}/configuration.yml"
+
+authelia_install_root: "/opt/authelia"
+authelia_version_dir: "{{ authelia_install_root }}/{{ authelia_version }}"
+authelia_bin_path: "/usr/local/bin/authelia"
+
+authelia_host: "127.0.0.1"
+authelia_port: 9091
+
+authelia_database_port: 3306
+
+authelia_log_level: "info"
+
+authelia_session_name: "authelia_session"
+authelia_session_expiration: "1h"
+authelia_session_inactivity: "5m"
+authelia_session_remember_me_duration: "1M"

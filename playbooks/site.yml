@@ -21,12 +21,6 @@
   roles:
     - role: renderer
     - role: dffmpeg
-- name: SeedBox
-  hosts: seedbox
-  become: true
-  roles:
-    - role: aws_creds
-    - role: certbot
 - name: NUT Server
   hosts: nutserver
   become: true
@@ -71,6 +65,11 @@
   roles:
     - role: freeipa.ansible_freeipa.ipareplica
       tags: ipa_replica_setup
+- name: Authelia SSO Servers
+  hosts: autheliaservers
+  become: true
+  roles:
+    - role: authelia
 - name: ACME Cert Pusher
   hosts: acmecertpusher
   roles:

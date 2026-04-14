@@ -1,0 +1,86 @@
+---
+- name: Check for Authelia user (Managed by LDAP)
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ authelia_user }}"
+    fail_key: false
+  become: true
+- name: Create local Authelia user if not in LDAP
+  ansible.builtin.user:
+    name: "{{ authelia_user }}"
+    shell: /bin/false
+    system: true
+  when: ansible_facts.getent_passwd[authelia_user] is none
+  become: true
+- name: Create Authelia directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ authelia_user }}"
+    group: root
+    mode: '0750'
+  loop:
+    - "{{ authelia_config_path }}"
+    - "{{ authelia_install_root }}"
+    - "{{ authelia_version_dir }}"
+  become: true
+- name: Template Authelia configuration
+  ansible.builtin.template:
+    src: configuration.yml.j2
+    dest: "{{ authelia_config_file }}"
+    owner: "{{ authelia_user }}"
+    group: root
+    mode: '0640'
+  become: true
+  notify: Restart Authelia
+- name: Download Authelia binary
+  ansible.builtin.get_url:
+    url: "https://github.com/authelia/authelia/releases/download/v{{ authelia_version }}/authelia-v{{ authelia_version }}-linux-amd64.tar.gz"
+    dest: "/tmp/authelia-{{ authelia_version }}.tar.gz"
+    checksum: "{{ authelia_checksum }}"
+    mode: '0644'
+  become: true
+- name: Extract Authelia binary
+  ansible.builtin.unarchive:
+    src: "/tmp/authelia-{{ authelia_version }}.tar.gz"
+    dest: "{{ authelia_version_dir }}"
+    owner: "{{ authelia_user }}"
+    group: root
+    remote_src: true
+    creates: "{{ authelia_version_dir }}/authelia"
+  become: true
+  notify: Restart Authelia
+- name: Create symlink to Authelia binary
+  ansible.builtin.file:
+    src: "{{ authelia_version_dir }}/authelia"
+    dest: "{{ authelia_bin_path }}"
+    state: link
+    force: true
+  become: true
+  notify: Restart Authelia
+- name: Create Authelia systemd unit
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      Description=Authelia SSO
+      After=network.target
+
+      [Service]
+      ExecStart={{ authelia_bin_path }} --config {{ authelia_config_file }}
+      Restart=on-failure
+      User={{ authelia_user }}
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: /etc/systemd/system/authelia.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart Authelia
+- name: Ensure Authelia is started and enabled
+  ansible.builtin.service:
+    name: authelia
+    state: started
+    enabled: true
+  become: true
