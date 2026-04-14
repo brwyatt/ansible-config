@@ -1,0 +1,12 @@
+bind 0.0.0.0
+port {{ redis_sentinel_port }}
+daemonize no
+pidfile /var/run/redis/redis-sentinel.pid
+logfile /var/log/redis/redis-sentinel.log
+dir /var/lib/redis
+
+sentinel monitor {{ redis_cluster_name }} {{ hostvars[groups['redisservers'][0]]['ansible_host'] | default(groups['redisservers'][0]) }} {{ redis_port }} {{ redis_sentinel_quorum }}
+sentinel auth-pass {{ redis_cluster_name }} {{ redis_requirepass }}
+sentinel down-after-milliseconds {{ redis_cluster_name }} {{ redis_sentinel_down_after_milliseconds }}
+sentinel parallel-syncs {{ redis_cluster_name }} {{ redis_sentinel_parallel_syncs }}
+sentinel failover-timeout {{ redis_cluster_name }} {{ redis_sentinel_failover_timeout }}

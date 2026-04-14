@@ -1,0 +1,26 @@
+---
+- name: Install Redis Sentinel
+  ansible.builtin.package:
+    name: redis-sentinel
+    state: present
+
+- name: Check if Sentinel config exists
+  ansible.builtin.stat:
+    path: /etc/redis/sentinel.conf
+  register: sentinel_conf_stat
+
+- name: Configure Redis Sentinel (Initial)
+  when: not sentinel_conf_stat.stat.exists
+  ansible.builtin.template:
+    src: sentinel.conf.j2
+    dest: /etc/redis/sentinel.conf
+    owner: redis
+    group: redis
+    mode: '0640'
+  notify: Restart Redis Sentinel
+
+- name: Ensure Sentinel is started and enabled
+  ansible.builtin.service:
+    name: redis-sentinel
+    state: started
+    enabled: true

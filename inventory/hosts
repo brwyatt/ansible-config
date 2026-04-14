@@ -18,6 +18,7 @@ loadbalancers:
     dffmpegloadbalancers:
     guacamoleloadbalancers:
     authelialoadbalancers:
+    redisloadbalancers:
 mqttloadbalancers:
   hosts:
     mqtt-haproxy[01:02].iot.home.brwyatt.net:
@@ -135,6 +136,12 @@ guacamoleloadbalancers:
 authelialoadbalancers:
   hosts:
     authelia-haproxy[01:02].server.home.brwyatt.net:
+redisloadbalancers:
+  hosts:
+    redis-haproxy[01:02].server.home.brwyatt.net:
+redisservers:
+  hosts:
+    redis[01:03].server.home.brwyatt.net:
 otbr:
   hosts:
     thread-br.iot.home.brwyatt.net:

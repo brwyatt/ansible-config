@@ -124,6 +124,12 @@
     - role: aws_creds
     - role: certbot
     - role: mariadb
+- name: Redis Cluster
+  hosts: redisservers
+  become: true
+  roles:
+    - role: redis
+    - role: redis_sentinel
 - name: Load Balancer hosts
   hosts: loadbalancers
   become: true
