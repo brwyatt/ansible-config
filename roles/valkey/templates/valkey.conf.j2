@@ -1,4 +1,5 @@
 bind 0.0.0.0
+{% if valkey_tls %}
 port 0
 tls-port {{ valkey_port }}
 
@@ -6,6 +7,11 @@ tls-cert-file /etc/valkey/certs/valkey.crt
 tls-key-file /etc/valkey/certs/valkey.key
 tls-ca-cert-file /etc/ssl/certs/ca-certificates.crt
 tls-auth-clients no
+
+tls-cluster yes
+{% else %}
+port {{ valkey_port }}
+{% endif %}
 
 protected-mode no
 tcp-backlog 511
