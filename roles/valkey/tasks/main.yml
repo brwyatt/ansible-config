@@ -38,19 +38,35 @@
     name: valkey-server
     state: started
     enabled: true
-- name: Initialize Valkey Cluster
+- name: Check Valkey Cluster state
   run_once: true
   delegate_to: "{{ groups['valkeyservers'][0] }}"
   ansible.builtin.command:
     cmd: >
-      valkey-cli --cluster create
+      valkey-cli --tls
+      --cert /etc/valkey/certs/valkey.crt
+      --key /etc/valkey/certs/valkey.key
+      --cacert /etc/ssl/certs/ca-certificates.crt
+      -u valkey://admin:{{ valkey_admin_password }}@localhost:{{ valkey_port }}
+      cluster info
+  register: valkey_cluster_info
+  changed_when: false
+  failed_when: false
+- name: Initialize Valkey Cluster
+  run_once: true
+  delegate_to: "{{ groups['valkeyservers'][0] }}"
+  when: "'cluster_state:ok' not in valkey_cluster_info.stdout"
+  changed_when: true
+  ansible.builtin.command:
+    cmd: >
+      valkey-cli --tls
+      --cert /etc/valkey/certs/valkey.crt
+      --key /etc/valkey/certs/valkey.key
+      --cacert /etc/ssl/certs/ca-certificates.crt
+      -u valkey://admin:{{ valkey_admin_password }}@localhost:{{ valkey_port }}
+      --cluster create
       {% for host in groups['valkeyservers'] %}
       {{ hostvars[host]['ansible_host'] | default(host) }}:{{ valkey_port }}
       {% endfor %}
       --cluster-replicas 0
       --cluster-yes
-    creates: /var/lib/valkey/nodes.conf
-  register: cluster_init
-  failed_when:
-    - cluster_init.rc != 0
-    - "'already has a nodes.conf' not in cluster_init.stderr"

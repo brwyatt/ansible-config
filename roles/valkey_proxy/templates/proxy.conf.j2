@@ -13,6 +13,8 @@ port {{ valkey_proxy_port | default(6379) }}
 # Assuming proxies communicate with cluster nodes via TLS
 cluster-tls {{ "yes" if valkey_cluster_tls | default(true) else "no" }}
 cluster-tls-ca-cert-file /etc/ssl/certs/ca-certificates.crt
+cluster-username {{ valkey_proxy_cluster_username }}
+cluster-password {{ valkey_proxy_cluster_password }}
 
 # Bootstrap nodes
 {% for host in groups['valkeyservers'] %}

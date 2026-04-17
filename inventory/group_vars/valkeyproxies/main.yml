@@ -4,3 +4,5 @@ certbot_certs:
 
 valkey_proxy_port: 6379
 valkey_proxy_tls: yes
+valkey_proxy_cluster_username: valkeyproxy
+valkey_proxy_cluster_password: "{{ valkey_valkeyproxy_password }}"
