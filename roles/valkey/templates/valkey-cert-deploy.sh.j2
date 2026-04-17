@@ -12,5 +12,3 @@ cp "$RENEWED_LINEAGE/privkey.pem" "$CERT_DIR/valkey.key"
 chown valkey:valkey "$CERT_DIR/valkey.crt" "$CERT_DIR/valkey.key"
 chmod 0644 "$CERT_DIR/valkey.crt"
 chmod 0600 "$CERT_DIR/valkey.key"
-
-systemctl restart valkey-server
