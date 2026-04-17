@@ -7,12 +7,16 @@ tls-cert-file /etc/valkey/certs/valkey.crt
 tls-key-file /etc/valkey/certs/valkey.key
 tls-ca-cert-file /etc/ssl/certs/ca-certificates.crt
 tls-auth-clients no
-tls-replication yes
 
 tls-cluster yes
+tls-replication yes
 {% else %}
 port {{ valkey_port }}
 {% endif %}
+
+cluster-preferred-endpoint-type hostname
+cluster-announce-hostname {{ inventory_hostname }}
+cluster-announce-ip ""
 
 protected-mode no
 tcp-backlog 511
