@@ -1,0 +1,13 @@
+---
+certbot_certs:
+  - ["{{ inventory_hostname }}"]
+
+valkey_port: 6379
+valkey_cluster_enabled: yes
+valkey_appendonly: yes
+valkey_appendfsync: everysec
+
+valkey_users:
+  - username: authelia
+    password: "{{ valkey_user_passwords['authelia'] }}"
+    acl: "~authelia:* +@all -@dangerous"

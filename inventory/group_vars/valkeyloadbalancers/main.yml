@@ -1,0 +1,41 @@
+---
+cert:
+  - valkey.server.home.brwyatt.net
+haproxy_certbot_certs:
+  - "{{ cert[0] }}"
+haproxy_resolvers:
+  localdns:
+    nameservers:
+      dns1:
+        host: "127.0.0.53"
+        port: "53"
+    options:
+      - "accepted_payload_size 8192"
+haproxy_frontends:
+  valkey:
+    mode: tcp
+    bind:
+      port: 6379
+      ssl_cert: "/etc/haproxy/certs/{{ cert[0] }}.pem"
+    backend: valkey-proxy-backend
+haproxy_backends:
+  valkey-proxy-backend:
+    mode: tcp
+    balance: roundrobin
+    options:
+      - "option tcp-check"
+      - "tcp-check connect"
+      - "tcp-check send PING\r\n"
+      - "tcp-check expect string +PONG"
+      - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt send-proxy-v2"
+      - "server-template valkey-proxy 1-5 _redis._tcp.valkey-proxy.server.home.brwyatt.net resolvers localdns init-addr none"
+
+keepalived_check_scripts:
+  haproxy:
+    type: haproxy
+keepalived_instances:
+  valkey:
+    virtual_ip: "172.17.30.211/24"
+    auth_pass: "{{ keepalived_auth_pass }}"
+    check_scripts:
+      - haproxy

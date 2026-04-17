@@ -1,0 +1,16 @@
+#!/bin/bash
+# Certbot deploy hook for Valkey Proxy
+
+set -e
+
+CERT_DIR="/etc/valkey-proxy/certs"
+DOMAIN="{{ inventory_hostname }}"
+
+cp "$RENEWED_LINEAGE/fullchain.pem" "$CERT_DIR/proxy.crt"
+cp "$RENEWED_LINEAGE/privkey.pem" "$CERT_DIR/proxy.key"
+
+chown valkey:valkey "$CERT_DIR/proxy.crt" "$CERT_DIR/proxy.key"
+chmod 0644 "$CERT_DIR/proxy.crt"
+chmod 0600 "$CERT_DIR/proxy.key"
+
+systemctl restart valkey-cluster-proxy

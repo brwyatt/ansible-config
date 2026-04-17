@@ -1,5 +1,0 @@
----
-- name: Restart Redis Sentinel
-  ansible.builtin.service:
-    name: redis-sentinel
-    state: restarted

@@ -1,0 +1,56 @@
+---
+- name: Install Valkey
+  ansible.builtin.package:
+    name: valkey-server
+    state: present
+- name: Create Valkey config directory
+  ansible.builtin.file:
+    path: /etc/valkey
+    state: directory
+    owner: valkey
+    group: valkey
+    mode: '0755'
+- name: Create Valkey certs directory
+  ansible.builtin.file:
+    path: /etc/valkey/certs
+    state: directory
+    owner: valkey
+    group: valkey
+    mode: '0750'
+- name: Deploy Certbot renewal hook for Valkey
+  ansible.builtin.template:
+    src: valkey-cert-deploy.sh.j2
+    dest: /etc/letsencrypt/renewal-hooks/deploy/valkey
+    owner: root
+    group: root
+    mode: '0755'
+  notify: Cert Deploy Hook
+- name: Configure Valkey
+  ansible.builtin.template:
+    src: valkey.conf.j2
+    dest: /etc/valkey/valkey.conf
+    owner: valkey
+    group: valkey
+    mode: '0640'
+  notify: Restart Valkey
+- name: Ensure Valkey is started and enabled
+  ansible.builtin.service:
+    name: valkey-server
+    state: started
+    enabled: true
+- name: Initialize Valkey Cluster
+  run_once: true
+  delegate_to: "{{ groups['valkeyservers'][0] }}"
+  ansible.builtin.command:
+    cmd: >
+      valkey-cli --cluster create
+      {% for host in groups['valkeyservers'] %}
+      {{ hostvars[host]['ansible_host'] | default(host) }}:{{ valkey_port }}
+      {% endfor %}
+      --cluster-replicas 0
+      --cluster-yes
+    creates: /var/lib/valkey/nodes.conf
+  register: cluster_init
+  failed_when:
+    - cluster_init.rc != 0
+    - "'already has a nodes.conf' not in cluster_init.stderr"

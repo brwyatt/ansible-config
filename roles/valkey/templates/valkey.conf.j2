@@ -1,0 +1,48 @@
+bind 0.0.0.0
+port 0
+tls-port {{ valkey_port }}
+
+tls-cert-file /etc/valkey/certs/valkey.crt
+tls-key-file /etc/valkey/certs/valkey.key
+tls-ca-cert-file /etc/ssl/certs/ca-certificates.crt
+tls-auth-clients no
+
+protected-mode no
+tcp-backlog 511
+timeout 0
+tcp-keepalive 300
+daemonize no
+supervised no
+pidfile /var/run/valkey/valkey-server.pid
+loglevel notice
+logfile /var/log/valkey/valkey-server.log
+databases 1
+always-show-logo yes
+
+save 900 1
+save 300 10
+save 60 10000
+stop-writes-on-bgsave-error yes
+rdbcompression yes
+rdbchecksum yes
+dbfilename dump.rdb
+dir /var/lib/valkey
+
+appendonly {{ "yes" if valkey_appendonly | default(true) else "no" }}
+appendfilename "appendonly.aof"
+appendfsync {{ valkey_appendfsync | default('everysec') }}
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+aof-load-truncated yes
+aof-use-rdb-preamble yes
+
+cluster-enabled {{ "yes" if valkey_cluster_enabled | default(true) else "no" }}
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+
+user default off
+user admin on >{{ valkey_admin_password }} +@all
+{% for user in valkey_users %}
+user {{ user.username }} on >{{ user.password }} {{ user.acl }}
+{% endfor %}

@@ -1,0 +1,6 @@
+---
+certbot_certs:
+  - ["{{ inventory_hostname }}"]
+
+valkey_proxy_port: 6379
+valkey_proxy_tls: yes

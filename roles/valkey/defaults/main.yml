@@ -1,0 +1,6 @@
+---
+valkey_port: 6379
+valkey_cluster_enabled: true
+valkey_appendonly: true
+valkey_appendfsync: "everysec"
+valkey_users: []
