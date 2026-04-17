@@ -49,7 +49,7 @@ aof-load-truncated yes
 aof-use-rdb-preamble yes
 
 cluster-enabled {{ "yes" if valkey_cluster_enabled | default(true) else "no" }}
-cluster-config-file nodes.conf
+cluster-config-file /etc/valkey/nodes.conf
 cluster-node-timeout 5000
 
 user default off
