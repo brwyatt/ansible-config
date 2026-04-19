@@ -5,6 +5,9 @@
       - valkey-server
       - valkey-tools
     state: absent
+- name: Create Valkey Group
+  ansible.builtin.group:
+    name: "{{ valkey_group }}"
 - name: Create Valkey user
   ansible.builtin.user:
     name: "{{ valkey_user }}"
