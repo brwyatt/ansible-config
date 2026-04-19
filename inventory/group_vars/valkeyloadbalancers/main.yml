@@ -28,7 +28,7 @@ haproxy_backends:
       - "tcp-check send PING\r\n"
       - "tcp-check expect string +PONG"
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
-      - "server-template valkey-proxy 1-5 _redis._tcp.valkey-proxy.server.home.brwyatt.net resolvers localdns init-addr none"
+      - "server-template valkey-proxy 1-5 _rediss._tcp.valkey-proxy.server.home.brwyatt.net resolvers localdns init-addr none"
 
 keepalived_check_scripts:
   haproxy:
