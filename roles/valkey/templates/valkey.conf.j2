@@ -9,8 +9,9 @@ tls-ca-cert-file /etc/ipa/ca.crt
 tls-client-cert-file {{ valkey_ipa_cert_path }}
 tls-client-key-file {{ valkey_ipa_key_path }}
 tls-auth-clients no
+# Added 3 months ago, not in current stable yet
 # 10x per day (86400 would be 1 day, but this ensures renewed certs are picked up more frequently)
-tls-auto-reload-interval 8640
+# tls-auto-reload-interval 8640
 
 tls-cluster yes
 tls-replication yes

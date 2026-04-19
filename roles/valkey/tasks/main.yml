@@ -66,6 +66,13 @@
     - valkey-check-rdb
     - valkey-sentinel
   notify: Restart Valkey
+- name: Deploy IPA renewal hook for Valkey
+  ansible.builtin.template:
+    src: valkey-ipa-reload.sh.j2
+    dest: "{{ valkey_ipa_reload_script }}"
+    owner: root
+    group: root
+    mode: '0755'
 - name: Request IPA certificate for Valkey
   ansible.builtin.include_role:
     name: ipacert
@@ -78,6 +85,7 @@
         key_path: "{{ valkey_ipa_key_path }}"
         key_owner: "{{ valkey_user }}"
         key_perms: "0600"
+        after_command: "{{ valkey_ipa_reload_script }}"
 - name: Networking hygiene - Remove FQDN loopback
   ansible.builtin.lineinfile:
     path: /etc/hosts

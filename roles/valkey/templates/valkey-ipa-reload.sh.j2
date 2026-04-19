@@ -1,0 +1,7 @@
+#!/bin/bash
+# Reload Valkey certs using CONFIG SET
+if systemctl is-active --quiet valkey-server; then
+  valkey-cli -u rediss://admin:{{ valkey_admin_password }}@localhost:{{ valkey_port }} CONFIG SET tls-cert-file {{ valkey_ipa_cert_path }}
+  sleep 1
+  valkey-cli -u rediss://admin:{{ valkey_admin_password }}@localhost:{{ valkey_port }} CONFIG SET tls-key-file {{ valkey_ipa_key_path }}
+fi
