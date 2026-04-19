@@ -1,7 +1,9 @@
 ---
 - name: Remove OS-provided Valkey package
   ansible.builtin.package:
-    name: valkey-server
+    name:
+      - valkey-server
+      - valkey-tools
     state: absent
 - name: Create Valkey user
   ansible.builtin.user:
@@ -74,7 +76,7 @@
 - name: Networking hygiene - Remove FQDN loopback
   ansible.builtin.lineinfile:
     path: /etc/hosts
-    regexp: '^127\.[01]\.[01]\.1\s+.*{{ inventory_hostname | regexp_escape }}.*$'
+    regexp: '^127\.[01]\.[01]\.1\s+.*{{ inventory_hostname | ansible.builtin.regex_escape }}.*$'
     state: absent
 - name: Configure Valkey
   ansible.builtin.template:
