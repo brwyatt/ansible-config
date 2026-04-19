@@ -12,6 +12,13 @@ haproxy_resolvers:
     options:
       - "accepted_payload_size 8192"
 haproxy_frontends:
+  stats:
+    bind:
+      port: 8404
+    options:
+      - "stats enable"
+      - "stats uri /"
+      - "stats refresh 5s"
   valkey:
     mode: tcp
     bind:
