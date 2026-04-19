@@ -1,11 +1,4 @@
 ---
-- name: Cert Deploy Hook
-  ansible.builtin.command:
-    argv:
-      - "/etc/letsencrypt/renewal-hooks/deploy/valkey"
-  environment:
-    RENEWED_LINEAGE: "/etc/letsencrypt/live/{{ inventory_hostname }}"
-  changed_when: true
 - name: Restart Valkey
   ansible.builtin.service:
     name: valkey-server
