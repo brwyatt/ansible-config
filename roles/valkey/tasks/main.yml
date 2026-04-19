@@ -50,6 +50,8 @@
     group: "{{ valkey_group }}"
     remote_src: true
     creates: "{{ valkey_version_dir }}/bin/valkey-server"
+    extra_opts:
+      - "--strip-components=1"
 - name: Create symlinks to Valkey binaries
   ansible.builtin.file:
     src: "{{ valkey_version_dir }}/bin/{{ item }}"
