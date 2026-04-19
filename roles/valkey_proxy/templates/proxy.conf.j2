@@ -1,24 +1,24 @@
 {% if valkey_proxy_tls | default(true) %}
 # TLS Frontend
-tls-port {{ valkey_proxy_port | default(6379) }}
+tls-port {{ valkey_proxy_port }}
 tls-cert-file /etc/valkey-proxy/certs/proxy.crt
 tls-key-file /etc/valkey-proxy/certs/proxy.key
 tls-ca-cert-file /etc/ssl/certs/ca-certificates.crt
 tls-auth-clients no
 {% else %}
-port {{ valkey_proxy_port | default(6379) }}
+port {{ valkey_proxy_port }}
 {% endif %}
 
 # TLS Backend to Cluster
 # Assuming proxies communicate with cluster nodes via TLS
-cluster-tls {{ "yes" if valkey_cluster_tls | default(true) else "no" }}
+cluster-tls {{ "yes" if valkey_proxy_cluster_tls | default(true) else "no" }}
 cluster-tls-ca-cert-file /etc/ssl/certs/ca-certificates.crt
 cluster-username {{ valkey_proxy_cluster_username }}
 cluster-password {{ valkey_proxy_cluster_password }}
 
 # Bootstrap nodes
 {% for host in groups['valkeyservers'] %}
-cluster {{ hostvars[host]['ansible_host'] | default(host) }}:{{ valkey_port | default(6379) }}
+cluster {{ host }}:{{ valkey_proxy_cluster_port }}
 {% endfor %}
 
 # Auth

@@ -1,4 +1,5 @@
 ---
 valkey_proxy_port: 6379
 valkey_proxy_tls: true
-valkey_cluster_tls: true
+valkey_proxy_cluster_tls: true
+valkey_proxy_cluster_port: 6379
