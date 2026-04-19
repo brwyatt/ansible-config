@@ -3,10 +3,13 @@ bind 0.0.0.0
 port 0
 tls-port {{ valkey_port }}
 
-tls-cert-file /etc/valkey/certs/valkey.crt
-tls-key-file /etc/valkey/certs/valkey.key
-tls-ca-cert-file /etc/ssl/certs/ca-certificates.crt
+tls-cert-file {{ valkey_ipa_cert_path }}
+tls-key-file {{ valkey_ipa_key_path }}
+tls-ca-cert-file /etc/ipa/ca.crt
+tls-client-cert-file {{ valkey_ipa_cert_path }}
+tls-client-key-file {{ valkey_ipa_key_path }}
 tls-auth-clients no
+tls-auto-reload-interval 86400
 
 tls-cluster yes
 tls-replication yes

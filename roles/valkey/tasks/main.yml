@@ -1,37 +1,96 @@
 ---
-- name: Install Valkey
+- name: Remove OS-provided Valkey package
   ansible.builtin.package:
     name: valkey-server
-    state: present
-- name: Create Valkey config directory
+    state: absent
+- name: Create Valkey user
+  ansible.builtin.user:
+    name: "{{ valkey_user }}"
+    system: true
+    shell: /usr/sbin/nologin
+    home: /etc/valkey
+    group: "{{ valkey_group }}"
+    create_home: false
+- name: Create Valkey directories
   ansible.builtin.file:
-    path: /etc/valkey
+    path: "{{ item }}"
     state: directory
-    owner: valkey
-    group: valkey
+    owner: "{{ valkey_user }}"
+    group: "{{ valkey_group }}"
     mode: '0755'
+  loop:
+    - /etc/valkey
+    - /var/lib/valkey
+    - /var/log/valkey
+    - "{{ valkey_install_root }}"
+    - "{{ valkey_version_dir }}"
 - name: Create Valkey certs directory
   ansible.builtin.file:
-    path: /etc/valkey/certs
+    path: "{{ valkey_ipa_cert_dir }}"
     state: directory
-    owner: valkey
-    group: valkey
+    owner: "{{ valkey_user }}"
+    group: "{{ valkey_group }}"
     mode: '0750'
-- name: Deploy Certbot renewal hook for Valkey
-  ansible.builtin.template:
-    src: valkey-cert-deploy.sh.j2
-    dest: /etc/letsencrypt/renewal-hooks/deploy/valkey
-    owner: root
-    group: root
-    mode: '0755'
-  notify: Cert Deploy Hook
+- name: Download Valkey binary
+  ansible.builtin.get_url:
+    url: "https://download.valkey.io/releases/valkey-{{ valkey_version }}-{{ valkey_distro }}-{{ valkey_arch }}.tar.gz"
+    dest: "/tmp/valkey-{{ valkey_version }}.tar.gz"
+    checksum: "{{ valkey_checksum }}"
+    mode: '0644'
+- name: Extract Valkey binary
+  ansible.builtin.unarchive:
+    src: "/tmp/valkey-{{ valkey_version }}.tar.gz"
+    dest: "{{ valkey_version_dir }}"
+    owner: "{{ valkey_user }}"
+    group: "{{ valkey_group }}"
+    remote_src: true
+    creates: "{{ valkey_version_dir }}/bin/valkey-server"
+- name: Create symlinks to Valkey binaries
+  ansible.builtin.file:
+    src: "{{ valkey_version_dir }}/bin/{{ item }}"
+    dest: "{{ valkey_bin_path }}/{{ item }}"
+    state: link
+    force: true
+  loop:
+    - valkey-server
+    - valkey-cli
+    - valkey-benchmark
+    - valkey-check-aof
+    - valkey-check-rdb
+    - valkey-sentinel
+  notify: Restart Valkey
+- name: Request IPA certificate for Valkey
+  ansible.builtin.include_role:
+    name: ipacert
+  vars:
+    ipacert_certs:
+      "{{ valkey_ipa_cert_name }}":
+        cert_path: "{{ valkey_ipa_cert_path }}"
+        cert_owner: "{{ valkey_user }}"
+        cert_perms: "0644"
+        key_path: "{{ valkey_ipa_key_path }}"
+        key_owner: "{{ valkey_user }}"
+        key_perms: "0600"
+- name: Networking hygiene - Remove FQDN loopback
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.[01]\.[01]\.1\s+.*{{ inventory_hostname | regexp_escape }}.*$'
+    state: absent
 - name: Configure Valkey
   ansible.builtin.template:
     src: valkey.conf.j2
     dest: /etc/valkey/valkey.conf
-    owner: valkey
-    group: valkey
+    owner: "{{ valkey_user }}"
+    group: "{{ valkey_group }}"
     mode: '0640'
+  notify: Restart Valkey
+- name: Deploy Valkey systemd unit
+  ansible.builtin.template:
+    src: valkey-server.service.j2
+    dest: /etc/systemd/system/valkey-server.service
+    owner: root
+    group: root
+    mode: '0644'
   notify: Restart Valkey
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
@@ -62,7 +121,7 @@
       -u redis{{ "s" if valkey_tls else "" }}://admin:{{ valkey_admin_password }}@localhost:{{ valkey_port }}
       --cluster create
       {% for host in groups['valkeyservers'] %}
-      {{ hostvars[host]['ansible_host'] | default(host) }}:{{ valkey_port }}
+      {{ host }}:{{ valkey_port }}
       {% endfor %}
       --cluster-replicas 0
       --cluster-yes

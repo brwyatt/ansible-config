@@ -129,7 +129,6 @@
   become: true
   roles:
     - role: aws_creds
-    - role: certbot
     - role: valkey
 - name: Valkey Cluster Proxies
   hosts: valkeyproxies
