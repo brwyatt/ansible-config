@@ -3,3 +3,10 @@
   ansible.builtin.service:
     name: valkey-server
     state: restarted
+- name: Reload Valkey ACLs
+  ansible.builtin.command:
+    cmd: >
+      valkey-cli
+      -u redis{{ "s" if valkey_tls else "" }}://admin:{{ valkey_admin_password }}@localhost:{{ valkey_port }}
+      ACL LOAD
+  changed_when: true

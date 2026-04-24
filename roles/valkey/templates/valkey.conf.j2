@@ -57,8 +57,4 @@ cluster-enabled {{ "yes" if valkey_cluster_enabled | default(true) else "no" }}
 cluster-config-file /etc/valkey/nodes.conf
 cluster-node-timeout 5000
 
-user default off
-user admin on >{{ valkey_admin_password }} +@all
-{% for user in valkey_users %}
-user {{ user.username }} on >{{ user.password }} {{ user.acl }}
-{% endfor %}
+aclfile /etc/valkey/users.acl

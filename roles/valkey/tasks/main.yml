@@ -91,6 +91,14 @@
     path: /etc/hosts
     regexp: '^127\.[01]\.[01]\.1\s+.*{{ inventory_hostname | ansible.builtin.regex_escape }}.*$'
     state: absent
+- name: Deploy Valkey ACL File
+  ansible.builtin.template:
+    src: users.acl.j2
+    dest: /etc/valkey/users.acl
+    owner: "{{ valkey_user }}"
+    group: "{{ valkey_group }}"
+    mode: '0640'
+  notify: Reload Valkey ACLs
 - name: Configure Valkey
   ansible.builtin.template:
     src: valkey.conf.j2
