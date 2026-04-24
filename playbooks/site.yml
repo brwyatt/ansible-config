@@ -136,7 +136,7 @@
   roles:
     - role: aws_creds
     - role: certbot
-    - role: valkey_proxy
+    - role: shotover_proxy
 - name: Load Balancer hosts
   hosts: loadbalancers
   become: true

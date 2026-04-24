@@ -1,0 +1,14 @@
+[Unit]
+Description=Shotover Proxy
+After=network.target
+
+[Service]
+Type=simple
+User={{ shotover_user }}
+Group={{ shotover_group }}
+ExecStart={{ shotover_bin_path }}/shotover-proxy --config-file {{ shotover_config_dir }}/config.yaml --topology-file {{ shotover_config_dir }}/topology.yaml
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

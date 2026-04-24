@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+
+# Shotover Proxy Cert Deployment Hook
+# This script is called by Certbot after a successful certificate renewal.
+
+CERT_DIR="{{ shotover_config_dir }}/certs"
+mkdir -p "${CERT_DIR}"
+
+if [ -f "${RENEWED_LINEAGE}/fullchain.pem" ]; then
+    cp "${RENEWED_LINEAGE}/fullchain.pem" "${CERT_DIR}/proxy.crt"
+    cp "${RENEWED_LINEAGE}/privkey.pem" "${CERT_DIR}/proxy.key"
+    chown {{ shotover_user }}:{{ shotover_group }} "${CERT_DIR}/proxy.crt" "${CERT_DIR}/proxy.key"
+    chmod 640 "${CERT_DIR}/proxy.crt" "${CERT_DIR}/proxy.key"
+    
+    # Restart Shotover to pick up new certs
+    systemctl restart shotover-proxy
+fi

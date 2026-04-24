@@ -8,6 +8,3 @@ valkey_users:
   - username: authelia
     password: "{{ valkey_authelia_password }}"
     acl: "~authelia:* +@all -@dangerous"
-  - username: valkeyproxy
-    password: "{{ valkey_valkeyproxy_password }}"
-    acl: "+@all"
