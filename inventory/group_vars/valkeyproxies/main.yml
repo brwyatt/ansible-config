@@ -17,6 +17,8 @@ shotover_topology:
         chain:
           - ValkeySinkCluster:
               first_contact_points: "{{ groups['valkeyservers'] | map('regex_replace', '$', ':6379') | list }}"
+              connect_timeout_ms: 1500
+              connection_count: 2
               tls:
                 certificate_authority_path: "/etc/ipa/ca.crt"
                 verify_hostname: true
