@@ -23,14 +23,9 @@
     - "{{ shotover_version_dir }}"
 - name: Download and extract Shotover
   ansible.builtin.unarchive:
-    src: |
-      {{
-        [
-          "https://github.com/shotover/shotover-proxy/releases/download/",
-          "v{{ shotover_version }}/shotover-proxy-linux_{{ shotover_arch }}",
-          "-{{ shotover_version }}.tar.gz",
-        ] | join('')
-      }}
+    src: >-
+      https://github.com/shotover/shotover-proxy/releases/download/v{{ shotover_version
+      }}/shotover-proxy-linux_{{ shotover_arch }}-{{ shotover_version }}.tar.gz
     dest: "{{ shotover_version_dir }}"
     remote_src: true
     extra_opts:
