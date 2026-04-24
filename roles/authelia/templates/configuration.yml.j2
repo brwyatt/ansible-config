@@ -36,6 +36,14 @@ session:
       expiration: {{ authelia_session_expiration }}
       inactivity: {{ authelia_session_inactivity }}
       remember_me: {{ authelia_session_remember_me_duration }}
+  redis:
+    host: {{ authelia_session_redis_host }}
+    port: {{ authelia_session_redis_port }}
+    database_index: 0
+    username: {{ authelia_session_redis_username }}
+    password: {{ authelia_session_redis_password }}
+    tls:
+      enabled: {{ authelia_session_redis_tls_enabled | lower }}
 
 storage:
   encryption_key: {{ authelia_storage_encryption_key }}

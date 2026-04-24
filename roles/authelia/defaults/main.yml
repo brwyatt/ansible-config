@@ -21,3 +21,9 @@ authelia_session_name: "authelia_session"
 authelia_session_expiration: "1h"
 authelia_session_inactivity: "5m"
 authelia_session_remember_me_duration: "1M"
+
+authelia_session_redis_host: "127.0.0.1"
+authelia_session_redis_port: 6379
+authelia_session_redis_username: "authelia"
+authelia_session_redis_password: ""
+authelia_session_redis_tls_enabled: false

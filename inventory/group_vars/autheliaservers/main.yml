@@ -1,5 +1,8 @@
 ---
 authelia_session_domain: "home.brwyatt.net"
+authelia_session_redis_host: "valkey.server.home.brwyatt.net"
+authelia_session_redis_password: "{{ valkey_authelia_password }}"
+authelia_session_redis_tls_enabled: true
 
 authelia_ldap_url: "ldaps://ipa.home.brwyatt.net"
 authelia_ldap_base_dn: "dc=home,dc=brwyatt,dc=net"
