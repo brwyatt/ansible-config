@@ -54,7 +54,6 @@
     group: "{{ shotover_group }}"
     mode: '0640'
   notify: Restart Shotover
-  register: config_deploy
 - name: Deploy Shotover topology
   ansible.builtin.template:
     src: topology.yaml.j2
@@ -63,18 +62,6 @@
     group: "{{ shotover_group }}"
     mode: '0640'
   notify: Restart Shotover
-  register: topology_deploy
-- name: Validate Shotover config
-  ansible.builtin.command:
-    argv:
-      - "{{ shotover_bin_path }}/shotover-proxy"
-      - "--check"
-      - "--config-file"
-      - "{{ shotover_config_dir }}/config.yaml"
-      - "--topology-file"
-      - "{{ shotover_config_dir }}/topology.yaml"
-  changed_when: false
-  when: config_deploy.changed or topology_deploy.changed
 - name: Deploy Shotover systemd service
   ansible.builtin.template:
     src: shotover-proxy.service.j2
