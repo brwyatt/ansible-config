@@ -9,4 +9,4 @@ valkey_appendfsync: everysec
 valkey_users:
   - username: authelia
     password: "{{ valkey_authelia_password }}"
-    acl: "~authelia_session:* +@all -@dangerous"
+    acl: "~authelia-session:* +@all -@dangerous"
