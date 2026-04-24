@@ -31,7 +31,7 @@ haproxy_backends:
     balance: roundrobin
     options:
       - "option tcp-check"
-      - "tcp-check connect"
+      - "tcp-check connect ssl"
       - "tcp-check send PING\r\n"
       - "tcp-check expect string +PONG"
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
