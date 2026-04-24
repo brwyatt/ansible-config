@@ -4,7 +4,9 @@ valkey_distro: "noble"
 valkey_arch: "x86_64"
 valkey_checksum: "sha256:7412f0216a80580dfaa5c5d23af41e0c89589b74fb46ab96641aea5544221b0c"
 
-valkey_port: 6379
+valkey_instances:
+  - 6379
+valkey_port: "{{ valkey_instances[0] }}"
 valkey_cluster_enabled: true
 valkey_appendonly: true
 valkey_tls: true

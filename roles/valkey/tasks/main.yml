@@ -29,6 +29,14 @@
     - /var/log/valkey
     - "{{ valkey_install_root }}"
     - "{{ valkey_version_dir }}"
+- name: Create Valkey Instance data directories
+  ansible.builtin.file:
+    path: "/var/lib/valkey/{{ item }}"
+    state: directory
+    owner: "{{ valkey_user }}"
+    group: "{{ valkey_group }}"
+    mode: '0755'
+  loop: "{{ valkey_instances }}"
 - name: Create Valkey certs directory
   ansible.builtin.file:
     path: "{{ valkey_ipa_cert_dir }}"
@@ -99,29 +107,33 @@
     group: "{{ valkey_group }}"
     mode: '0640'
   notify: Reload Valkey ACLs
-- name: Configure Valkey
+- name: Configure Valkey Instances
   ansible.builtin.template:
     src: valkey.conf.j2
-    dest: /etc/valkey/valkey.conf
+    dest: "/etc/valkey/valkey-{{ item }}.conf"
     owner: "{{ valkey_user }}"
     group: "{{ valkey_group }}"
     mode: '0640'
+  loop: "{{ valkey_instances }}"
+  vars:
+    valkey_instance_port: "{{ item }}"
   notify: Restart Valkey
 - name: Deploy Valkey systemd unit
   ansible.builtin.template:
-    src: valkey-server.service.j2
-    dest: /etc/systemd/system/valkey-server.service
+    src: valkey-server@.service.j2
+    dest: /etc/systemd/system/valkey-server@.service
     owner: root
     group: root
     mode: '0644'
   notify: Restart Valkey
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
-- name: Ensure Valkey is started and enabled
+- name: Ensure Valkey Instances are started and enabled
   ansible.builtin.service:
-    name: valkey-server
+    name: "valkey-server@{{ item }}"
     state: started
     enabled: true
+  loop: "{{ valkey_instances }}"
 - name: Check Valkey Cluster state
   run_once: true
   delegate_to: "{{ groups['valkeyservers'][0] }}"
@@ -144,7 +156,9 @@
       -u redis{{ "s" if valkey_tls else "" }}://admin:{{ valkey_admin_password }}@localhost:{{ valkey_port }}
       --cluster create
       {% for host in groups['valkeyservers'] %}
-      {{ host }}:{{ valkey_port }}
+      {% for port in hostvars[host]['valkey_instances'] %}
+      {{ host }}:{{ port }}
       {% endfor %}
-      --cluster-replicas 0
+      {% endfor %}
+      --cluster-replicas 1
       --cluster-yes

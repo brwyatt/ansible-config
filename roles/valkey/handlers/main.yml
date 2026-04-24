@@ -1,12 +1,14 @@
 ---
 - name: Restart Valkey
   ansible.builtin.service:
-    name: valkey-server
+    name: "valkey-server@{{ item }}"
     state: restarted
+  loop: "{{ valkey_instances }}"
 - name: Reload Valkey ACLs
   ansible.builtin.command:
     cmd: >
       valkey-cli
-      -u redis{{ "s" if valkey_tls else "" }}://admin:{{ valkey_admin_password }}@localhost:{{ valkey_port }}
+      -u redis{{ "s" if valkey_tls else "" }}://admin:{{ valkey_admin_password }}@localhost:{{ item }}
       ACL LOAD
+  loop: "{{ valkey_instances }}"
   changed_when: true

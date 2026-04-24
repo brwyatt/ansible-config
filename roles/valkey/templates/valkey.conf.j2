@@ -1,7 +1,7 @@
 bind 0.0.0.0
 {% if valkey_tls %}
 port 0
-tls-port {{ valkey_port }}
+tls-port {{ valkey_instance_port }}
 
 tls-cert-file {{ valkey_ipa_cert_path }}
 tls-key-file {{ valkey_ipa_key_path }}
@@ -16,7 +16,7 @@ tls-auth-clients no
 tls-cluster yes
 tls-replication yes
 {% else %}
-port {{ valkey_port }}
+port {{ valkey_instance_port }}
 {% endif %}
 
 cluster-preferred-endpoint-type hostname
@@ -29,9 +29,9 @@ timeout 0
 tcp-keepalive 300
 daemonize no
 supervised no
-pidfile /var/run/valkey/valkey-server.pid
+pidfile /var/run/valkey/valkey-server-{{ valkey_instance_port }}.pid
 loglevel notice
-logfile /var/log/valkey/valkey-server.log
+logfile /var/log/valkey/valkey-server-{{ valkey_instance_port }}.log
 databases 1
 always-show-logo yes
 
@@ -42,7 +42,7 @@ stop-writes-on-bgsave-error yes
 rdbcompression yes
 rdbchecksum yes
 dbfilename dump.rdb
-dir /var/lib/valkey
+dir /var/lib/valkey/{{ valkey_instance_port }}
 
 appendonly {{ "yes" if valkey_appendonly | default(true) else "no" }}
 appendfilename "appendonly.aof"
@@ -54,7 +54,7 @@ aof-load-truncated yes
 aof-use-rdb-preamble yes
 
 cluster-enabled {{ "yes" if valkey_cluster_enabled | default(true) else "no" }}
-cluster-config-file /etc/valkey/nodes.conf
+cluster-config-file /etc/valkey/nodes-{{ valkey_instance_port }}.conf
 cluster-node-timeout 5000
 
 aclfile /etc/valkey/users.acl
