@@ -52,7 +52,7 @@ authelia_access_control_rules:
     resources:
       - '^/ping$'
       - '^/api/.*$'
-      - '^/\d+/api/.*$'
+      - '^/\d+/api[\?].*$'
   - domain: "prowlarr.server.home.brwyatt.net"
     policy: "one_factor"
     subject: "group:arrsusers"
