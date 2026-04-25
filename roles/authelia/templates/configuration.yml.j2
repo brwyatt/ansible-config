@@ -9,6 +9,10 @@ log:
   level: {{ authelia_log_level }}
 
 authentication_backend:
+  password_change:
+    disable: true
+  password_reset:
+    disable: true
   ldap:
     implementation: freeipa
     address: {{ authelia_ldap_url }}
