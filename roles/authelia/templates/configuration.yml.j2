@@ -43,7 +43,7 @@ session:
     username: {{ authelia_session_redis_username }}
     password: {{ authelia_session_redis_password }}
 {% if authelia_session_redis_key_prefix is defined %}
-    key_prefix: {{ authelia_session_redis_key_prefix }}
+    key_prefix: {{ authelia_session_redis_key_prefix | to_json }}
 {% endif %}
 {% if authelia_session_redis_tls_enabled %}
     tls:
