@@ -5,3 +5,4 @@ cephclient_mounts:
     remote_path: "/"
     mount_path: "/mnt/Media"
 proxy_port: 8989
+proxy_sso_enabled: true

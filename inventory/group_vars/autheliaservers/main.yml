@@ -19,6 +19,7 @@ authelia_database_name: "authelia"
 authelia_database_user: "authelia"
 
 authelia_access_control_rules:
+  # Seedbox
   - domain: "seedbox.server.home.brwyatt.net"
     policy: "bypass" # Fall-through to application auth
     networks:
@@ -27,6 +28,33 @@ authelia_access_control_rules:
   - domain: "seedbox.server.home.brwyatt.net"
     policy: "one_factor"
     subject: "group:seedboxusers"
+  # Sonarr
+  - domain: "sonarr.server.home.brwyatt.net"
+    policy: "bypass"
+    resources:
+      - '^/ping$'
+      - '^/api/.*$'
+  - domain: "sonarr.server.home.brwyatt.net"
+    policy: "one_factor"
+    subject: "group:arrsusers"
+  # Radarr
+  - domain: "radarr.server.home.brwyatt.net"
+    policy: "bypass"
+    resources:
+      - '^/ping$'
+      - '^/api/.*$'
+  - domain: "radarr.server.home.brwyatt.net"
+    policy: "one_factor"
+    subject: "group:arrsusers"
+  # Prowlarr
+  - domain: "prowlarr.server.home.brwyatt.net"
+    policy: "bypass"
+    resources:
+      - '^/ping$'
+      - '^/api/.*$'
+  - domain: "prowlarr.server.home.brwyatt.net"
+    policy: "one_factor"
+    subject: "group:arrsusers"
 
 proxy_port: 9091
 

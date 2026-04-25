@@ -1,2 +1,3 @@
 ---
 proxy_port: 9696
+proxy_sso_enabled: true
