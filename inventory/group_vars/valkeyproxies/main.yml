@@ -1,0 +1,24 @@
+---
+certbot_certs:
+  - ["{{ inventory_hostname }}"]
+
+shotover_config:
+  main_log_level: "info"
+  observability_interface: "127.0.0.1:9001"
+
+shotover_topology:
+  sources:
+    - Valkey:
+        name: "valkey"
+        listen_addr: "0.0.0.0:6379"
+        tls:
+          certificate_path: "{{ shotover_config_dir }}/certs/proxy.crt"
+          private_key_path: "{{ shotover_config_dir }}/certs/proxy.key"
+        chain:
+          - ValkeySinkCluster:
+              first_contact_points: "{{ groups['valkeyservers'] | map('regex_replace', '$', ':6379') | list }}"
+              connect_timeout_ms: 1500
+              connection_count: 2
+              tls:
+                certificate_authority_path: "/etc/ipa/ca.crt"
+                verify_hostname: true

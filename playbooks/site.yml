@@ -124,6 +124,19 @@
     - role: aws_creds
     - role: certbot
     - role: mariadb
+- name: Valkey Cluster Servers
+  hosts: valkeyservers
+  become: true
+  roles:
+    - role: aws_creds
+    - role: valkey
+- name: Valkey Cluster Proxies
+  hosts: valkeyproxies
+  become: true
+  roles:
+    - role: aws_creds
+    - role: certbot
+    - role: shotover_proxy
 - name: Load Balancer hosts
   hosts: loadbalancers
   become: true

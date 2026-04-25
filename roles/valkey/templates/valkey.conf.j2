@@ -1,0 +1,60 @@
+bind 0.0.0.0
+{% if valkey_tls %}
+port 0
+tls-port {{ valkey_instance_port }}
+
+tls-cert-file {{ valkey_ipa_cert_path }}
+tls-key-file {{ valkey_ipa_key_path }}
+tls-ca-cert-file /etc/ipa/ca.crt
+tls-client-cert-file {{ valkey_ipa_cert_path }}
+tls-client-key-file {{ valkey_ipa_key_path }}
+tls-auth-clients no
+# Added 3 months ago, not in current stable yet
+# 10x per day (86400 would be 1 day, but this ensures renewed certs are picked up more frequently)
+# tls-auto-reload-interval 8640
+
+tls-cluster yes
+tls-replication yes
+{% else %}
+port {{ valkey_instance_port }}
+{% endif %}
+
+cluster-preferred-endpoint-type hostname
+cluster-announce-hostname {{ inventory_hostname }}
+cluster-announce-ip ""
+
+protected-mode no
+tcp-backlog 511
+timeout 0
+tcp-keepalive 300
+daemonize no
+supervised no
+pidfile /var/run/valkey/valkey-server-{{ valkey_instance_port }}.pid
+loglevel notice
+logfile /var/log/valkey/valkey-server-{{ valkey_instance_port }}.log
+databases 1
+always-show-logo yes
+
+save 900 1
+save 300 10
+save 60 10000
+stop-writes-on-bgsave-error yes
+rdbcompression yes
+rdbchecksum yes
+dbfilename dump.rdb
+dir /var/lib/valkey/{{ valkey_instance_port }}
+
+appendonly {{ "yes" if valkey_appendonly | default(true) else "no" }}
+appendfilename "appendonly.aof"
+appendfsync {{ valkey_appendfsync | default('everysec') }}
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+aof-load-truncated yes
+aof-use-rdb-preamble yes
+
+cluster-enabled {{ "yes" if valkey_cluster_enabled | default(true) else "no" }}
+cluster-config-file /etc/valkey/nodes-{{ valkey_instance_port }}.conf
+cluster-node-timeout 5000
+
+aclfile /etc/valkey/users.acl

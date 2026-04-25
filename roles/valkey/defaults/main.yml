@@ -1,0 +1,27 @@
+---
+valkey_version: "9.0.3"
+valkey_distro: "noble"
+valkey_arch: "x86_64"
+valkey_checksum: "sha256:7412f0216a80580dfaa5c5d23af41e0c89589b74fb46ab96641aea5544221b0c"
+
+valkey_instances:
+  - 6379
+valkey_port: "{{ valkey_instances[0] }}"
+valkey_cluster_enabled: true
+valkey_appendonly: true
+valkey_tls: true
+valkey_appendfsync: "everysec"
+valkey_users: []
+
+valkey_install_root: "/opt/valkey"
+valkey_version_dir: "{{ valkey_install_root }}/{{ valkey_version }}"
+valkey_bin_path: "/usr/local/bin"
+
+valkey_user: "valkey"
+valkey_group: "valkey"
+
+valkey_ipa_cert_name: "valkey"
+valkey_ipa_cert_dir: "/etc/valkey/certs"
+valkey_ipa_cert_path: "{{ valkey_ipa_cert_dir }}/valkey.crt"
+valkey_ipa_key_path: "{{ valkey_ipa_cert_dir }}/valkey.key"
+valkey_ipa_reload_script: "/usr/local/bin/valkey-ipa-reload.sh"

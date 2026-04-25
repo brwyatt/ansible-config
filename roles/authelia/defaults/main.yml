@@ -1,4 +1,5 @@
 ---
+authelia_repo_source: "authelia/authelia"
 authelia_version: "4.39.19"
 authelia_checksum: "sha256:f6f8d2450533071076f1f2bbf4abfc5b4885be0cc3565e5362bc2ac2470677a3"
 
@@ -21,3 +22,9 @@ authelia_session_name: "authelia_session"
 authelia_session_expiration: "1h"
 authelia_session_inactivity: "5m"
 authelia_session_remember_me_duration: "1M"
+
+authelia_session_redis_host: "127.0.0.1"
+authelia_session_redis_port: 6379
+authelia_session_redis_username: "authelia"
+authelia_session_redis_password: ""
+authelia_session_redis_tls_enabled: false

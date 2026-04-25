@@ -1,0 +1,5 @@
+user default off
+user admin on >{{ valkey_admin_password }} +@all
+{% for user in valkey_users %}
+user {{ user.username }} on >{{ user.password }} {{ user.acl }}
+{% endfor %}

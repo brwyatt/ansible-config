@@ -35,7 +35,7 @@
   notify: Restart Authelia
 - name: Download Authelia binary
   ansible.builtin.get_url:
-    url: "https://github.com/authelia/authelia/releases/download/v{{ authelia_version }}/authelia-v{{ authelia_version }}-linux-amd64.tar.gz"
+    url: "https://github.com/{{ authelia_repo_source }}/releases/download/v{{ authelia_version }}/authelia-v{{ authelia_version }}-linux-amd64.tar.gz"
     dest: "/tmp/authelia-{{ authelia_version }}.tar.gz"
     checksum: "{{ authelia_checksum }}"
     mode: '0644'

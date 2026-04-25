@@ -1,0 +1,12 @@
+---
+valkey_instances:
+  - 6379
+  - 6380
+valkey_cluster_enabled: yes
+valkey_appendonly: yes
+valkey_appendfsync: everysec
+
+valkey_users:
+  - username: authelia
+    password: "{{ valkey_authelia_password }}"
+    acl: "~{authelia-session}:* +@all -@dangerous"
