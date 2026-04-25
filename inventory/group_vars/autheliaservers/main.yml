@@ -1,7 +1,7 @@
 ---
 authelia_repo_source: "brwyatt/authelia"
-authelia_version: "4.39.19-RedisKeyPrefix"
-authelia_checksum: "sha256:e7b4ac848b0106f7058bf7125579ca9e6e00e2adf43f043601a5ec4f6eb0f0a4"
+authelia_version: "4.39.19-RedisKeyPrefix-v2"
+authelia_checksum: "sha256:b9bfc30eef01fa77faa39e7fa51da7add63ace5109cbb9071a96ff3bd4fc411b"
 
 authelia_session_domain: "home.brwyatt.net"
 authelia_session_redis_host: "valkey.server.home.brwyatt.net"
