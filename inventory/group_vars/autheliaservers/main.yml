@@ -20,6 +20,11 @@ authelia_database_user: "authelia"
 
 authelia_access_control_rules:
   - domain: "seedbox.server.home.brwyatt.net"
+    policy: "bypass" # Fall-through to application auth
+    networks:
+      - "172.17.20.20/32" # Home Assistant
+      - "172.17.30.0/24" # Server Subnet
+  - domain: "seedbox.server.home.brwyatt.net"
     policy: "one_factor"
     subject: "group:seedboxusers"
 

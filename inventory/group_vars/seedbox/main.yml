@@ -21,4 +21,4 @@ cephclient_mounts:
     remote_path: "/template/iso"
     mount_path: "/mnt/iso"
 proxy_port: 8080
-proxy_sso_enabled: false
+proxy_sso_enabled: true

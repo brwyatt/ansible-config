@@ -67,10 +67,16 @@ access_control:
   default_policy: deny
   rules:
 {% for rule in authelia_access_control_rules %}
-    - domain: {{ rule.domain }}
+    - domain: {{ rule.domain | to_json }}
       policy: {{ rule.policy }}
+{% if rule.networks is defined %}
+      networks: {{ rule.networks | to_json }}
+{% endif %}
+{% if rule.resources is defined %}
+      resources: {{ rule.resources | to_json }}
+{% endif %}
 {% if rule.subject is defined %}
-      subject: {{ rule.subject }}
+      subject: {{ rule.subject | to_json }}
 {% endif %}
 {% endfor %}
 
