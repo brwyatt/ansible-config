@@ -42,6 +42,9 @@ session:
     database_index: 0
     username: {{ authelia_session_redis_username }}
     password: {{ authelia_session_redis_password }}
+{% if authelia_session_redis_key_prefix is defined %}
+    key_prefix: {{ authelia_session_redis_key_prefix }}
+{% endif %}
 {% if authelia_session_redis_tls_enabled %}
     tls:
       server_name: {{ authelia_session_redis_host }}
