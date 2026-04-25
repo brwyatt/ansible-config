@@ -10,3 +10,6 @@ valkey_users:
   - username: authelia
     password: "{{ valkey_authelia_password }}"
     acl: "~{authelia-session}:* +@all -@dangerous"
+  - username: uptimekuma
+    password: "{{ valkey_uptimekuma_password }}"
+    acl: "+@all -@dangerous"
