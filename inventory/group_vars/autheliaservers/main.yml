@@ -13,7 +13,7 @@ authelia_notifier_smtp_username: "authelia@brwyatt.net"
 authelia_notifier_smtp_sender: "authelia@brwyatt.net"
 authelia_notifier_smtp_identifier: "authelia.home.brwyatt.net"
 
-authelia_password_ss_enabled: false
+authelia_password_ss_enabled: true
 
 authelia_oidc_enabled: true
 
@@ -26,9 +26,9 @@ authelia_oidc_authorization_policies:
   homeassistant_policy:
     default_policy: deny
     rules:
-      - policy: one_factor
+      - policy: two_factor
         subject: 'group:homeassistantadmins'
-      - policy: one_factor
+      - policy: two_factor
         subject: 'group:homeassistantusers'
 
 authelia_oidc_clients:
@@ -85,7 +85,7 @@ authelia_access_control_rules:
       - "172.17.20.20/32" # Home Assistant
       - "172.17.30.0/24" # Server Subnet
   - domain: "seedbox.server.home.brwyatt.net"
-    policy: "one_factor"
+    policy: "two_factor"
     subject: "group:seedboxusers"
   # Sonarr
   - domain: "sonarr.server.home.brwyatt.net"
@@ -94,7 +94,7 @@ authelia_access_control_rules:
       - '^/ping$'
       - '^/api/.*$'
   - domain: "sonarr.server.home.brwyatt.net"
-    policy: "one_factor"
+    policy: "two_factor"
     subject: "group:arrsusers"
   # Radarr
   - domain: "radarr.server.home.brwyatt.net"
@@ -103,7 +103,7 @@ authelia_access_control_rules:
       - '^/ping$'
       - '^/api/.*$'
   - domain: "radarr.server.home.brwyatt.net"
-    policy: "one_factor"
+    policy: "two_factor"
     subject: "group:arrsusers"
   # Prowlarr
   - domain: "prowlarr.server.home.brwyatt.net"
@@ -114,7 +114,7 @@ authelia_access_control_rules:
       - '^/\d+/api[\?].*$'
       - '^/\d+/download[\?].*$'
   - domain: "prowlarr.server.home.brwyatt.net"
-    policy: "one_factor"
+    policy: "two_factor"
     subject: "group:arrsusers"
   # Z-Wave JS UI
   - domain: "zwave-js-ui.iot.home.brwyatt.net"
