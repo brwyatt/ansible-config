@@ -17,6 +17,8 @@ authelia_oidc_authorization_policies:
     default_policy: deny
     rules:
       - policy: one_factor
+        subject: 'group:homeassistantadmins'
+      - policy: one_factor
         subject: 'group:homeassistantusers'
 
 authelia_oidc_clients:
