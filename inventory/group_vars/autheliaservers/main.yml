@@ -5,6 +5,16 @@ authelia_checksum: "sha256:b9bfc30eef01fa77faa39e7fa51da7add63ace5109cbb9071a96f
 
 authelia_session_domain: "home.brwyatt.net"
 
+authelia_notifier_type: "smtp"
+authelia_notifier_smtp_host: "smtps.brwyatt.net"
+authelia_notifier_smtp_port: 465
+authelia_notifier_smtp_tls: true
+authelia_notifier_smtp_username: "authelia@brwyatt.net"
+authelia_notifier_smtp_sender: "authelia@brwyatt.net"
+authelia_notifier_smtp_identifier: "authelia.home.brwyatt.net"
+
+authelia_password_ss_enabled: false
+
 authelia_oidc_enabled: true
 
 authelia_oidc_authorization_policies:
