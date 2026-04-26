@@ -57,6 +57,14 @@ authelia_access_control_rules:
   - domain: "prowlarr.server.home.brwyatt.net"
     policy: "one_factor"
     subject: "group:arrsusers"
+  # Z-Wave JS UI
+  - domain: "zwave-js-ui.iot.home.brwyatt.net"
+    policy: "one_factor"
+    subject: "group:iot-admins"
+  # Zigbee2MQTT
+  - domain: "zigbee2mqtt.iot.home.brwyatt.net"
+    policy: "one_factor"
+    subject: "group:iot-admins"
 
 proxy_port: 9091
 
