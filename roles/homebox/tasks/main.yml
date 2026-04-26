@@ -2,7 +2,7 @@
 - name: Create HomeBox env file
   ansible.builtin.template:
     src: env.j2
-    dest: /opt/.env
+    dest: /opt/homebox/.env
     owner: root
     group: root
     mode: '0644'
