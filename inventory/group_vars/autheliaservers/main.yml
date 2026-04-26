@@ -16,7 +16,7 @@ authelia_oidc_authorization_policies:
 
 authelia_oidc_clients:
   homebox:
-    client_name: homebox
+    client_name: HomeBox
     client_secret: "{{ authelia_oidc_homebox_hashed_secret }}"
     public: false
     authorization_policy: homebox_policy
