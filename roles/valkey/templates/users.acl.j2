@@ -1,6 +1,6 @@
 user default off
 user admin on >{{ valkey_admin_password }} +@all
-user replicator on >{{ valkey_replication_password }} +@replication
+user replicator on >{{ valkey_replication_password }} +psync +replconf +ping
 {% for user in valkey_users %}
 user {{ user.username }} on >{{ user.password }} {{ user.acl }}
 {% endfor %}
