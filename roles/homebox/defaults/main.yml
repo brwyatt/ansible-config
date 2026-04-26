@@ -2,3 +2,16 @@
 homebox_mode: "production"
 homebox_web_port: "7745"
 homebox_web_host: "0.0.0.0"
+
+homebox_enable_oidc: false
+homebox_oidc_issuer_url: "https://auth.home.brwyatt.net"
+homebox_oidc_client_id: "homebox"
+homebox_oidc_client_secret: ""
+homebox_oidc_button_text: "Authelia SSO"
+homebox_oidc_scopes: "openid,profile,email"
+homebox_oidc_auto_redirect: true
+
+homebox_options_hostname: "{{ ansible_fqdn }}"
+homebox_options_allow_local_login: "{{ not homebox_enable_oidc | bool }}"
+homebox_options_allow_registration: false
+homebox_options_trust_proxy: true

@@ -4,6 +4,38 @@ authelia_version: "4.39.19-RedisKeyPrefix-v2"
 authelia_checksum: "sha256:b9bfc30eef01fa77faa39e7fa51da7add63ace5109cbb9071a96ff3bd4fc411b"
 
 authelia_session_domain: "home.brwyatt.net"
+
+authelia_oidc_enabled: true
+
+authelia_oidc_issuer_certificate_chain: |
+  -----BEGIN PUBLIC KEY-----
+  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv/HcSK01On4tAPRtstrb
+  hHc1nFwOEhM/QmCkamHkpH7XcS7b5UCvSDckrZQKBL/5CX+oCBRl6XuGS/NNxQsk
+  hgeiT0OvkIQGS3Ajou7ggCAdZOg9uQFoWaBxoMrOOwVaPIZnz7fqE+ZwxsiU77Xk
+  Sp1xN9cZvkaVaXs0QbLPKNuWdfj1C9RnCcxhC4Ao6q9x49TI4UARrN3suw6ytlEL
+  2QtrCF1T+fXCxqqnZPvir0GQUX1tpsjNw4Gg00fWtS+YZJLt2BhoarsTd/8WwslV
+  MKYISnSb3mqNCYgA97xNAaibb+p2pXqyj4c/gtDqyEz/gAysbCEtwnZE/eSESOQQ
+  1wIDAQAB
+  -----END PUBLIC KEY-----
+
+authelia_oidc_authorization_policies:
+  homebox_policy:
+    default_policy: deny
+    rules:
+      - policy: one_factor
+        subject: 'group:homeboxusers'
+
+authelia_oidc_clients:
+  - id: homebox
+    description: HomeBox
+    secret: "{{ authelia_oidc_homebox_hashed_secret }}"
+    public: false
+    authorization_policy: homebox_policy
+    redirect_uris:
+      - https://homebox.server.home.brwyatt.net/auth/callback
+    scopes: [openid, profile, email]
+    userinfo_signed_response_alg: 'none'
+
 authelia_session_redis_host: "valkey.server.home.brwyatt.net"
 authelia_session_redis_password: "{{ valkey_authelia_password }}"
 authelia_session_redis_tls_enabled: true

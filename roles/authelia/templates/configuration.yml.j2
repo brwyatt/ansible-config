@@ -94,3 +94,24 @@ regulation:
 identity_validation:
   reset_password:
     jwt_secret: {{ authelia_jwt_secret }}
+
+{% if authelia_oidc_enabled %}
+identity_providers:
+{% if authelia_oidc_enabled %}
+  oidc:
+    hmac_secret: {{ authelia_oidc_hmac_secret }}
+    jwks:
+      - key_id: 'main'
+        algorithm: 'RS256'
+        use: 'sig'
+        key: {{ authelia_oidc_issuer_private_key | to_json }}
+        certificate_chain: {{ authelia_oidc_issuer_certificate_chain | to_json }}
+{% if authelia_oidc_authorization_policies %}
+    authorization_policies:
+{{ authelia_oidc_authorization_policies | to_nice_yaml(indent=2) | indent(6, True) }}
+{% endif %}
+
+    clients:
+{{ authelia_oidc_clients | to_nice_yaml(indent=2) | indent(6, True) }}
+{% endif %}
+{% endif %}
