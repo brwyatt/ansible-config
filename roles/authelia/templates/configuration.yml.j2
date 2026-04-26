@@ -104,14 +104,32 @@ identity_providers:
       - key_id: 'main'
         algorithm: 'RS256'
         use: 'sig'
-        key: {{ authelia_oidc_issuer_private_key | to_json }}
-        certificate_chain: {{ authelia_oidc_issuer_certificate_chain | to_json }}
+        key: |
+{{ authelia_oidc_issuer_private_key | indent(10, True) }}
+{% if authelia_oidc_issuer_certificate_chain is defined %}
+        certificate_chain: |
+{{ authelia_oidc_issuer_certificate_chain | indent(10, True) }}
+{% endif %}
 {% if authelia_oidc_authorization_policies %}
     authorization_policies:
-{{ authelia_oidc_authorization_policies | to_nice_yaml(indent=2) | indent(6, True) }}
+{% for policy_name, policy_details in authelia_oidc_authorization_policies.items() %}
+      {{ policy_name }}:
+        default_policy: {{ policy_details.default_policy }}
+        rules:
+{{ policy_details.rules | to_nice_yaml(indent=2) | indent(10, True) }}
+{% endfor %}
 {% endif %}
 
     clients:
-{{ authelia_oidc_clients | to_nice_yaml(indent=2) | indent(6, True) }}
+{% for client in authelia_oidc_clients %}
+      - id: {{ client.id }}
+        description: {{ client.description }}
+        secret: {{ client.secret }}
+        public: {{ client.public | lower }}
+        authorization_policy: {{ client.authorization_policy }}
+        redirect_uris: {{ client.redirect_uris | to_json }}
+        scopes: {{ client.scopes | to_json }}
+        userinfo_signed_response_alg: {{ client.userinfo_signed_response_alg | to_json }}
+{% endfor %}
 {% endif %}
 {% endif %}

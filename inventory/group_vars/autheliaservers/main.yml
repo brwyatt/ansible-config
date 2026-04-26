@@ -7,17 +7,6 @@ authelia_session_domain: "home.brwyatt.net"
 
 authelia_oidc_enabled: true
 
-authelia_oidc_issuer_certificate_chain: |
-  -----BEGIN PUBLIC KEY-----
-  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv/HcSK01On4tAPRtstrb
-  hHc1nFwOEhM/QmCkamHkpH7XcS7b5UCvSDckrZQKBL/5CX+oCBRl6XuGS/NNxQsk
-  hgeiT0OvkIQGS3Ajou7ggCAdZOg9uQFoWaBxoMrOOwVaPIZnz7fqE+ZwxsiU77Xk
-  Sp1xN9cZvkaVaXs0QbLPKNuWdfj1C9RnCcxhC4Ao6q9x49TI4UARrN3suw6ytlEL
-  2QtrCF1T+fXCxqqnZPvir0GQUX1tpsjNw4Gg00fWtS+YZJLt2BhoarsTd/8WwslV
-  MKYISnSb3mqNCYgA97xNAaibb+p2pXqyj4c/gtDqyEz/gAysbCEtwnZE/eSESOQQ
-  1wIDAQAB
-  -----END PUBLIC KEY-----
-
 authelia_oidc_authorization_policies:
   homebox_policy:
     default_policy: deny
