@@ -1,5 +1,6 @@
 ---
 homebox_web_host: "127.0.0.1"
+homebox_web_port: 7745
 proxy_port: "{{ homebox_web_port }}"
 
 homebox_enable_oidc: true
