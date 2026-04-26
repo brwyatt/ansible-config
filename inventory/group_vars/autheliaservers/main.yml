@@ -15,15 +15,25 @@ authelia_oidc_authorization_policies:
         subject: 'group:homeboxusers'
 
 authelia_oidc_clients:
-  - id: homebox
-    description: HomeBox
-    secret: "{{ authelia_oidc_homebox_hashed_secret }}"
+  homebox:
+    client_name: homebox
+    client_secret: "{{ authelia_oidc_homebox_hashed_secret }}"
     public: false
     authorization_policy: homebox_policy
+    require_pkce: true
+    pkce_challenge_method: 'S256'
     redirect_uris:
-      - https://homebox.server.home.brwyatt.net/auth/callback
-    scopes: [openid, profile, email]
-    userinfo_signed_response_alg: 'none'
+      - https://homebox.server.home.brwyatt.net/api/v1/users/login/oidc/callback
+    scopes:
+      - openid
+      - groups
+      - email
+      - profile
+    response_types:
+      - 'code'
+    grant_types:
+      - 'authorization_code'
+    token_endpoint_auth_method: 'client_secret_basic'
 
 authelia_session_redis_host: "valkey.server.home.brwyatt.net"
 authelia_session_redis_password: "{{ valkey_authelia_password }}"

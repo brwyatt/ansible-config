@@ -121,15 +121,11 @@ identity_providers:
 {% endif %}
 
     clients:
-{% for client in authelia_oidc_clients %}
-      - id: {{ client.id }}
-        description: {{ client.description }}
-        secret: {{ client.secret }}
-        public: {{ client.public | lower }}
-        authorization_policy: {{ client.authorization_policy }}
-        redirect_uris: {{ client.redirect_uris | to_json }}
-        scopes: {{ client.scopes | to_json }}
-        userinfo_signed_response_alg: {{ client.userinfo_signed_response_alg | to_json }}
+{% for client_id, client_details in authelia_oidc_clients.items() %}
+      - client_id: {{ client_id }}
+{% for key, value in client_details.items() %}
+        {{ key }}: {{ value | to_json }}
+{% endfor %}
 {% endfor %}
 {% endif %}
 {% endif %}
