@@ -58,3 +58,5 @@ cluster-config-file /etc/valkey/nodes-{{ valkey_instance_port }}.conf
 cluster-node-timeout 5000
 
 aclfile /etc/valkey/users.acl
+masteruser replicator
+masterauth {{ valkey_replication_password }}

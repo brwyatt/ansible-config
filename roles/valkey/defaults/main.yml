@@ -19,6 +19,7 @@ valkey_bin_path: "/usr/local/bin"
 
 valkey_user: "valkey"
 valkey_group: "valkey"
+valkey_replication_password: "{{ valkey_admin_password }}"
 
 valkey_ipa_cert_name: "valkey"
 valkey_ipa_cert_dir: "/etc/valkey/certs"
