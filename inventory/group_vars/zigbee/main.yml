@@ -1,3 +1,10 @@
 ---
 proxy_port: 8080
 proxy_sso_enabled: true
+proxy_healthcheck:
+  path: /health
+  checks:
+    - type: port
+      value: "{{ proxy_port }}"
+    - type: service
+      value: zigbee2mqtt

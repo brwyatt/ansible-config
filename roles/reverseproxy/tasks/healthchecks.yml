@@ -1,0 +1,22 @@
+---
+- name: Install Healthcheck Dependencies
+  ansible.builtin.package:
+    name:
+      - fcgiwrap
+      - netcat-openbsd
+    state: present
+  become: true
+- name: Ensure fcgiwrap is running
+  ansible.builtin.service:
+    name: fcgiwrap
+    state: started
+    enabled: true
+  become: true
+- name: Deploy Healthcheck Script
+  ansible.builtin.copy:
+    src: nginx-healthcheck.sh
+    dest: /usr/local/bin/nginx-healthcheck.sh
+    owner: root
+    group: root
+    mode: '0755'
+  become: true

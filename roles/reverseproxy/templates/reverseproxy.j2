@@ -39,6 +39,28 @@ server {
 
   include snippets/authelia-auth.conf;
 {% endif %}
+{% if item.healthcheck is defined %}
+
+  location {{ item.healthcheck.path | default('/health') }} {
+    auth_request off;
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME /usr/local/bin/nginx-healthcheck.sh;
+    {% set health_vars = namespace(check_strings=[]) %}
+    {% for c in item.healthcheck.checks %}
+      {% if c.type == 'port' %}
+        {% set health_vars.check_strings = health_vars.check_strings + ['port:' ~ (c.value | default(proxy_port | default(80)))] %}
+      {% elif c.type == 'service' %}
+        {% set health_vars.check_strings = health_vars.check_strings + ['service:' ~ c.value] %}
+      {% elif c.type == 'pgrep' %}
+        {% set health_vars.check_strings = health_vars.check_strings + ['pgrep:' ~ c.value] %}
+      {% elif c.type == 'custom' %}
+        {% set health_vars.check_strings = health_vars.check_strings + ['custom:' ~ c.value] %}
+      {% endif %}
+    {% endfor %}
+    fastcgi_param CHECKS "{{ health_vars.check_strings | join(';') }}";
+    fastcgi_pass unix:/var/run/fcgiwrap.socket;
+  }
+{% endif %}
 
   location / {
     proxy_set_header Remote-User "";
