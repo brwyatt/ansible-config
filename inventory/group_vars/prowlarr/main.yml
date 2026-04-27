@@ -1,3 +1,8 @@
 ---
 proxy_port: 9696
 proxy_sso_enabled: true
+proxy_public_paths:
+  - /ping
+  - /api
+proxy_public_paths_regex:
+  - "^/([0-9]+)/(api|download)"

@@ -39,8 +39,37 @@ server {
 
   include snippets/authelia-auth.conf;
 {% endif %}
-{% if item.healthcheck is defined %}
 
+  # Initialize SSO variables
+  set $user "";
+  set $groups "";
+  set $name "";
+  set $email "";
+
+  location @backend {
+    proxy_pass {{ item.destination }};
+    proxy_set_header Remote-User $user;
+    proxy_set_header Remote-Groups $groups;
+    proxy_set_header Remote-Name $name;
+    proxy_set_header Remote-Email $email;
+
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    proxy_http_version 1.1;
+
+    add_header X-Served-By $host;
+
+    proxy_redirect off;
+    proxy_read_timeout 120;
+
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Scheme $scheme;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+
+{% if item.healthcheck is defined %}
   location {{ item.healthcheck.path | default('/health') }} {
     auth_request off;
     include fastcgi_params;
@@ -62,41 +91,31 @@ server {
   }
 {% endif %}
 
-  location / {
-    proxy_set_header Remote-User "";
-    proxy_set_header Remote-Groups "";
-    proxy_set_header Remote-Name "";
-    proxy_set_header Remote-Email "";
+{% for public in item.public_paths | default([]) %}
+  location {{ public }} {
+    auth_request off;
+    try_files /dev/null/nonexistent @backend;
+  }
+{% endfor %}
 
+{% for regex in item.public_paths_regex | default([]) %}
+  location ~ {{ regex }} {
+    auth_request off;
+    try_files /dev/null/nonexistent @backend;
+  }
+{% endfor %}
+
+  location / {
 {% if item.sso_enabled|default(false) %}
     auth_request /authelia;
     error_page 401 =302 {{ reverseproxy_sso_url }}/?rd=$scheme://$http_host$request_uri;
 
     auth_request_set $user $upstream_http_remote_user;
-    proxy_set_header Remote-User $user;
     auth_request_set $groups $upstream_http_remote_groups;
-    proxy_set_header Remote-Groups $groups;
     auth_request_set $name $upstream_http_remote_name;
-    proxy_set_header Remote-Name $name;
     auth_request_set $email $upstream_http_remote_email;
-    proxy_set_header Remote-Email $email;
 
 {% endif %}
-    proxy_pass {{ item.destination }};
-
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection $http_connection;
-    proxy_http_version 1.1;
-
-    add_header X-Served-By $host;
-
-    proxy_redirect off;
-    proxy_read_timeout 120;
-
-    proxy_set_header Host $http_host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Scheme $scheme;
-    proxy_set_header X-Forwarded-Proto $scheme;
+    try_files /dev/null/nonexistent @backend;
   }
 }
