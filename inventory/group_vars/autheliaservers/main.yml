@@ -30,6 +30,13 @@ authelia_oidc_authorization_policies:
         subject: 'group:homeassistantadmins'
       - policy: two_factor
         subject: 'group:homeassistantusers'
+  jellyfin_policy:
+    default_policy: deny
+    rules:
+      - policy: two_factor
+        subject: 'group:jellyfin-admins'
+      - policy: two_factor
+        subject: 'group:jellyfin-users'
 
 authelia_oidc_clients:
   homebox:
@@ -61,6 +68,27 @@ authelia_oidc_clients:
     redirect_uris:
       - 'https://homeassistant.home.brwyatt.net/auth/oidc/callback'
       - 'https://homeassistant.iot.home.brwyatt.net/auth/oidc/callback'
+    token_endpoint_auth_method: 'client_secret_post'
+  jellyfin:
+    client_name: 'Jellyfin'
+    client_secret: "{{ authelia_oidc_jellyfin_hashed_secret }}"
+    public: false
+    authorization_policy: jellyfin_policy
+    require_pkce: true
+    pkce_challenge_method: 'S256'
+    redirect_uris:
+      - 'https://jellyfin.home.brwyatt.net/sso/OID/redirect/authelia'
+      - 'https://jellyfin.server.home.brwyatt.net/sso/OID/redirect/authelia'
+    scopes:
+      - openid
+      - groups
+      - profile
+    response_types:
+      - 'code'
+    grant_types:
+      - 'authorization_code'
+    access_token_signed_response_alg: "none"
+    userinfo_signed_response_alg: "none"
     token_endpoint_auth_method: 'client_secret_post'
 
 authelia_session_redis_host: "valkey.server.home.brwyatt.net"
