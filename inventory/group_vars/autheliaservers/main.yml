@@ -21,7 +21,7 @@ authelia_oidc_authorization_policies:
   homebox_policy:
     default_policy: deny
     rules:
-      - policy: one_factor
+      - policy: two_factor
         subject: 'group:homeboxusers'
   homeassistant_policy:
     default_policy: deny
@@ -117,40 +117,23 @@ authelia_access_control_rules:
     subject: "group:seedboxusers"
   # Sonarr
   - domain: "sonarr.server.home.brwyatt.net"
-    policy: "bypass"
-    resources:
-      - '^/ping$'
-      - '^/api/.*$'
-  - domain: "sonarr.server.home.brwyatt.net"
     policy: "two_factor"
     subject: "group:arrsusers"
   # Radarr
-  - domain: "radarr.server.home.brwyatt.net"
-    policy: "bypass"
-    resources:
-      - '^/ping$'
-      - '^/api/.*$'
   - domain: "radarr.server.home.brwyatt.net"
     policy: "two_factor"
     subject: "group:arrsusers"
   # Prowlarr
   - domain: "prowlarr.server.home.brwyatt.net"
-    policy: "bypass"
-    resources:
-      - '^/ping$'
-      - '^/api/.*$'
-      - '^/\d+/api[\?].*$'
-      - '^/\d+/download[\?].*$'
-  - domain: "prowlarr.server.home.brwyatt.net"
     policy: "two_factor"
     subject: "group:arrsusers"
   # Z-Wave JS UI
   - domain: "zwave-js-ui.iot.home.brwyatt.net"
-    policy: "one_factor"
+    policy: "two_factor"
     subject: "group:iot-admins"
   # Zigbee2MQTT
   - domain: "zigbee2mqtt.iot.home.brwyatt.net"
-    policy: "one_factor"
+    policy: "two_factor"
     subject: "group:iot-admins"
 
 proxy_port: 9091
