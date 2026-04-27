@@ -29,8 +29,5 @@ reverseproxy_sites:
   #     - matrix.home.brwyatt.net
   #   destination: "https://matrix.server.home.brwyatt.net:443"
   - server_names:
-      - "password.home.brwyatt.net"
-    destination: "https://password.server.home.brwyatt.net:443"
-  - server_names:
       - "auth.home.brwyatt.net"
     destination: "https://auth.home.brwyatt.net:443"

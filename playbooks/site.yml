@@ -84,14 +84,6 @@
   hosts: otbr
   roles:
     - role: ot_br
-- name: Password Servers
-  hosts: sspasswdservers
-  become: true
-  roles:
-    - role: aws_creds
-    - role: certbot
-    - role: sspasswd
-    - role: keepalived
 - name: Guacamole Server
   hosts: guacamole
   become: true
