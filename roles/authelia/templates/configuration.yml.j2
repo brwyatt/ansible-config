@@ -12,9 +12,9 @@ log:
 
 authentication_backend:
   password_change:
-    disable: true
+    disable: {{ not authelia_password_ss_enabled | default(true) | bool | lower }}
   password_reset:
-    disable: true
+    disable: {{ not authelia_password_ss_enabled | default(true) | bool | lower }}
   ldap:
     implementation: freeipa
     address: {{ authelia_ldap_url }}
@@ -22,7 +22,7 @@ authentication_backend:
       skip_verify: false
     base_dn: {{ authelia_ldap_base_dn }}
     additional_users_dn: cn=users,cn=accounts
-    users_filter: "(&(!(memberOf=cn=service-accounts,cn=groups,cn=accounts,{{ authelia_ldap_base_dn }}))({username_attribute}={input}))"
+    users_filter: "(&(!(memberOf=cn=service-accounts,cn=groups,cn=accounts,{{ authelia_ldap_base_dn }}))({username_attribute}={input})(!(nsAccountLock=TRUE)))"
     additional_groups_dn: cn=groups,cn=accounts
     groups_filter: "(member={dn})"
     attributes:
@@ -66,8 +66,19 @@ storage:
     password: {{ authelia_database_password }}
 
 notifier:
+{% if authelia_notifier_type | default('filesystem') == 'smtp' %}
+  smtp:
+    address: 'submission{{ 's' if authelia_notifier_smtp_tls | default(false) else '' }}://{{ authelia_notifier_smtp_host }}:{{ authelia_notifier_smtp_port }}'
+    username: {{ authelia_notifier_smtp_username }}
+    password: {{ authelia_notifier_smtp_password }}
+    sender: {{ authelia_notifier_smtp_sender }}
+    identifier: {{ authelia_notifier_smtp_identifier }}
+    subject: '[Authelia] {title}'
+    startup_check_address: 'test@authelia.com'
+{% else %}
   filesystem:
     filename: {{ authelia_config_path }}/notification.txt
+{% endif %}
 
 access_control:
   default_policy: deny
@@ -94,3 +105,37 @@ regulation:
 identity_validation:
   reset_password:
     jwt_secret: {{ authelia_jwt_secret }}
+
+{% if authelia_oidc_enabled %}
+identity_providers:
+{% if authelia_oidc_enabled %}
+  oidc:
+    hmac_secret: {{ authelia_oidc_hmac_secret }}
+    jwks:
+      - key_id: 'main'
+        algorithm: 'RS256'
+        use: 'sig'
+        key: |
+{{ authelia_oidc_issuer_private_key | indent(10, True) }}
+{% if authelia_oidc_issuer_certificate_chain is defined %}
+        certificate_chain: |
+{{ authelia_oidc_issuer_certificate_chain | indent(10, True) }}
+{% endif %}
+{% if authelia_oidc_authorization_policies %}
+    authorization_policies:
+{% for policy_name, policy_details in authelia_oidc_authorization_policies.items() %}
+      {{ policy_name }}:
+        default_policy: {{ policy_details.default_policy }}
+        rules:
+{{ policy_details.rules | to_nice_yaml(indent=2) | indent(10, True) }}
+{% endfor %}
+{% endif %}
+    clients:
+{% for client_id, client_details in authelia_oidc_clients.items() %}
+      - client_id: {{ client_id }}
+{% for key, value in client_details.items() %}
+        {{ key }}: {{ value | to_json }}
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% endif %}

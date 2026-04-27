@@ -4,6 +4,65 @@ authelia_version: "4.39.19-RedisKeyPrefix-v2"
 authelia_checksum: "sha256:b9bfc30eef01fa77faa39e7fa51da7add63ace5109cbb9071a96ff3bd4fc411b"
 
 authelia_session_domain: "home.brwyatt.net"
+
+authelia_notifier_type: "smtp"
+authelia_notifier_smtp_host: "smtps.brwyatt.net"
+authelia_notifier_smtp_port: 465
+authelia_notifier_smtp_tls: true
+authelia_notifier_smtp_username: "authelia@brwyatt.net"
+authelia_notifier_smtp_sender: "authelia@brwyatt.net"
+authelia_notifier_smtp_identifier: "authelia.home.brwyatt.net"
+
+authelia_password_ss_enabled: true
+
+authelia_oidc_enabled: true
+
+authelia_oidc_authorization_policies:
+  homebox_policy:
+    default_policy: deny
+    rules:
+      - policy: one_factor
+        subject: 'group:homeboxusers'
+  homeassistant_policy:
+    default_policy: deny
+    rules:
+      - policy: two_factor
+        subject: 'group:homeassistantadmins'
+      - policy: two_factor
+        subject: 'group:homeassistantusers'
+
+authelia_oidc_clients:
+  homebox:
+    client_name: HomeBox
+    client_secret: "{{ authelia_oidc_homebox_hashed_secret }}"
+    public: false
+    authorization_policy: homebox_policy
+    require_pkce: true
+    pkce_challenge_method: 'S256'
+    redirect_uris:
+      - https://homebox.server.home.brwyatt.net/api/v1/users/login/oidc/callback
+    scopes:
+      - openid
+      - groups
+      - email
+      - profile
+    response_types:
+      - 'code'
+    grant_types:
+      - 'authorization_code'
+    token_endpoint_auth_method: 'client_secret_basic'
+  homeassistant:
+    client_name: 'Home Assistant'
+    client_secret: "{{ authelia_oidc_homeassistant_hashed_secret }}"
+    public: false
+    authorization_policy: homeassistant_policy
+    require_pkce: true
+    pkce_challenge_method: 'S256'
+    redirect_uris:
+      - 'https://homeassistant.home.brwyatt.net/auth/oidc/callback'
+      - 'https://homeassistant.iot.home.brwyatt.net/auth/oidc/callback'
+    token_endpoint_auth_method: 'client_secret_post'
+
 authelia_session_redis_host: "valkey.server.home.brwyatt.net"
 authelia_session_redis_password: "{{ valkey_authelia_password }}"
 authelia_session_redis_tls_enabled: true
@@ -26,7 +85,7 @@ authelia_access_control_rules:
       - "172.17.20.20/32" # Home Assistant
       - "172.17.30.0/24" # Server Subnet
   - domain: "seedbox.server.home.brwyatt.net"
-    policy: "one_factor"
+    policy: "two_factor"
     subject: "group:seedboxusers"
   # Sonarr
   - domain: "sonarr.server.home.brwyatt.net"
@@ -35,7 +94,7 @@ authelia_access_control_rules:
       - '^/ping$'
       - '^/api/.*$'
   - domain: "sonarr.server.home.brwyatt.net"
-    policy: "one_factor"
+    policy: "two_factor"
     subject: "group:arrsusers"
   # Radarr
   - domain: "radarr.server.home.brwyatt.net"
@@ -44,7 +103,7 @@ authelia_access_control_rules:
       - '^/ping$'
       - '^/api/.*$'
   - domain: "radarr.server.home.brwyatt.net"
-    policy: "one_factor"
+    policy: "two_factor"
     subject: "group:arrsusers"
   # Prowlarr
   - domain: "prowlarr.server.home.brwyatt.net"
@@ -55,7 +114,7 @@ authelia_access_control_rules:
       - '^/\d+/api[\?].*$'
       - '^/\d+/download[\?].*$'
   - domain: "prowlarr.server.home.brwyatt.net"
-    policy: "one_factor"
+    policy: "two_factor"
     subject: "group:arrsusers"
   # Z-Wave JS UI
   - domain: "zwave-js-ui.iot.home.brwyatt.net"

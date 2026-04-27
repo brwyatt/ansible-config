@@ -28,3 +28,9 @@ authelia_session_redis_port: 6379
 authelia_session_redis_username: "authelia"
 authelia_session_redis_password: ""
 authelia_session_redis_tls_enabled: false
+
+authelia_oidc_enabled: false
+authelia_oidc_hmac_secret: ""
+authelia_oidc_issuer_private_key: ""
+authelia_oidc_authorization_policies: {}
+authelia_oidc_clients: []

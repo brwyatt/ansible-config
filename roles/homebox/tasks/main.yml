@@ -2,12 +2,14 @@
 - name: Create HomeBox env file
   ansible.builtin.template:
     src: env.j2
-    dest: /opt/.env
+    dest: /opt/homebox/.env
     owner: root
     group: root
     mode: '0644'
   become: true
   notify: Restart HomeBox
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
 - name: Ensure HomeBox is running and enabled
   ansible.builtin.service:
     name: homebox
