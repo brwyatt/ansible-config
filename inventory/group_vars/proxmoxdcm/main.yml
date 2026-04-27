@@ -1,2 +1,3 @@
 ---
-proxy_destination: "https://127.0.0.1:8443"
+proxy_port: 8443
+proxy_destination: "https://127.0.0.1:{{ proxy_port }}/"
