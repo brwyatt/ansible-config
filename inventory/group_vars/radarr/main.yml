@@ -6,3 +6,6 @@ cephclient_mounts:
     mount_path: "/mnt/Media"
 proxy_port: 7878
 proxy_sso_enabled: true
+proxy_public_paths:
+  - /ping
+  - /api
