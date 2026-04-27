@@ -22,7 +22,7 @@ authentication_backend:
       skip_verify: false
     base_dn: {{ authelia_ldap_base_dn }}
     additional_users_dn: cn=users,cn=accounts
-    users_filter: "(&(!(memberOf=cn=service-accounts,cn=groups,cn=accounts,{{ authelia_ldap_base_dn }}))({username_attribute}={input}))"
+    users_filter: "(&(!(memberOf=cn=service-accounts,cn=groups,cn=accounts,{{ authelia_ldap_base_dn }}))({username_attribute}={input})(!(nsAccountLock=TRUE)))"
     additional_groups_dn: cn=groups,cn=accounts
     groups_filter: "(member={dn})"
     attributes:
