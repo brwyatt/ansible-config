@@ -1,7 +1,0 @@
----
-cephclient_mounts:
-  - user: "mediamanager"
-    fs_name: "Media_EC"
-    remote_path: "/"
-    mount_path: "/mnt/Media"
-proxy_port: 8000

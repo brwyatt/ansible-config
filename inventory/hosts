@@ -109,9 +109,6 @@ sonarr:
 prowlarr:
   hosts:
     prowlarr.server.home.brwyatt.net:
-mediamanager:
-  hosts:
-    mediamanager.server.home.brwyatt.net:
 uptimekuma:
   hosts:
     uptimekuma.server.home.brwyatt.net:
@@ -151,7 +148,6 @@ app_proxy:
     radarr:
     sonarr:
     prowlarr:
-    mediamanager:
     uptimekuma:
     zwave:
     zigbee:
@@ -168,5 +164,4 @@ ceph_clients:
     pxeservers:
     radarr:
     sonarr:
-    mediamanager:
     cephiscsi:
