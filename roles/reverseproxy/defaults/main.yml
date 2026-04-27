@@ -2,3 +2,4 @@
 reverseproxy_include_default: false
 reverseproxy_sso_url: "https://auth.home.brwyatt.net"
 reverseproxy_sso_verify_url: "https://auth.home.brwyatt.net/api/verify"
+reverseproxy_recursive_proxies: false
