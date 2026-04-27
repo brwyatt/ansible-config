@@ -6,7 +6,7 @@
   become: true
 - name: Determine if any sites have healthchecks enabled
   ansible.builtin.set_fact:
-    reverseproxy_any_healthchecks: "{{ reverseproxy_sites | selectattr('healthcheck', 'defined') | list | length > 0 }}"
+    reverseproxy_any_healthchecks: "{{ reverseproxy_sites | selectattr('healthcheck', 'defined') | rejectattr('healthcheck', 'sameas', omit) | list | length > 0 }}"
 - name: Include Healthcheck Support
   ansible.builtin.include_tasks: healthchecks.yml
   when: reverseproxy_any_healthchecks
