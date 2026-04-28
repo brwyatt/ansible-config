@@ -1,2 +1,5 @@
 ---
 proxy_port: 3001
+reverseproxy_nginx_after:
+  - network-online.target
+  - uptime-kuma.service

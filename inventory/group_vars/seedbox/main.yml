@@ -22,3 +22,6 @@ cephclient_mounts:
     mount_path: "/mnt/iso"
 proxy_port: 8080
 proxy_sso_enabled: true
+reverseproxy_nginx_after:
+  - network-online.target
+  - transmission-daemon.service

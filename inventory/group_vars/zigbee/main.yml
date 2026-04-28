@@ -1,6 +1,9 @@
 ---
 proxy_port: 8080
 proxy_sso_enabled: true
+reverseproxy_nginx_after:
+  - network-online.target
+  - zigbee2mqtt.service
 proxy_healthcheck:
   path: /health
   checks:
