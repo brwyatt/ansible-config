@@ -73,7 +73,6 @@
   become: true
   when: item.remount_timer | default(cephclient_remount_timer)
   notify: Reload systemd
-
 - name: "Enable CephFS Remount Timer {{ item.mount_path }}"
   ansible.builtin.service:
     name: "{{ systemd_mount_timer_unit }}"
