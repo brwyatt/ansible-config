@@ -37,6 +37,15 @@ authelia_oidc_authorization_policies:
         subject: 'group:jellyfin-admins'
       - policy: two_factor
         subject: 'group:jellyfin-users'
+  proxmox_policy:
+    default_policy: deny
+    rules:
+      - policy: deny
+        subject: 'group:pve-automation'
+      - policy: two_factor
+        subject: 'group:pve-admins'
+      - policy: two_factor
+        subject: 'group:pve-users'
 
 authelia_oidc_clients:
   homebox:
@@ -90,6 +99,27 @@ authelia_oidc_clients:
     access_token_signed_response_alg: "none"
     userinfo_signed_response_alg: "none"
     token_endpoint_auth_method: 'client_secret_post'
+  proxmox:
+    client_name: 'Proxmox'
+    client_secret: "{{ authelia_oidc_proxmox_hashed_secret }}"
+    public: false
+    authorization_policy: 'proxmox_policy'
+    require_pkce: true
+    pkce_challenge_method: 'S256'
+    redirect_uris:
+      - 'https://proxmox.home.brwyatt.net'
+    scopes:
+      - 'openid'
+      - 'profile'
+      - 'email'
+      - 'groups'
+    response_types:
+      - 'code'
+    grant_types:
+      - 'authorization_code'
+    access_token_signed_response_alg: 'none'
+    userinfo_signed_response_alg: 'none'
+    token_endpoint_auth_method: 'client_secret_basic'
 
 authelia_session_redis_host: "valkey.server.home.brwyatt.net"
 authelia_session_redis_password: "{{ valkey_authelia_password }}"
