@@ -1,5 +1,9 @@
 ---
 reverseproxy_include_default: false
 reverseproxy_sso_url: "https://auth.home.brwyatt.net"
-reverseproxy_sso_verify_url: "https://auth.home.brwyatt.net/api/verify"
+reverseproxy_sso_verify_url: "https://172.17.30.210/api/verify"
+reverseproxy_sso_verify_host: "auth.home.brwyatt.net"
 reverseproxy_recursive_proxies: false
+reverseproxy_nginx_after:
+  - network-online.target
+reverseproxy_nginx_start_delay: 5

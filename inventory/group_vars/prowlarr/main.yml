@@ -1,6 +1,9 @@
 ---
 proxy_port: 9696
 proxy_sso_enabled: true
+reverseproxy_nginx_after:
+  - network-online.target
+  - prowlarr.service
 proxy_public_paths:
   - /ping
   - /api

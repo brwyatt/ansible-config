@@ -38,3 +38,6 @@ reverseproxy_sites:
 reverseproxy_trusted_proxies:
   - "172.17.30.82"
   - "172.17.30.107"
+reverseproxy_nginx_after:
+  - network-online.target
+  - tomcat.service

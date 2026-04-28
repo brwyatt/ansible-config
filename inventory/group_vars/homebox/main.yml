@@ -5,3 +5,6 @@ proxy_port: "{{ homebox_web_port }}"
 
 homebox_enable_oidc: true
 homebox_options_hostname: "homebox.server.home.brwyatt.net"
+reverseproxy_nginx_after:
+  - network-online.target
+  - homebox.service

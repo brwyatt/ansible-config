@@ -6,6 +6,9 @@ cephclient_mounts:
     mount_path: "/mnt/Media"
 proxy_port: 8989
 proxy_sso_enabled: true
+reverseproxy_nginx_after:
+  - network-online.target
+  - sonarr.service
 proxy_public_paths:
   - /ping
   - /api

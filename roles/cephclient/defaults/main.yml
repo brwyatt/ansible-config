@@ -1,4 +1,5 @@
 cephclient_automount: "{{ ansible_virtualization_type != 'lxc' }}"
+cephclient_remount_timer: "{{ ansible_virtualization_type == 'lxc' }}"
 cephclient_mon_hosts: []
 cephclient_mon_dns_srv_name: {}
 cephclient_users: {}
