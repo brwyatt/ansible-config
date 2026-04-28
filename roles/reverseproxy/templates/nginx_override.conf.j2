@@ -1,0 +1,12 @@
+[Unit]
+{% for after in reverseproxy_nginx_after %}
+After={{ after }}
+Wants={{ after }}
+{% endfor %}
+
+[Service]
+{% if reverseproxy_nginx_start_delay > 0 %}
+ExecStartPre=/bin/sleep {{ reverseproxy_nginx_start_delay }}
+{% endif %}
+Restart=on-failure
+RestartSec=5s

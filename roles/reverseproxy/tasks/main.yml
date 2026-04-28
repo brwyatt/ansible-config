@@ -6,7 +6,13 @@
   become: true
 - name: Determine if any sites have healthchecks enabled
   ansible.builtin.set_fact:
-    reverseproxy_any_healthchecks: "{{ reverseproxy_sites | selectattr('healthcheck', 'defined') | rejectattr('healthcheck', 'sameas', omit) | list | length > 0 }}"
+    reverseproxy_any_healthchecks: "{{
+      reverseproxy_sites
+      | selectattr('healthcheck', 'defined')
+      | rejectattr('healthcheck', 'sameas', omit)
+      | list
+      | length > 0
+      }}"
 - name: Include Healthcheck Support
   ansible.builtin.include_tasks: healthchecks.yml
   when: reverseproxy_any_healthchecks
@@ -96,6 +102,27 @@
     group: root
     mode: '0755'
   become: true
+- name: Nginx systemd override directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/nginx.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+- name: Nginx systemd override
+  ansible.builtin.template:
+    src: nginx_override.conf.j2
+    dest: /etc/systemd/system/nginx.service.d/override.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    - Reload systemd
+    - Restart Nginx
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
 - name: Ensure Nginx is running
   ansible.builtin.service:
     name: nginx
