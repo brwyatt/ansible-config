@@ -1,0 +1,11 @@
+[Unit]
+Description=Timer to ensure {{ item.mount_path }} is mounted
+After=network-online.target
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+RandomizedDelaySec=10s
+
+[Install]
+WantedBy=timers.target

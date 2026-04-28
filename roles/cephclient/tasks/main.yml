@@ -20,29 +20,6 @@
     group: root
     mode: '0600'
   become: true
-- name: Create Ceph Monitor Wait Service
-  ansible.builtin.template:
-    src: ceph-mon-wait.service.j2
-    dest: /etc/systemd/system/ceph-mon-wait.service
-    owner: root
-    group: root
-    mode: '0644'
-  become: true
-  notify: Reload systemd
-  when: cephclient_wait_for_dns
-- name: Enable Ceph Monitor Wait Service
-  ansible.builtin.service:
-    name: ceph-mon-wait.service
-    enabled: true
-  become: true
-  when: cephclient_wait_for_dns
-- name: Remove Ceph Monitor Wait Service if disabled
-  ansible.builtin.file:
-    path: /etc/systemd/system/ceph-mon-wait.service
-    state: absent
-  become: true
-  notify: Reload systemd
-  when: not cephclient_wait_for_dns
 - name: Create Mounts
   loop: "{{ cephclient_mounts }}"
   loop_control:

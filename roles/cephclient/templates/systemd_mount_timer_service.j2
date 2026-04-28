@@ -1,0 +1,10 @@
+[Unit]
+Description=Periodic check/remount for {{ item.mount_path }}
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/systemctl start {{ systemd_mount_unit }}
+
+[Install]
+WantedBy=multi-user.target
