@@ -1,0 +1,17 @@
+[Unit]
+Description=Wait for Ceph Monitor DNS SRV records
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+{% if cephclient_mon_dns_srv_name.domain %}
+ExecStart=/bin/bash -c 'until host -t SRV _{{ cephclient_mon_dns_srv_name.srv | default("ceph-mon") }}._tcp.{{ cephclient_mon_dns_srv_name.domain }}; do sleep 2; done'
+{% else %}
+ExecStart=/bin/true
+{% endif %}
+TimeoutStartSec=60
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

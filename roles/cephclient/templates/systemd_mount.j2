@@ -1,7 +1,10 @@
 [Unit]
 Description=CephFS Mount for {{ item.mount_path }} from {{ item.fs_name }}
-After=network-online.target remote-fs.target
-Wants=network-online.target
+After=network-online.target remote-fs.target{% if cephclient_wait_for_dns %} ceph-mon-wait.service{% endif %}
+Wants=network-online.target{% if cephclient_wait_for_dns %} ceph-mon-wait.service{% endif %}
+{% if cephclient_wait_for_dns %}
+Requires=ceph-mon-wait.service
+{% endif %}
 Conflicts=umount.target
 
 [Mount]
