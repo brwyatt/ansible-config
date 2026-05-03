@@ -165,3 +165,9 @@ ceph_clients:
     radarr:
     sonarr:
     cephiscsi:
+aws_usw2:
+  children:
+    aws_usw2_bastions:
+aws_usw2_bastions:
+  hosts:
+    bastion01.usw2.aws.brwyatt.net:

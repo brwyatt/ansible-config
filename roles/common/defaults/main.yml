@@ -38,3 +38,20 @@ common_manage_etc_hosts: false
 common_sshd_service_name_families:
   Debian: "ssh"
   RedHat: "sshd"
+
+common_ssh_ciphers:
+  - "aes128-ctr"
+  - "aes128-gcm@openssh.com"
+  - "aes192-ctr"
+  - "aes256-ctr"
+  - "aes256-gcm@openssh.com"
+common_ssh_kexalgorithms:
+  - "curve25519-sha256@libssh.org"
+  - "diffie-hellman-group-exchange-sha256"
+  - "ecdh-sha2-nistp256"
+  - "ecdh-sha2-nistp384"
+  - "ecdh-sha2-nistp521"
+common_ssh_macs:
+  - "hmac-sha2-256"
+  - "hmac-sha2-512"
+  - "umac-128@openssh.com"

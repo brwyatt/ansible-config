@@ -144,3 +144,7 @@
     - role: certbot
     - role: reverseproxy
     - role: keepalived
+- name: AWS USW2 Bastion
+  hosts: aws_usw2
+  become: true
+  roles: []

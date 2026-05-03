@@ -1,0 +1,9 @@
+---
+common_join_ipa_domain: false
+
+chrony_sources:
+  - type: "server"
+    location: "169.254.169.123"
+    iburst: true
+    trust: true
+    prefer: true

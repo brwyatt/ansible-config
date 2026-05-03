@@ -11,6 +11,24 @@
     state: present
   become: true
   when: ansible_os_family == "RedHat"
+- name: Configure sshd
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?{{ item.key }}\\s"
+    line: "{{ item.key }} {{ item.value }}"
+    state: present
+    validate: "/usr/sbin/sshd -t -f %s"
+  loop:
+    - { key: "PermitRootLogin", value: "no" }
+    - { key: "PasswordAuthentication", value: "no" }
+    - { key: "PubkeyAuthentication", value: "yes" }
+    - { key: "Ciphers", value: "{{ common_ssh_ciphers | join(',') }}" }
+    - { key: "KexAlgorithms", value: "{{ common_ssh_kexalgorithms | join(',') }}" }
+    - { key: "MACs", value: "{{ common_ssh_macs | join(',') }}" }
+  notify: Restart sshd
+- name: Flush Handlers
+  ansible.builtin.meta: flush_handlers
 - name: Start sshd
   ansible.builtin.service:
     name: |-
