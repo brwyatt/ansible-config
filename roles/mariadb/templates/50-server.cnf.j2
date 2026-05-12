@@ -27,7 +27,7 @@ log_error = /var/log/mysql/error.log
 
 # InnoDB Tuning
 default_storage_engine  = InnoDB
-innodb_buffer_pool_size = 512M
+innodb_buffer_pool_size = {{ mariadb_innodb_buffer_pool_size }}
 innodb_log_file_size    = 128M
 innodb_file_per_table   = 1
 innodb_flush_log_at_trx_commit = 2
