@@ -15,7 +15,7 @@
   become: true
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
-    regexp: "^#?{{ item.key }}\\s"
+    regexp: "^\\s*#?\\s*{{ item.key }}\\s"
     line: "{{ item.key }} {{ item.value }}"
     state: present
     validate: "/usr/sbin/sshd -t -f %s"
