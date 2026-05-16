@@ -21,7 +21,7 @@
     validate: "/usr/sbin/sshd -t -f %s"
   loop:
     - { key: "PermitRootLogin", value: "{{ common_ssh_permit_root_login }}" }
-    - { key: "PasswordAuthentication", value: "no" }
+    - { key: "PasswordAuthentication", value: "{{ common_ssh_password_authentication }}" }
     - { key: "PubkeyAuthentication", value: "yes" }
     - { key: "Ciphers", value: "{{ common_ssh_ciphers | join(',') }}" }
     - { key: "KexAlgorithms", value: "{{ common_ssh_kexalgorithms | join(',') }}" }

@@ -40,6 +40,7 @@ common_sshd_service_name_families:
   RedHat: "sshd"
 
 common_ssh_permit_root_login: "no"
+common_ssh_password_authentication: "no"
 
 common_ssh_ciphers:
   - "aes128-ctr"

@@ -12,3 +12,4 @@ users_root_password: null
 users_manage_root: true
 users_disable_root_login: false
 common_ssh_permit_root_login: "yes"
+common_ssh_password_authentication: "yes"
