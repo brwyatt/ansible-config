@@ -11,3 +11,4 @@ users_extra_root_keys: "{{ ssh_keys_proxmox.values() | list }}"
 users_root_password: null
 users_manage_root: true
 users_disable_root_login: false
+common_ssh_permit_root_login: "yes"
