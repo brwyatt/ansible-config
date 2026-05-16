@@ -1,7 +1,7 @@
 ---
 common_join_ipa_domain: false
 
-ansible_ssh_common_args: '-o ProxyJump={{ ansible_user | default(lookup("env", "USER")) }}@bastion01.usw2.aws.brwyatt.net'
+ansible_ssh_common_args: '-o ProxyJump={{ ansible_user | default(lookup("env", "USER")) }}@{{ groups["aws_usw2_bastions"] | random }} -o StrictHostKeyChecking=accept-new'
 
 chrony_sources:
   - type: "server"
