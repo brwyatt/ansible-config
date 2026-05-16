@@ -1,0 +1,11 @@
+---
+common_join_ipa_domain: false
+
+ansible_ssh_common_args: '-o ProxyJump={{ ansible_user | default(lookup("env", "USER")) }}@{{ groups["aws_usw2_bastions"] | random }} -o StrictHostKeyChecking=accept-new'
+
+chrony_sources:
+  - type: "server"
+    location: "169.254.169.123"
+    iburst: true
+    trust: true
+    prefer: true

@@ -1,1 +1,13 @@
 ---
+- name: Restart sshd
+  become: true
+  ansible.builtin.service:
+    name: |-
+      {{
+        common_sshd_service_name |
+        default(
+          common_sshd_service_name_families[ansible_os_family] |
+          default('sshd')
+        )
+      }}
+    state: restarted
