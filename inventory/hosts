@@ -97,9 +97,6 @@ ipaservers:
 ipaloadbalancers:
   hosts:
     ipa-haproxy[01:02].server.home.brwyatt.net:
-openmediavault:
-  hosts:
-    omv-test.server.home.brwyatt.net:
 radarr:
   hosts:
     radarr.server.home.brwyatt.net:
@@ -115,9 +112,6 @@ uptimekuma:
 acmecertpusher:
   hosts:
     acmecertpusher.server.home.brwyatt.net:
-cephiscsi:
-  hosts:
-    iscsigw[01:02].server.home.brwyatt.net:
 guacamole:
   hosts:
     guacamole[01:02].server.home.brwyatt.net:
