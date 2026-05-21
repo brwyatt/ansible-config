@@ -157,6 +157,10 @@ authelia_access_control_rules:
   - domain: "prowlarr.server.home.brwyatt.net"
     policy: "two_factor"
     subject: "group:arrsusers"
+  # Tracearr
+  - domain: "tracearr.server.home.brwyatt.net"
+    policy: "two_factor"
+    subject: "group:arrsusers"
   # Z-Wave JS UI
   - domain: "zwave-js-ui.iot.home.brwyatt.net"
     policy: "two_factor"
