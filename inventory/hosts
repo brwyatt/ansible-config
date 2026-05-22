@@ -8,6 +8,9 @@ rabbitmq:
 mariadb:
   hosts:
     mariadb[01:03].server.home.brwyatt.net:
+etcd_cluster:
+  hosts:
+    etcd[01:03].server.home.brwyatt.net:
 loadbalancers:
   children:
     mqttloadbalancers:

@@ -116,6 +116,11 @@
     - role: aws_creds
     - role: certbot
     - role: mariadb
+- name: etcd Cluster
+  hosts: etcd_cluster
+  become: true
+  roles:
+    - role: etcd
 - name: Valkey Cluster Servers
   hosts: valkeyservers
   become: true

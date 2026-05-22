@@ -1,0 +1,78 @@
+---
+- name: Install etcd
+  ansible.builtin.package:
+    name: "{{ etcd_package }}"
+    state: present
+- name: Ensure etcd cert directory exists
+  ansible.builtin.file:
+    path: "{{ etcd_cert_dir }}"
+    state: directory
+    owner: etcd
+    group: etcd
+    mode: '0750'
+- name: Deploy IPA renewal hook for etcd
+  ansible.builtin.copy:
+    content: |
+      #!/bin/bash
+      systemctl is-active --quiet etcd && systemctl restart etcd
+    dest: "{{ etcd_ipa_reload_script }}"
+    owner: root
+    group: root
+    mode: '0755'
+- name: Request IPA certificates for etcd (Server/Client)
+  ansible.builtin.include_role:
+    name: ipacert
+  vars:
+    ipacert_certs:
+      "{{ etcd_ipa_cert_name }}":
+        cert_path: "{{ etcd_ipa_cert_path }}"
+        cert_owner: etcd
+        cert_perms: "0644"
+        key_path: "{{ etcd_ipa_key_path }}"
+        key_owner: etcd
+        key_perms: "0600"
+        after_command: "{{ etcd_ipa_reload_script }}"
+- name: Request IPA certificates for etcd (Peer)
+  ansible.builtin.include_role:
+    name: ipacert
+  vars:
+    ipacert_certs:
+      "{{ etcd_ipa_peer_cert_name }}":
+        cert_path: "{{ etcd_ipa_peer_cert_path }}"
+        cert_owner: etcd
+        cert_perms: "0644"
+        key_path: "{{ etcd_ipa_peer_key_path }}"
+        key_owner: etcd
+        key_perms: "0600"
+        after_command: "{{ etcd_ipa_reload_script }}"
+- name: Symlink IPA CA cert to etcd certs dir
+  ansible.builtin.file:
+    src: "{{ etcd_ca_path }}"
+    dest: "{{ etcd_cert_dir }}/dogtag-ca.crt"
+    state: link
+- name: Deploy etcd configuration
+  ansible.builtin.template:
+    src: etcd.yml.j2
+    dest: /etc/etcd/etcd.yml
+    owner: etcd
+    group: etcd
+    mode: '0644'
+  notify: Restart etcd
+- name: Configure etcd to use yaml config
+  ansible.builtin.copy:
+    content: 'ETCD_CONFIG_FILE="/etc/etcd/etcd.yml"'
+    dest: /etc/default/etcd
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart etcd
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+- name: Start and enable etcd service
+  ansible.builtin.systemd:
+    name: etcd
+    state: started
+    enabled: true
+- name: Ensure cluster is bootstrapped and RBAC is enabled
+  ansible.builtin.include_tasks: rbac.yml
+  when: inventory_hostname == groups['etcd_cluster'][0]

@@ -1,0 +1,16 @@
+---
+etcd_package: etcd
+etcd_cert_dir: /etc/etcd/certs
+etcd_ipa_cert_name: etcd-{{ inventory_hostname_short }}
+etcd_ipa_cert_path: "{{ etcd_cert_dir }}/server.crt"
+etcd_ipa_key_path: "{{ etcd_cert_dir }}/server.key"
+etcd_ipa_peer_cert_name: etcd-peer-{{ inventory_hostname_short }}
+etcd_ipa_peer_cert_path: "{{ etcd_cert_dir }}/peer.crt"
+etcd_ipa_peer_key_path: "{{ etcd_cert_dir }}/peer.key"
+etcd_ipa_reload_script: /usr/local/bin/etcd_ipa_cert_reload.sh
+etcd_ca_path: /etc/ipa/ca.crt
+
+etcd_client_port: 2379
+etcd_peer_port: 2380
+etcd_discovery_srv: "etcd.server.home.brwyatt.net"
+etcd_initial_cluster_token: "etcd-homelab-token"

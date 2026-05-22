@@ -1,0 +1,21 @@
+name: "{{ inventory_hostname_short }}"
+data-dir: "/var/lib/etcd/{{ inventory_hostname_short }}.etcd"
+listen-peer-urls: "https://{{ ansible_default_ipv4.address }}:{{ etcd_peer_port }}"
+listen-client-urls: "https://{{ ansible_default_ipv4.address }}:{{ etcd_client_port }},https://127.0.0.1:{{ etcd_client_port }}"
+initial-advertise-peer-urls: "https://{{ inventory_hostname }}:{{ etcd_peer_port }}"
+advertise-client-urls: "https://{{ inventory_hostname }}:{{ etcd_client_port }}"
+discovery-srv: "{{ etcd_discovery_srv }}"
+initial-cluster-token: "{{ etcd_initial_cluster_token }}"
+initial-cluster-state: "new"
+
+client-transport-security:
+  cert-file: "{{ etcd_ipa_cert_path }}"
+  key-file: "{{ etcd_ipa_key_path }}"
+  client-cert-auth: true
+  trusted-ca-file: "{{ etcd_cert_dir }}/dogtag-ca.crt"
+
+peer-transport-security:
+  cert-file: "{{ etcd_ipa_peer_cert_path }}"
+  key-file: "{{ etcd_ipa_peer_key_path }}"
+  client-cert-auth: true
+  trusted-ca-file: "{{ etcd_cert_dir }}/dogtag-ca.crt"
