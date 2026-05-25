@@ -3,7 +3,7 @@
   ansible.builtin.command: >
     etcdctl endpoint health
     --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cacert={{ etcd_ca_path }}
     --cert={{ etcd_ipa_cert_path }}
     --key={{ etcd_ipa_key_path }}
   register: etcd_health
@@ -15,7 +15,7 @@
   ansible.builtin.command: >
     etcdctl user list
     --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cacert={{ etcd_ca_path }}
     --cert={{ etcd_ipa_cert_path }}
     --key={{ etcd_ipa_key_path }}
   register: etcd_users
@@ -24,7 +24,7 @@
   ansible.builtin.command: >
     etcdctl user add root:{{ etcd_root_password }}
     --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cacert={{ etcd_ca_path }}
     --cert={{ etcd_ipa_cert_path }}
     --key={{ etcd_ipa_key_path }}
   when: "'root' not in etcd_users.stdout_lines"
@@ -33,7 +33,7 @@
   ansible.builtin.command: >
     etcdctl user add {{ hostvars[item].inventory_hostname }} --no-password
     --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cacert={{ etcd_ca_path }}
     --cert={{ etcd_ipa_cert_path }}
     --key={{ etcd_ipa_key_path }}
   loop: "{{ groups['etcd_cluster'] }}"
@@ -43,7 +43,7 @@
   ansible.builtin.command: >
     etcdctl user get root
     --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cacert={{ etcd_ca_path }}
     --cert={{ etcd_ipa_cert_path }}
     --key={{ etcd_ipa_key_path }}
   register: root_roles
@@ -52,7 +52,7 @@
   ansible.builtin.command: >
     etcdctl user grant-role root root
     --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cacert={{ etcd_ca_path }}
     --cert={{ etcd_ipa_cert_path }}
     --key={{ etcd_ipa_key_path }}
   when: "'Roles: root' not in root_roles.stdout"
@@ -61,7 +61,7 @@
   ansible.builtin.command: >
     etcdctl user get {{ hostvars[item].inventory_hostname }}
     --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cacert={{ etcd_ca_path }}
     --cert={{ etcd_ipa_cert_path }}
     --key={{ etcd_ipa_key_path }}
   register: node_roles
@@ -71,7 +71,7 @@
   ansible.builtin.command: >
     etcdctl user grant-role {{ item.item }} root
     --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cacert={{ etcd_ca_path }}
     --cert={{ etcd_ipa_cert_path }}
     --key={{ etcd_ipa_key_path }}
   loop: "{{ node_roles.results }}"
@@ -83,7 +83,7 @@
   ansible.builtin.command: >
     etcdctl auth status
     --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cacert={{ etcd_ca_path }}
     --cert={{ etcd_ipa_cert_path }}
     --key={{ etcd_ipa_key_path }}
   register: etcd_auth_status
@@ -92,7 +92,7 @@
   ansible.builtin.command: >
     etcdctl auth enable
     --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cacert={{ etcd_ca_path }}
     --cert={{ etcd_ipa_cert_path }}
     --key={{ etcd_ipa_key_path }}
   when: "'Authentication Status: false' in etcd_auth_status.stdout or 'Authentication Status: disabled' in etcd_auth_status.stdout"

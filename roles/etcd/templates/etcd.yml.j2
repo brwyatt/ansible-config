@@ -12,10 +12,10 @@ client-transport-security:
   cert-file: "{{ etcd_ipa_cert_path }}"
   key-file: "{{ etcd_ipa_key_path }}"
   client-cert-auth: true
-  trusted-ca-file: "{{ etcd_cert_dir }}/dogtag-ca.crt"
+  trusted-ca-file: "{{ etcd_ca_path }}"
 
 peer-transport-security:
   cert-file: "{{ etcd_ipa_peer_cert_path }}"
   key-file: "{{ etcd_ipa_peer_key_path }}"
   client-cert-auth: true
-  trusted-ca-file: "{{ etcd_cert_dir }}/dogtag-ca.crt"
+  trusted-ca-file: "{{ etcd_ca_path }}"

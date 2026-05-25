@@ -45,11 +45,6 @@
         key_owner: etcd
         key_perms: "0600"
         after_command: "{{ etcd_ipa_reload_script }}"
-- name: Symlink IPA CA cert to etcd certs dir
-  ansible.builtin.file:
-    src: "{{ etcd_ca_path }}"
-    dest: "{{ etcd_cert_dir }}/dogtag-ca.crt"
-    state: link
 - name: Deploy etcd configuration
   ansible.builtin.template:
     src: etcd.yml.j2
