@@ -11,6 +11,74 @@
   delay: 5
   until: etcd_health.rc == 0
   changed_when: false
+- name: Get list of etcd users
+  ansible.builtin.command: >
+    etcdctl user list
+    --endpoints=https://127.0.0.1:{{ etcd_client_port }}
+    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cert={{ etcd_ipa_cert_path }}
+    --key={{ etcd_ipa_key_path }}
+  register: etcd_users
+  changed_when: false
+- name: Add root user
+  ansible.builtin.command: >
+    etcdctl user add root:{{ etcd_root_password }}
+    --endpoints=https://127.0.0.1:{{ etcd_client_port }}
+    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cert={{ etcd_ipa_cert_path }}
+    --key={{ etcd_ipa_key_path }}
+  when: "'root' not in etcd_users.stdout_lines"
+  changed_when: true
+- name: Add etcd nodes as users (certificate based)
+  ansible.builtin.command: >
+    etcdctl user add {{ hostvars[item].inventory_hostname }} --no-password
+    --endpoints=https://127.0.0.1:{{ etcd_client_port }}
+    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cert={{ etcd_ipa_cert_path }}
+    --key={{ etcd_ipa_key_path }}
+  loop: "{{ groups['etcd_cluster'] }}"
+  when: "hostvars[item].inventory_hostname not in etcd_users.stdout_lines"
+  changed_when: true
+- name: Check root user roles
+  ansible.builtin.command: >
+    etcdctl user get root
+    --endpoints=https://127.0.0.1:{{ etcd_client_port }}
+    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cert={{ etcd_ipa_cert_path }}
+    --key={{ etcd_ipa_key_path }}
+  register: root_roles
+  changed_when: false
+- name: Grant root role to root user
+  ansible.builtin.command: >
+    etcdctl user grant-role root root
+    --endpoints=https://127.0.0.1:{{ etcd_client_port }}
+    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cert={{ etcd_ipa_cert_path }}
+    --key={{ etcd_ipa_key_path }}
+  when: "'Roles: root' not in root_roles.stdout"
+  changed_when: true
+- name: Check etcd nodes roles
+  ansible.builtin.command: >
+    etcdctl user get {{ hostvars[item].inventory_hostname }}
+    --endpoints=https://127.0.0.1:{{ etcd_client_port }}
+    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cert={{ etcd_ipa_cert_path }}
+    --key={{ etcd_ipa_key_path }}
+  register: node_roles
+  loop: "{{ groups['etcd_cluster'] }}"
+  changed_when: false
+- name: Grant root role to etcd nodes
+  ansible.builtin.command: >
+    etcdctl user grant-role {{ item.item }} root
+    --endpoints=https://127.0.0.1:{{ etcd_client_port }}
+    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cert={{ etcd_ipa_cert_path }}
+    --key={{ etcd_ipa_key_path }}
+  loop: "{{ node_roles.results }}"
+  when: "'Roles: root' not in item.stdout"
+  loop_control:
+    label: "{{ item.item }}"
+  changed_when: true
 - name: Check if auth is enabled
   ansible.builtin.command: >
     etcdctl auth status
@@ -20,43 +88,12 @@
     --key={{ etcd_ipa_key_path }}
   register: etcd_auth_status
   changed_when: false
-- name: Initialize etcd RBAC
+- name: Enable auth
+  ansible.builtin.command: >
+    etcdctl auth enable
+    --endpoints=https://127.0.0.1:{{ etcd_client_port }}
+    --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
+    --cert={{ etcd_ipa_cert_path }}
+    --key={{ etcd_ipa_key_path }}
   when: "'Authentication Status: false' in etcd_auth_status.stdout or 'Authentication Status: disabled' in etcd_auth_status.stdout"
-  block:
-    - name: Add root user
-      ansible.builtin.command: >
-        etcdctl user add root:{{ etcd_root_password }}
-        --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-        --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
-        --cert={{ etcd_ipa_cert_path }}
-        --key={{ etcd_ipa_key_path }}
-    - name: Grant root role to root user
-      ansible.builtin.command: >
-        etcdctl user grant-role root root
-        --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-        --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
-        --cert={{ etcd_ipa_cert_path }}
-        --key={{ etcd_ipa_key_path }}
-    - name: Add etcd nodes as users (certificate based)
-      ansible.builtin.command: >
-        etcdctl user add {{ hostvars[item].inventory_hostname }} --no-password
-        --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-        --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
-        --cert={{ etcd_ipa_cert_path }}
-        --key={{ etcd_ipa_key_path }}
-      loop: "{{ groups['etcd_cluster'] }}"
-    - name: Grant root role to etcd nodes
-      ansible.builtin.command: >
-        etcdctl user grant-role {{ hostvars[item].inventory_hostname }} root
-        --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-        --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
-        --cert={{ etcd_ipa_cert_path }}
-        --key={{ etcd_ipa_key_path }}
-      loop: "{{ groups['etcd_cluster'] }}"
-    - name: Enable auth
-      ansible.builtin.command: >
-        etcdctl auth enable
-        --endpoints=https://127.0.0.1:{{ etcd_client_port }}
-        --cacert={{ etcd_cert_dir }}/dogtag-ca.crt
-        --cert={{ etcd_ipa_cert_path }}
-        --key={{ etcd_ipa_key_path }}
+  changed_when: true
