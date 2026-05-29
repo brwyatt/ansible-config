@@ -18,3 +18,6 @@ shotover_config:
   observability_interface: "127.0.0.1:9001"
 
 shotover_topology: {}
+
+shotover_wasm_target: "wasm32-wasip1"
+shotover_wasm_build_location: "localhost"

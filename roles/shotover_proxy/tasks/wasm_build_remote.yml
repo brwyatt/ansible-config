@@ -6,9 +6,9 @@
       - rustc
     state: present
   become: true
-- name: Add wasm32-wasi target to remote rustc
+- name: Add WASM target to remote rustc
   ansible.builtin.command:
-    cmd: "rustup target add wasm32-wasi"
+    cmd: "rustup target add {{ shotover_wasm_target }}"
   register: rustup_target_add
   changed_when: "'info: downloading' in rustup_target_add.stderr or 'info: installing' in rustup_target_add.stderr"
   failed_when: false
@@ -26,14 +26,14 @@
     mode: '0755'
 - name: Build WASM module remotely
   ansible.builtin.command:
-    cmd: "cargo build --target wasm32-wasi --release"
+    cmd: "cargo build --target {{ shotover_wasm_target }} --release"
   args:
     chdir: "{{ temp_build_dir.path }}"
   register: remote_build_output
   changed_when: true
 - name: Copy built WASM to final versioned location
   ansible.builtin.copy:
-    src: "{{ temp_build_dir.path }}/target/wasm32-wasi/release/redis_prefix_rewrite_wasm.wasm"
+    src: "{{ temp_build_dir.path }}/target/{{ shotover_wasm_target }}/release/redis_prefix_rewrite_wasm.wasm"
     dest: "/opt/shotover/wasm_transforms/{{ wasm_src_hash }}/redis_prefix_rewrite_wasm.wasm"
     owner: "{{ shotover_user }}"
     group: "{{ shotover_group }}"
