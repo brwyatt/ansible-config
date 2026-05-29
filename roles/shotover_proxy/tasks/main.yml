@@ -54,6 +54,8 @@
     group: "{{ shotover_group }}"
     mode: '0640'
   notify: Restart Shotover
+- name: Build and deploy custom WASM transform
+  ansible.builtin.import_tasks: wasm_transform.yml
 - name: Deploy Shotover topology
   ansible.builtin.template:
     src: topology.yaml.j2

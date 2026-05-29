@@ -15,6 +15,10 @@ shotover_topology:
           certificate_path: "{{ shotover_config_dir }}/certs/proxy.crt"
           private_key_path: "{{ shotover_config_dir }}/certs/proxy.key"
         chain:
+          # Custom WASM transform to translate 'authelia-session' keys to force them into a single hash slot '{authelia-session}'
+          # before they are forwarded to the Valkey cluster, preventing CROSSSLOT errors.
+          - Wasm:
+              wasm_path: "{{ shotover_topology_dir }}/redis_prefix_rewrite_wasm.wasm"
           - ValkeySinkCluster:
               first_contact_points: "{{ groups['valkeyservers'] | map('regex_replace', '$', ':6379') | list }}"
               connect_timeout_ms: 1500
