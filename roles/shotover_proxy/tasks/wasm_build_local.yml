@@ -1,0 +1,17 @@
+---
+- name: Build WASM module locally
+  ansible.builtin.command:
+    cmd: "cargo build --target wasm32-wasi --release"
+  args:
+    chdir: "{{ role_path }}/files/redis_prefix_rewrite_wasm"
+  delegate_to: localhost
+  run_once: true
+  register: local_build_output
+  changed_when: true
+- name: Copy built WASM to remote host
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/redis_prefix_rewrite_wasm/target/wasm32-wasi/release/redis_prefix_rewrite_wasm.wasm"
+    dest: "/opt/shotover/wasm_transforms/{{ wasm_src_hash }}/redis_prefix_rewrite_wasm.wasm"
+    owner: "{{ shotover_user }}"
+    group: "{{ shotover_group }}"
+    mode: '0644'

@@ -28,75 +28,16 @@
   ansible.builtin.stat:
     path: "/opt/shotover/wasm_transforms/{{ wasm_src_hash }}/redis_prefix_rewrite_wasm.wasm"
   register: wasm_file_stat
-- name: Compile WASM transform
-  block:
-    - name: Compile locally on Ansible controller
-      if: shotover_wasm_build_location | default('localhost') == 'localhost'
-      block:
-        - name: Build WASM module locally
-          ansible.builtin.command:
-            cmd: "cargo build --target wasm32-wasi --release"
-          args:
-            chdir: "{{ role_path }}/files/redis_prefix_rewrite_wasm"
-          delegate_to: localhost
-          run_once: true
-          register: local_build_output
-          changed_when: true
-        - name: Copy built WASM to remote host
-          ansible.builtin.copy:
-            src: "{{ role_path }}/files/redis_prefix_rewrite_wasm/target/wasm32-wasi/release/redis_prefix_rewrite_wasm.wasm"
-            dest: "/opt/shotover/wasm_transforms/{{ wasm_src_hash }}/redis_prefix_rewrite_wasm.wasm"
-            owner: "{{ shotover_user }}"
-            group: "{{ shotover_group }}"
-            mode: '0644'
-    - name: Compile remotely on Valkey proxy host
-      if: shotover_wasm_build_location | default('localhost') == 'remote'
-      block:
-        - name: Install build dependencies on remote host
-          ansible.builtin.package:
-            name:
-              - cargo
-              - rustc
-            state: present
-          become: true
-        - name: Add wasm32-wasi target to remote rustc
-          ansible.builtin.command:
-            cmd: "rustup target add wasm32-wasi"
-          register: rustup_target_add
-          changed_when: "'info: downloading' in rustup_target_add.stderr or 'info: installing' in rustup_target_add.stderr"
-          failed_when: false # Ignore if rustup is not used (system package manager might provide wasm32-wasi)
-        - name: Create remote temp build directory
-          ansible.builtin.tempfile:
-            state: directory
-            suffix: shotover-wasm-build
-          register: temp_build_dir
-        - name: Copy source code to remote build directory
-          ansible.builtin.copy:
-            src: "{{ role_path }}/files/redis_prefix_rewrite_wasm/"
-            dest: "{{ temp_build_dir.path }}/"
-            owner: "{{ shotover_user }}"
-            group: "{{ shotover_group }}"
-            mode: '0755'
-        - name: Build WASM module remotely
-          ansible.builtin.command:
-            cmd: "cargo build --target wasm32-wasi --release"
-          args:
-            chdir: "{{ temp_build_dir.path }}"
-          register: remote_build_output
-          changed_when: true
-        - name: Copy built WASM to final versioned location
-          ansible.builtin.copy:
-            src: "{{ temp_build_dir.path }}/target/wasm32-wasi/release/redis_prefix_rewrite_wasm.wasm"
-            dest: "/opt/shotover/wasm_transforms/{{ wasm_src_hash }}/redis_prefix_rewrite_wasm.wasm"
-            owner: "{{ shotover_user }}"
-            group: "{{ shotover_group }}"
-            mode: '0644'
-            remote_src: true
-        - name: Clean up remote temp build directory
-          ansible.builtin.file:
-            path: "{{ temp_build_dir.path }}"
-            state: absent
-  when: not wasm_file_stat.stat.exists
+- name: Include local WASM build tasks
+  ansible.builtin.include_tasks: wasm_build_local.yml
+  when:
+    - not wasm_file_stat.stat.exists
+    - shotover_wasm_build_location | default('localhost') == 'localhost'
+- name: Include remote WASM build tasks
+  ansible.builtin.include_tasks: wasm_build_remote.yml
+  when:
+    - not wasm_file_stat.stat.exists
+    - shotover_wasm_build_location | default('localhost') == 'remote'
 - name: Create symlink in Shotover topology directory
   ansible.builtin.file:
     src: "/opt/shotover/wasm_transforms/{{ wasm_src_hash }}/redis_prefix_rewrite_wasm.wasm"
