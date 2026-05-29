@@ -2,7 +2,7 @@ use anyhow::Result;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use shotover::frame::{Frame, MessageType, ValkeyFrame};
-use shotover::message::{MessageIdSet, Messages};
+use shotover::message::Messages;
 use shotover::transforms::{
     ChainState, Transform, TransformBuilder, TransformConfig, TransformContextConfig,
 };
@@ -194,26 +194,6 @@ fn rewrite_response_keys(command: &str, value: &mut ValkeyFrame, translations: &
                                 revert_key_value(bytes, translations);
                             }
                         }
-                    }
-                }
-            }
-        }
-        ValkeyFrame::SimpleString(status_bytes) => {
-            if let Ok(status_str) = std::str::from_utf8(status_bytes) {
-                for rule in translations {
-                    if status_str.contains(&rule.to) {
-                        let reverted = status_str.replace(&rule.to, &rule.from);
-                        *status_bytes = bytes::Bytes::from(reverted);
-                    }
-                }
-            }
-        }
-        ValkeyFrame::Error(err_bytes) => {
-            if let Ok(err_str) = std::str::from_utf8(err_bytes) {
-                for rule in translations {
-                    if err_str.contains(&rule.to) {
-                        let reverted = err_str.replace(&rule.to, &rule.from);
-                        *err_bytes = bytes::Bytes::from(reverted);
                     }
                 }
             }
