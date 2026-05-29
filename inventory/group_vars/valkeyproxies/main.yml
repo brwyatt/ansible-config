@@ -19,6 +19,12 @@ shotover_topology:
           # before they are forwarded to the Valkey cluster, preventing CROSSSLOT errors.
           - Wasm:
               wasm_path: "{{ shotover_topology_dir }}/redis_prefix_rewrite_wasm.wasm"
+              config:
+                translations:
+                  - from: "authelia-session."
+                    to: "{authelia-session}."
+                  - from: "authelia-session:"
+                    to: "{authelia-session}:"
           - ValkeySinkCluster:
               first_contact_points: "{{ groups['valkeyservers'] | map('regex_replace', '$', ':6379') | list }}"
               connect_timeout_ms: 1500

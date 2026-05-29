@@ -1,19 +1,28 @@
 use anyhow::Result;
+use serde::Deserialize;
 use shotover_wasm::frame::{Frame, RedisValue};
 use shotover_wasm::transform::{Message, Transform, TransformContext, TransformResult};
 
-/// A custom Shotover transform that transparently translates Valkey/Redis keys
-/// for Authelia sessions to force them into a single hash slot (`{authelia-session}`).
+/// A generic translation rule for Valkey/Redis keys.
+#[derive(Deserialize, Debug, Clone)]
+pub struct Translation {
+    /// The original prefix from the client (e.g. "authelia-session.")
+    pub from: String,
+    /// The target prefix in the cluster (e.g. "{authelia-session}.")
+    pub to: String,
+}
+
+/// A custom, fully generic Shotover transform that transparently translates
+/// Valkey/Redis keys based on dynamic configuration rules.
 ///
-/// Standard Authelia uses keys like `authelia-session.xxxx` or `authelia-session:xxxx`.
-/// If run on a cluster, this can cause CROSSSLOT errors because different keys map to
-/// different nodes.
-///
-/// This transform rewrites:
-/// - Requests: `authelia-session.<id>` -> `{authelia-session}.<id>` (and colons)
-/// - Responses (for KEYS and SCAN commands, and Error/Status messages):
-///   `{authelia-session}.<id>` -> `authelia-session.<id>` (and colons)
-pub struct RedisPrefixRewrite;
+/// This allows forcing keys into specific hash slots (such as `{authelia-session}`)
+/// to prevent CROSSSLOT errors on clusters, while keeping it completely transparent
+/// to upstream clients.
+#[derive(Deserialize, Debug)]
+pub struct RedisPrefixRewrite {
+    /// A list of translation rules configured in the topology YAML
+    pub translations: Vec<Translation>,
+}
 
 impl Transform for RedisPrefixRewrite {
     fn transform(&self, context: &mut TransformContext, mut messages: Vec<Message>) -> TransformResult {
@@ -36,11 +45,11 @@ impl Transform for RedisPrefixRewrite {
 
                         // Rewrite keys for the command if we found its name
                         if !cmd_name.is_empty() {
-                            rewrite_request_keys(&cmd_name, args);
+                            rewrite_request_keys(&cmd_name, args, &self.translations);
                         }
                     }
                 }
-                message.invalidate(); // Mark message as modified so Shotover serializes the changes
+                message.invalidate(); // Mark message as modified
             }
             request_commands.push(cmd_name);
         }
@@ -57,7 +66,7 @@ impl Transform for RedisPrefixRewrite {
                 // we ONLY rewrite:
                 // - Response arrays for KEYS and SCAN commands (which return key lists)
                 // - Status or Error messages (which might include the key in error reports)
-                rewrite_response_keys(&corresponding_cmd, value);
+                rewrite_response_keys(&corresponding_cmd, value, &self.translations);
                 response.invalidate(); // Mark response as modified
             }
         }
@@ -67,32 +76,32 @@ impl Transform for RedisPrefixRewrite {
 }
 
 /// Rewrites key arguments in Valkey requests
-fn rewrite_request_keys(command: &str, args: &mut [RedisValue]) {
+fn rewrite_request_keys(command: &str, args: &mut [RedisValue], translations: &[Translation]) {
     match command {
         "GET" | "EXPIRE" | "TTL" | "SET" | "SETEX" => {
             // Key is at index 1
             if args.len() > 1 {
-                rewrite_key_value(&mut args[1]);
+                rewrite_key_value(&mut args[1], translations);
             }
         }
         "DEL" | "EXISTS" | "MGET" => {
             // All arguments from index 1 to N are keys
             for key_arg in args.iter_mut().skip(1) {
-                rewrite_key_value(key_arg);
+                rewrite_key_value(key_arg, translations);
             }
         }
         "MSET" => {
             // MSET key value [key value ...] (keys at 1, 3, 5, ...)
             let mut i = 1;
             while i < args.len() {
-                rewrite_key_value(&mut args[i]);
+                rewrite_key_value(&mut args[i], translations);
                 i += 2;
             }
         }
         "KEYS" => {
             // Index 1 is the pattern
             if args.len() > 1 {
-                rewrite_key_value(&mut args[1]);
+                rewrite_key_value(&mut args[1], translations);
             }
         }
         "SCAN" => {
@@ -103,7 +112,7 @@ fn rewrite_request_keys(command: &str, args: &mut [RedisValue]) {
                 if let RedisValue::BulkString(bytes) = &args[i] {
                     if let Ok(arg_str) = std::str::from_utf8(bytes) {
                         if arg_str.to_ascii_uppercase() == "MATCH" {
-                            rewrite_key_value(&mut args[i + 1]);
+                            rewrite_key_value(&mut args[i + 1], translations);
                             break;
                         }
                     }
@@ -115,29 +124,28 @@ fn rewrite_request_keys(command: &str, args: &mut [RedisValue]) {
     }
 }
 
-/// Helper to rewrite a single key value
-fn rewrite_key_value(value: &mut RedisValue) {
+/// Helper to rewrite a single key value based on active translation rules
+fn rewrite_key_value(value: &mut RedisValue, translations: &[Translation]) {
     if let RedisValue::BulkString(bytes) = value {
         if let Ok(key_str) = std::str::from_utf8(bytes) {
-            // Convert 'authelia-session.' to '{authelia-session}.' and 'authelia-session:' to '{authelia-session}:'
-            if key_str.starts_with("authelia-session.") {
-                let rewritten = key_str.replace("authelia-session.", "{authelia-session}.");
-                *bytes = bytes::Bytes::from(rewritten);
-            } else if key_str.starts_with("authelia-session:") {
-                let rewritten = key_str.replace("authelia-session:", "{authelia-session}:");
-                *bytes = bytes::Bytes::from(rewritten);
+            for rule in translations {
+                if key_str.starts_with(&rule.from) {
+                    let rewritten = key_str.replace(&rule.from, &rule.to);
+                    *bytes = bytes::Bytes::from(rewritten);
+                    break; // Apply only the first matching rule for this key
+                }
             }
         }
     }
 }
 
 /// Rewrites key arguments/values in responses from Valkey back to standard names
-fn rewrite_response_keys(command: &str, value: &mut RedisValue) {
+fn rewrite_response_keys(command: &str, value: &mut RedisValue, translations: &[Translation]) {
     match value {
         RedisValue::BulkString(bytes) => {
             // If the command is KEYS, every BulkString returned is a key
             if command == "KEYS" {
-                revert_key_value(bytes);
+                revert_key_value(bytes, translations);
             }
         }
         RedisValue::Array(items) => {
@@ -145,7 +153,7 @@ fn rewrite_response_keys(command: &str, value: &mut RedisValue) {
                 // Array of key names
                 for item in items {
                     if let RedisValue::BulkString(bytes) = item {
-                        revert_key_value(bytes);
+                        revert_key_value(bytes, translations);
                     }
                 }
             } else if command == "SCAN" {
@@ -154,7 +162,7 @@ fn rewrite_response_keys(command: &str, value: &mut RedisValue) {
                     if let RedisValue::Array(keys_array) = &mut items[1] {
                         for item in keys_array {
                             if let RedisValue::BulkString(bytes) = item {
-                                revert_key_value(bytes);
+                                revert_key_value(bytes, translations);
                             }
                         }
                     }
@@ -163,33 +171,33 @@ fn rewrite_response_keys(command: &str, value: &mut RedisValue) {
         }
         RedisValue::Status(status_str) => {
             // Revert any keys embedded in status messages
-            if status_str.contains("{authelia-session}.") || status_str.contains("{authelia-session}:") {
-                *status_str = status_str
-                    .replace("{authelia-session}.", "authelia-session.")
-                    .replace("{authelia-session}:", "authelia-session:");
+            for rule in translations {
+                if status_str.contains(&rule.to) {
+                    *status_str = status_str.replace(&rule.to, &rule.from);
+                }
             }
         }
         RedisValue::Error(err_str) => {
             // Revert any keys embedded in error messages
-            if err_str.contains("{authelia-session}.") || err_str.contains("{authelia-session}:") {
-                *err_str = err_str
-                    .replace("{authelia-session}.", "authelia-session.")
-                    .replace("{authelia-session}:", "authelia-session:");
+            for rule in translations {
+                if err_str.contains(&rule.to) {
+                    *err_str = err_str.replace(&rule.to, &rule.from);
+                }
             }
         }
         _ => {}
     }
 }
 
-/// Helper to revert a single key value
-fn revert_key_value(bytes: &mut bytes::Bytes) {
+/// Helper to revert a single key value based on active translation rules
+fn revert_key_value(bytes: &mut bytes::Bytes, translations: &[Translation]) {
     if let Ok(key_str) = std::str::from_utf8(bytes) {
-        if key_str.starts_with("{authelia-session}.") {
-            let reverted = key_str.replace("{authelia-session}.", "authelia-session.");
-            *bytes = bytes::Bytes::from(reverted);
-        } else if key_str.starts_with("{authelia-session}:") {
-            let reverted = key_str.replace("{authelia-session}:", "authelia-session:");
-            *bytes = bytes::Bytes::from(reverted);
+        for rule in translations {
+            if key_str.starts_with(&rule.to) {
+                let reverted = key_str.replace(&rule.to, &rule.from);
+                *bytes = bytes::Bytes::from(reverted);
+                break; // Revert only the first matching rule
+            }
         }
     }
 }
