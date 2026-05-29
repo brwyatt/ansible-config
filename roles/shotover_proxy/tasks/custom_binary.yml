@@ -1,0 +1,64 @@
+---
+- name: Get Cargo.toml local stat
+  ansible.builtin.stat:
+    path: "{{ role_path }}/files/redis_prefix_rewrite/Cargo.toml"
+  delegate_to: localhost
+  register: cargo_toml_local_stat
+  run_once: true
+  become: false
+- name: Get main.rs local stat
+  ansible.builtin.stat:
+    path: "{{ role_path }}/files/redis_prefix_rewrite/src/main.rs"
+  delegate_to: localhost
+  register: main_rs_local_stat
+  run_once: true
+  become: false
+- name: Get redis_prefix_rewrite.rs local stat
+  ansible.builtin.stat:
+    path: "{{ role_path }}/files/redis_prefix_rewrite/src/redis_prefix_rewrite.rs"
+  delegate_to: localhost
+  register: rewrite_rs_local_stat
+  run_once: true
+  become: false
+- name: Calculate combined source hash
+  ansible.builtin.set_fact:
+    custom_bin_hash: >-
+      {{
+        (cargo_toml_local_stat.stat.checksum +
+         main_rs_local_stat.stat.checksum +
+         rewrite_rs_local_stat.stat.checksum)
+        | ansible.builtin.hash('sha256')
+      }}
+- name: Ensure custom binary directories exist on remote host
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ shotover_user }}"
+    group: "{{ shotover_group }}"
+    mode: '0755'
+  loop:
+    - "/opt/shotover/custom_binaries"
+    - "/opt/shotover/custom_binaries/{{ custom_bin_hash }}"
+- name: Check if this version of custom binary is already built on remote host
+  ansible.builtin.stat:
+    path: "/opt/shotover/custom_binaries/{{ custom_bin_hash }}/shotover-proxy"
+  register: custom_bin_stat
+- name: Include local custom binary build tasks
+  ansible.builtin.include_tasks: build_local.yml
+  when:
+    - not custom_bin_stat.stat.exists
+    - shotover_custom_build_location | default('localhost') == 'localhost'
+- name: Include remote custom binary build tasks
+  ansible.builtin.include_tasks: build_remote.yml
+  when:
+    - not custom_bin_stat.stat.exists
+    - shotover_custom_build_location | default('localhost') == 'remote'
+- name: Create symlink in Shotover bin directory
+  ansible.builtin.file:
+    src: "/opt/shotover/custom_binaries/{{ custom_bin_hash }}/shotover-proxy"
+    dest: "{{ shotover_bin_path }}/shotover-proxy"
+    state: link
+    owner: root
+    group: root
+    force: true
+  notify: Restart Shotover

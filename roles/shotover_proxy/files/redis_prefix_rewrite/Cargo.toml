@@ -1,0 +1,13 @@
+[package]
+name = "redis-prefix-rewrite"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+shotover = { git = "https://github.com/shotover/shotover-proxy", tag = "v0.7.2", default-features = false, features = ["valkey"] }
+serde = { version = "1.0", features = ["derive"] }
+anyhow = "1.0"
+async-trait = "0.1"
+bytes = "1.5"
+typetag = "0.2"
+tracing = "0.1"

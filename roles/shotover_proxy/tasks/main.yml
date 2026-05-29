@@ -20,22 +20,8 @@
     mode: '0755'
   loop:
     - "{{ shotover_install_root }}"
-    - "{{ shotover_version_dir }}"
-- name: Download and extract Shotover
-  ansible.builtin.unarchive:
-    src: >-
-      https://github.com/shotover/shotover-proxy/releases/download/v{{ shotover_version
-      }}/shotover-proxy-linux_{{ shotover_arch }}-{{ shotover_version }}.tar.gz
-    dest: "{{ shotover_version_dir }}"
-    remote_src: true
-    extra_opts:
-      - "--strip-components=1"
-    creates: "{{ shotover_version_dir }}/shotover-proxy"
-- name: Create Shotover symlink
-  ansible.builtin.file:
-    src: "{{ shotover_version_dir }}/shotover-proxy"
-    dest: "{{ shotover_bin_path }}/shotover-proxy"
-    state: link
+- name: Build and deploy custom Shotover binary
+  ansible.builtin.import_tasks: custom_binary.yml
 - name: Create Shotover config directories
   ansible.builtin.file:
     path: "{{ item }}"
@@ -54,8 +40,6 @@
     group: "{{ shotover_group }}"
     mode: '0640'
   notify: Restart Shotover
-- name: Build and deploy custom WASM transform
-  ansible.builtin.import_tasks: wasm_transform.yml
 - name: Deploy Shotover topology
   ansible.builtin.template:
     src: topology.yaml.j2
