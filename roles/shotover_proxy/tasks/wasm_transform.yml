@@ -3,12 +3,14 @@
   ansible.builtin.stat:
     path: "{{ role_path }}/files/redis_prefix_rewrite_wasm/Cargo.toml"
   delegate_to: localhost
+  become: false
   register: cargo_toml_local_stat
   run_once: true
 - name: Get lib.rs local stat
   ansible.builtin.stat:
     path: "{{ role_path }}/files/redis_prefix_rewrite_wasm/src/lib.rs"
   delegate_to: localhost
+  become: false
   register: lib_rs_local_stat
   run_once: true
 - name: Calculate combined source hash

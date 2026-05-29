@@ -5,6 +5,7 @@
   args:
     chdir: "{{ role_path }}/files/redis_prefix_rewrite_wasm"
   delegate_to: localhost
+  become: false
   run_once: true
   register: local_build_output
   changed_when: true
