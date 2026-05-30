@@ -118,14 +118,26 @@ impl Transform for RedisPrefixRewrite {
 
 fn rewrite_request_keys(command: &str, args: &mut [ValkeyFrame], translations: &[Translation]) {
     match command {
-        "GET" | "EXPIRE" | "TTL" | "SET" | "SETEX" => {
+        "GET" | "SET" | "SETEX" | "SETNX" | "GETSET" | "PSETEX" |
+        "EXPIRE" | "PEXPIRE" | "TTL" | "PTTL" | "PERSIST" |
+        "HGET" | "HSET" | "HDEL" | "HEXISTS" | "HGETALL" | "HMGET" | "HMSET" | "HKEYS" | "HVALS" | "HSETNX" |
+        "SADD" | "SREM" | "SISMEMBER" | "SMEMBERS" | "SCARD" |
+        "RPUSH" | "LPUSH" | "RPOP" | "LPOP" | "LRANGE" | "LLEN" => {
             if args.len() > 1 {
                 rewrite_key_value(&mut args[1], translations);
             }
         }
-        "DEL" | "EXISTS" | "MGET" => {
+        "DEL" | "UNLINK" | "EXISTS" | "MGET" | "WATCH" | "TOUCH" => {
             for key_arg in args.iter_mut().skip(1) {
                 rewrite_key_value(key_arg, translations);
+            }
+        }
+        "RENAME" | "RENAMENX" => {
+            if args.len() > 1 {
+                rewrite_key_value(&mut args[1], translations);
+            }
+            if args.len() > 2 {
+                rewrite_key_value(&mut args[2], translations);
             }
         }
         "MSET" => {
