@@ -1,0 +1,39 @@
+---
+- name: Install build dependencies on remote host
+  ansible.builtin.package:
+    name:
+      - cargo
+      - rustc
+    state: present
+  become: true
+- name: Create remote temp build directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: shotover-custom-build
+  register: temp_build_dir
+- name: Copy source code to remote build directory
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/redis_prefix_rewrite/"
+    dest: "{{ temp_build_dir.path }}/"
+    owner: "{{ shotover_user }}"
+    group: "{{ shotover_group }}"
+    mode: '0755'
+- name: Build custom Shotover binary remotely
+  ansible.builtin.command:
+    cmd: "cargo build --release"
+  args:
+    chdir: "{{ temp_build_dir.path }}"
+  register: remote_build_output
+  changed_when: true
+- name: Copy built custom Shotover binary to final location
+  ansible.builtin.copy:
+    src: "{{ temp_build_dir.path }}/target/release/redis-prefix-rewrite"
+    dest: "/opt/shotover/custom_binaries/{{ custom_bin_hash }}/shotover-proxy"
+    owner: root
+    group: root
+    mode: '0755'
+    remote_src: true
+- name: Clean up remote temp build directory
+  ansible.builtin.file:
+    path: "{{ temp_build_dir.path }}"
+    state: absent

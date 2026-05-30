@@ -1,10 +1,5 @@
 ---
-shotover_version: "0.7.2"
-shotover_checksum: "sha256:33359ffbdce1c1ed04cbb38d7776a771eb47c5b7b454dc40f9434bf8d1810077"
-shotover_arch: "amd64"
-
 shotover_install_root: "/opt/shotover"
-shotover_version_dir: "{{ shotover_install_root }}/{{ shotover_version }}"
 shotover_bin_path: "/usr/local/bin"
 
 shotover_user: "shotover"
@@ -18,3 +13,5 @@ shotover_config:
   observability_interface: "127.0.0.1:9001"
 
 shotover_topology: {}
+
+shotover_custom_build_location: "localhost"

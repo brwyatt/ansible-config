@@ -1,0 +1,18 @@
+---
+- name: Build custom Shotover binary locally
+  ansible.builtin.command:
+    cmd: "cargo build --release"
+  args:
+    chdir: "{{ role_path }}/files/redis_prefix_rewrite"
+  delegate_to: localhost
+  become: false
+  run_once: true
+  register: local_build_output
+  changed_when: true
+- name: Copy built custom Shotover binary to remote host
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/redis_prefix_rewrite/target/release/redis-prefix-rewrite"
+    dest: "/opt/shotover/custom_binaries/{{ custom_bin_hash }}/shotover-proxy"
+    owner: root
+    group: root
+    mode: '0755'

@@ -1,7 +1,7 @@
 ---
 authelia_repo_source: "authelia/authelia"
-authelia_version: "4.39.19"
-authelia_checksum: "sha256:f6f8d2450533071076f1f2bbf4abfc5b4885be0cc3565e5362bc2ac2470677a3"
+authelia_version: "4.39.20"
+authelia_checksum: "sha256:1f122add61752d6ef54e64ae7116bec4e026f5c0a6493498288c5a9770d92088"
 
 authelia_user: "authelia"
 authelia_config_path: "/etc/authelia"
