@@ -103,9 +103,6 @@ radarr:
 sonarr:
   hosts:
     sonarr.server.home.brwyatt.net:
-tracearr:
-  hosts:
-    tracearr.server.home.brwyatt.net:
 prowlarr:
   hosts:
     prowlarr.server.home.brwyatt.net:
@@ -144,7 +141,6 @@ app_proxy:
     autheliaservers:
     radarr:
     sonarr:
-    tracearr:
     prowlarr:
     uptimekuma:
     zwave:

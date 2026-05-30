@@ -1,6 +1,0 @@
----
-proxy_port: 3000
-proxy_sso_enabled: true
-reverseproxy_nginx_after:
-  - network-online.target
-  - tracearr.service
