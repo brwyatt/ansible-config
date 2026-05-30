@@ -19,8 +19,6 @@ shotover_topology:
           # before they are forwarded to the Valkey cluster, preventing CROSSSLOT errors.
           - RedisPrefixRewrite:
               translations:
-                - from: "authelia-session."
-                  to: "{authelia-session}."
                 - from: "authelia-session:"
                   to: "{authelia-session}:"
           - ValkeySinkCluster:
