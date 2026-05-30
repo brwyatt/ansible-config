@@ -3,3 +3,7 @@
 /.vscode
 /ansible.log
 /vault_key
+
+# Ignore custom Shotover Proxy build artifacts
+roles/shotover_proxy/files/redis_prefix_rewrite/Cargo.lock
+roles/shotover_proxy/files/redis_prefix_rewrite/target
