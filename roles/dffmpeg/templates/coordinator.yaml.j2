@@ -73,3 +73,4 @@ port: {{ dffmpeg_coordinator_listen_port }}
 trusted_proxies:
   {{ dffmpeg_trusted_proxies | to_nice_yaml(indent=2) | indent(2) | trim }}
 {% endif %}
+shutdown_delay_seconds: {{ dffmpeg_coordinator_shutdown_delay }}
