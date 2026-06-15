@@ -9,7 +9,7 @@
   become: true
 - name: Restart code-server
   ansible.builtin.systemd:
-    name: code-server
+    name: "code-server@{{ code_server_user }}"
     state: restarted
     daemon_reload: true
   become: true
