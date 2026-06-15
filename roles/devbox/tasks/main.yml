@@ -1,14 +1,57 @@
 ---
+- name: Ensure keyrings directory exists
+  ansible.builtin.file:
+    path: /usr/share/keyrings
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+- name: Check if Microsoft GPG key exists
+  ansible.builtin.stat:
+    path: /usr/share/keyrings/microsoft.gpg
+  register: microsoft_gpg_status
+- name: Download Microsoft GPG key
+  ansible.builtin.get_url:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    dest: /tmp/microsoft.asc
+    mode: '0644'
+  become: true
+  when: not microsoft_gpg_status.stat.exists
+- name: De-armor Microsoft GPG key
+  ansible.builtin.command:
+    cmd: gpg --dearmor -o /usr/share/keyrings/microsoft.gpg /tmp/microsoft.asc
+    creates: /usr/share/keyrings/microsoft.gpg
+  become: true
+  when: not microsoft_gpg_status.stat.exists
+- name: Configure VS Code apt repository
+  ansible.builtin.template:
+    src: vscode.sources.j2
+    dest: /etc/apt/sources.list.d/vscode.sources
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Apt update
+- name: Flush handlers to update apt cache
+  ansible.builtin.meta: flush_handlers
+- name: Install VS Code package
+  ansible.builtin.apt:
+    name: code
+    state: present
+  become: true
 - name: Stop and disable old code-tunnel service
   ansible.builtin.systemd:
     name: code-tunnel
     state: stopped
     enabled: false
+  become: true
   failed_when: false
 - name: Remove old code-tunnel systemd service file
   ansible.builtin.file:
     path: /etc/systemd/system/code-tunnel.service
     state: absent
+  become: true
   notify: Reload systemd
 - name: Deploy code-server systemd service configuration
   ansible.builtin.template:
@@ -17,11 +60,13 @@
     owner: root
     group: root
     mode: '0644'
+  become: true
   notify: Restart code-server
-- name: Flush handlers
+- name: Flush handlers to start service
   ansible.builtin.meta: flush_handlers
 - name: Ensure code-server is enabled and running
   ansible.builtin.service:
     name: code-server
     state: started
     enabled: true
+  become: true
