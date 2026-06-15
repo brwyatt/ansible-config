@@ -150,6 +150,7 @@ app_proxy:
     dffmpegcoordinators:
     guacamole:
     seedbox:
+    devbox:
 ceph_clients:
   children:
     jellyfin:

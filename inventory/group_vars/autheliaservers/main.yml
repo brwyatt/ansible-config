@@ -131,6 +131,10 @@ authelia_database_name: "authelia"
 authelia_database_user: "authelia"
 
 authelia_access_control_rules:
+  # Devbox
+  - domain: "devbox.server.home.brwyatt.net"
+    policy: "two_factor"
+    subject: "user:brwyatt"
   # Seedbox
   - domain: "seedbox.server.home.brwyatt.net"
     policy: "bypass" # Fall-through to application auth

@@ -1,0 +1,27 @@
+---
+- name: Stop and disable old code-tunnel service
+  ansible.builtin.systemd:
+    name: code-tunnel
+    state: stopped
+    enabled: false
+  failed_when: false
+- name: Remove old code-tunnel systemd service file
+  ansible.builtin.file:
+    path: /etc/systemd/system/code-tunnel.service
+    state: absent
+  notify: Reload systemd
+- name: Deploy code-server systemd service configuration
+  ansible.builtin.template:
+    src: code-server.service.j2
+    dest: /etc/systemd/system/code-server.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart code-server
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+- name: Ensure code-server is enabled and running
+  ansible.builtin.service:
+    name: code-server
+    state: started
+    enabled: true

@@ -148,3 +148,8 @@
   hosts: aws_usw2
   become: true
   roles: []
+- name: Devbox Config
+  hosts: devbox
+  become: true
+  roles:
+    - role: devbox
