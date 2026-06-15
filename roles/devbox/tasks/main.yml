@@ -1,42 +1,4 @@
 ---
-- name: Stop and disable temporary code-server systemd service
-  ansible.builtin.systemd:
-    name: code-server
-    state: stopped
-    enabled: false
-  become: true
-  failed_when: false
-- name: Remove temporary code-server systemd service file
-  ansible.builtin.file:
-    path: /etc/systemd/system/code-server.service
-    state: absent
-  become: true
-  notify: Reload systemd
-- name: Stop and disable old code-tunnel service
-  ansible.builtin.systemd:
-    name: code-tunnel
-    state: stopped
-    enabled: false
-  become: true
-  failed_when: false
-- name: Remove old code-tunnel systemd service file
-  ansible.builtin.file:
-    path: /etc/systemd/system/code-tunnel.service
-    state: absent
-  become: true
-  notify: Reload systemd
-- name: Remove temporary VS Code apt repository config
-  ansible.builtin.file:
-    path: /etc/apt/sources.list.d/vscode.sources
-    state: absent
-  become: true
-- name: Remove temporary Microsoft GPG keyring
-  ansible.builtin.file:
-    path: /usr/share/keyrings/microsoft.gpg
-    state: absent
-  become: true
-- name: Flush handlers to reload systemd
-  ansible.builtin.meta: flush_handlers
 - name: Download Coder code-server deb package
   ansible.builtin.get_url:
     url: "https://github.com/coder/code-server/releases/download/v{{ code_server_version }}/code-server_{{ code_server_version }}_amd64.deb"
@@ -47,6 +9,27 @@
   ansible.builtin.apt:
     deb: "/tmp/code-server_{{ code_server_version }}_amd64.deb"
   become: true
+- name: Ensure Coder code-server systemd override directory exists
+  ansible.builtin.file:
+    path: /etc/systemd/system/code-server@.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+- name: Configure Coder code-server systemd override for Microsoft Marketplace
+  ansible.builtin.copy:
+    content: |
+      [Service]
+      Environment=EXTENSIONS_GALLERY='{"serviceUrl":"https://marketplace.visualstudio.com/_apis/public/gallery","itemUrl":"https://marketplace.visualstudio.com/items"}'
+    dest: /etc/systemd/system/code-server@.service.d/override.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    - Reload systemd
+    - Restart code-server
 - name: Ensure user code-server config directory exists
   ansible.builtin.file:
     path: "/home/home.brwyatt.net/{{ code_server_user }}/.config/code-server"
