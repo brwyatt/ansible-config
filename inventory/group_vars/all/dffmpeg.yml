@@ -7,9 +7,6 @@ dffmpeg_mysql_host: "mariadb.server.home.brwyatt.net"
 dffmpeg_mysql_port: 3306
 dffmpeg_mysql_database: "dffmpeg"
 
-dffmpeg_enabled_transports:
-  - "rabbitmq"
-
 dffmpeg_rabbitmq_host: "rabbitmq.server.home.brwyatt.net"
 dffmpeg_rabbitmq_port: 5671
 dffmpeg_rabbitmq_vhost: "dffmpeg"

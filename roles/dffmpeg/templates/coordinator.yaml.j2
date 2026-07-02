@@ -31,7 +31,11 @@ transports:
   enabled_transports:
     {{ dffmpeg_enabled_transports | to_nice_yaml(indent=2) | indent(4) | trim }}
   transport_settings:
-{% if 'rabbitmq' in dffmpeg_enabled_transports %}
+{% if 'http_polling' in dffmpeg_enabled_transports %}
+    http_polling:{% if dffmpeg_http_backend_transport is defined %}
+      backend_transport: "{{ dffmpeg_http_backend_transport }}"{% else %} {}{% endif %}
+{% endif %}
+{% if 'rabbitmq' in dffmpeg_enabled_transports or (dffmpeg_http_backend_transport | default(None)) == 'rabbitmq' %}
     rabbitmq:
 {% if dffmpeg_rabbitmq_host is defined %}
       host: "{{ dffmpeg_rabbitmq_host }}"
@@ -51,7 +55,7 @@ transports:
       workers_exchange: "dffmpeg.workers"
       jobs_exchange: "dffmpeg.jobs"
 {% endif %}
-{% if 'mqtt' in dffmpeg_enabled_transports %}
+{% if 'mqtt' in dffmpeg_enabled_transports or (dffmpeg_http_backend_transport | default(None)) == 'mqtt' %}
     mqtt:
 {% if dffmpeg_mqtt_host is defined %}
       host: "{{ dffmpeg_mqtt_host }}"

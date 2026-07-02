@@ -13,11 +13,13 @@ cephclient_mounts:
     fs_name: "Media_EC"
     remote_path: "/"
     mount_path: "/mnt/media_original"
+
 dffmpeg_enable_client: true
+dffmpeg_enabled_transports:
+  - "http_polling"
 dffmpeg_client_replace_ffmpeg: true
 dffmpeg_user: jellyfin
 dffmpeg_group: jellyfin
-dffmpeg_rabbitmq_user: "dffmpeg-{{ dffmpeg_client_id }}"
 dffmpeg_paths:
   JellyfinCache: "/mnt/jellyfin/cache"
   JellyfinMetadata: "/mnt/jellyfin/metadata"

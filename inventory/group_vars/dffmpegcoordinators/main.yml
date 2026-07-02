@@ -1,7 +1,11 @@
 ---
 dffmpeg_enable_coordinator: true
+dffmpeg_enabled_transports:
+  - "http_polling"
 dffmpeg_mysql_user: dffmpegcoordinator
-dffmpeg_rabbitmq_user: dffmpeg-coordinator
+dffmpeg_rabbitmq_user: "{{ inventory_hostname_short }}"
+dffmpeg_rabbitmq_password: "{{ dffmpeg_rabbitmq_passwords[inventory_hostname_short] }}"
+dffmpeg_http_backend_transport: "rabbitmq"
 dffmpeg_coordinator_listen_address: "127.0.0.1"
 dffmpeg_auth_default_encryption_key_id: "20260215"
 dffmpeg_trusted_proxies:

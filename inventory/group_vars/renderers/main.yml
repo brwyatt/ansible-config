@@ -1,11 +1,12 @@
 ---
 cephclient_automount: false
+
 dffmpeg_enable_worker: true
+dffmpeg_enabled_transports:
+  - "http_polling"
 dffmpeg_user: jellyfin
 dffmpeg_group: jellyfin
 dffmpeg_hmac_key: "{{ dffmpeg_hmac_keys[dffmpeg_client_id] }}"
-dffmpeg_rabbitmq_user: "dffmpeg-{{ dffmpeg_client_id }}"
-dffmpeg_rabbitmq_password: "{{ dffmpeg_rabbitmq_passwords[inventory_hostname_short] }}"
 dffmpeg_binaries:
   ffmpeg: "/usr/lib/jellyfin-ffmpeg/ffmpeg"
   ffprobe: "/usr/lib/jellyfin-ffmpeg/ffprobe"
