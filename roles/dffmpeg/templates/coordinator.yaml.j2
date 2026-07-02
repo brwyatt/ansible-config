@@ -33,7 +33,9 @@ transports:
   transport_settings:
 {% if 'http_polling' in dffmpeg_enabled_transports %}
     http_polling:{% if dffmpeg_http_backend_transport is defined %}
+
       backend_transport: "{{ dffmpeg_http_backend_transport }}"{% else %} {}{% endif %}
+
 {% endif %}
 {% if 'rabbitmq' in dffmpeg_enabled_transports or (dffmpeg_http_backend_transport | default(None)) == 'rabbitmq' %}
     rabbitmq:
