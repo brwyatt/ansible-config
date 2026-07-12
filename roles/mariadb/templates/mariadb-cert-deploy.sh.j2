@@ -17,7 +17,7 @@ if [ -f "$LE_DIR/privkey.pem" ] && [ -f "$LE_DIR/fullchain.pem" ]; then
 
     # Reload MariaDB SSL non-disruptively if running
     if systemctl is-active --quiet mariadb; then
-        mariadb -e "FLUSH SSL;" || echo "Warning: Failed to FLUSH SSL, certificates updated on disk only."
+        mariadb --defaults-extra-file=/root/.my.cnf --socket=/run/mysqld/mysqld.sock -e "FLUSH SSL;" || echo "Warning: Failed to FLUSH SSL, certificates updated on disk only."
     fi
 else
     echo "Certificates not found in $LE_DIR"
