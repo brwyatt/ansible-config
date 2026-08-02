@@ -38,6 +38,7 @@ haproxy_backends:
 keepalived_check_scripts:
   haproxy:
     type: haproxy
+    backend_name: "valkey-proxy-backend"
 keepalived_instances:
   valkey:
     virtual_ip: "172.17.30.211/24"

@@ -66,6 +66,7 @@ haproxy_backends:
 keepalived_check_scripts:
   haproxy:
     type: haproxy
+    backend_name: "rabbitmq-amqp"
 keepalived_instances:
   rabbitmq:
     virtual_ip: "172.17.30.206/24"

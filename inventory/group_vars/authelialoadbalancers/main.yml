@@ -47,6 +47,7 @@ haproxy_backends:
 keepalived_check_scripts:
   haproxy:
     type: haproxy
+    backend_name: "authelia-backend"
 keepalived_instances:
   authelia:
     virtual_ip: 172.17.30.210/24

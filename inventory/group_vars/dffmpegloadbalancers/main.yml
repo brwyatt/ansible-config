@@ -47,6 +47,7 @@ haproxy_backends:
 keepalived_check_scripts:
   haproxy:
     type: haproxy
+    backend_name: "dffmpeg-backend"
 keepalived_instances:
   dffmpeg:
     virtual_ip: "172.17.30.208/24"

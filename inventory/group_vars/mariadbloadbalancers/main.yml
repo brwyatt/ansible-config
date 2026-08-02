@@ -37,6 +37,7 @@ haproxy_backends:
 keepalived_check_scripts:
   haproxy:
     type: haproxy
+    backend_name: "mariadb-backend"
 keepalived_instances:
   mariadb:
     virtual_ip: "172.17.30.207/24"
