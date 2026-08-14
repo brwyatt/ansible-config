@@ -1,0 +1,30 @@
+---
+- name: Check if NVMe latency parameter path exists
+  ansible.builtin.stat:
+    path: /sys/module/nvme_core/parameters/default_ps_max_latency_us
+  register: nvme_latency_stat
+- name: Configure NVMe power state latency
+  become: true
+  when: nvme_latency_stat.stat.exists
+  block:
+    - name: Create tmpfiles.d configuration for NVMe latency
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible
+          w /sys/module/nvme_core/parameters/default_ps_max_latency_us - - - - 0
+        dest: /etc/tmpfiles.d/nvme_core.conf
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Get current NVMe latency value
+      ansible.builtin.slurp:
+        src: /sys/module/nvme_core/parameters/default_ps_max_latency_us
+      register: nvme_latency_value
+    - name: Set active NVMe latency runtime parameter
+      ansible.builtin.copy:
+        content: "0\n"
+        dest: /sys/module/nvme_core/parameters/default_ps_max_latency_us
+        owner: "{{ nvme_latency_stat.stat.pw_name }}"
+        group: "{{ nvme_latency_stat.stat.gr_name }}"
+        mode: "{{ nvme_latency_stat.stat.mode }}"
+      when: (nvme_latency_value.content | b64decode | trim) != '0'
