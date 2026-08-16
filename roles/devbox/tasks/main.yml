@@ -1,14 +1,32 @@
 ---
+- name: Retrieve user passwd details
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ code_server_user }}"
+  become: true
+- name: Set code_server_user_home fact
+  ansible.builtin.set_fact:
+    code_server_user_home: "{{ ansible_facts.getent_passwd[code_server_user][4] }}"
+- name: Fetch latest code-server release version from GitHub
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/coder/code-server/releases/latest"
+    return_content: true
+  register: code_server_github_release
+  when: code_server_version | default('latest') == 'latest'
+- name: Set code_server_actual_version fact
+  ansible.builtin.set_fact:
+    code_server_actual_version: "{{ (code_server_github_release.json.tag_name | regex_replace('^v', '')) if (code_server_version | default('latest') == 'latest') else code_server_version }}"
 - name: Download Coder code-server deb package
   ansible.builtin.get_url:
-    url: "https://github.com/coder/code-server/releases/download/v{{ code_server_version }}/code-server_{{ code_server_version }}_amd64.deb"
-    dest: "/tmp/code-server_{{ code_server_version }}_amd64.deb"
+    url: "https://github.com/coder/code-server/releases/download/v{{ code_server_actual_version }}/code-server_{{ code_server_actual_version }}_amd64.deb"
+    dest: "/tmp/code-server_{{ code_server_actual_version }}_amd64.deb"
     mode: '0644'
   become: true
 - name: Install Coder code-server deb package
   ansible.builtin.apt:
-    deb: "/tmp/code-server_{{ code_server_version }}_amd64.deb"
+    deb: "/tmp/code-server_{{ code_server_actual_version }}_amd64.deb"
   become: true
+  notify: Restart code-server
 - name: Ensure Coder code-server systemd override directory exists
   ansible.builtin.file:
     path: /etc/systemd/system/code-server@.service.d
@@ -32,7 +50,7 @@
     - Restart code-server
 - name: Ensure user code-server config directory exists
   ansible.builtin.file:
-    path: "/home/home.brwyatt.net/{{ code_server_user }}/.config/code-server"
+    path: "{{ code_server_user_home }}/.config/code-server"
     state: directory
     owner: "{{ code_server_user }}"
     group: "{{ code_server_group }}"
@@ -41,7 +59,41 @@
 - name: Configure Coder code-server config.yaml
   ansible.builtin.template:
     src: config.yaml.j2
-    dest: "/home/home.brwyatt.net/{{ code_server_user }}/.config/code-server/config.yaml"
+    dest: "{{ code_server_user_home }}/.config/code-server/config.yaml"
+    owner: "{{ code_server_user }}"
+    group: "{{ code_server_group }}"
+    mode: '0640'
+  become: true
+  notify: Restart code-server
+- name: Ensure user code-server User settings directory exists
+  ansible.builtin.file:
+    path: "{{ code_server_user_home }}/.local/share/code-server/User"
+    state: directory
+    owner: "{{ code_server_user }}"
+    group: "{{ code_server_group }}"
+    mode: '0750'
+  become: true
+- name: Check if settings.json exists
+  ansible.builtin.stat:
+    path: "{{ code_server_user_home }}/.local/share/code-server/User/settings.json"
+  register: settings_json_stat
+  become: true
+- name: Slurp settings.json contents
+  ansible.builtin.slurp:
+    src: "{{ code_server_user_home }}/.local/share/code-server/User/settings.json"
+  register: settings_json_slurp
+  when: settings_json_stat.stat.exists
+  become: true
+- name: Parse existing settings.json or default to empty dict
+  ansible.builtin.set_fact:
+    existing_settings: "{{ (settings_json_slurp.content | b64decode | from_json) if (settings_json_stat.stat.exists and settings_json_slurp.content is defined) else {} }}"
+- name: Merge remote.extensionKind setting
+  ansible.builtin.set_fact:
+    updated_settings: "{{ existing_settings | combine({'remote.extensionKind': {'*': ['workspace']}}, recursive=true) }}"
+- name: Ensure settings.json is configured with remote.extensionKind
+  ansible.builtin.copy:
+    dest: "{{ code_server_user_home }}/.local/share/code-server/User/settings.json"
+    content: "{{ updated_settings | to_nice_json }}"
     owner: "{{ code_server_user }}"
     group: "{{ code_server_group }}"
     mode: '0640'
