@@ -13,12 +13,21 @@
     return_content: true
   register: code_server_github_release
   when: code_server_version | default('latest') == 'latest'
-- name: Set code_server_actual_version fact
+  check_mode: no
+- name: Set code_server_actual_version fact from GitHub
   ansible.builtin.set_fact:
-    code_server_actual_version: "{{ (code_server_github_release.json.tag_name | regex_replace('^v', '')) if (code_server_version | default('latest') == 'latest') else code_server_version }}"
+    code_server_actual_version: "{{ code_server_github_release.json.tag_name | regex_replace('^v', '') }}"
+  when: code_server_version | default('latest') == 'latest'
+- name: Set code_server_actual_version fact from explicit version
+  ansible.builtin.set_fact:
+    code_server_actual_version: "{{ code_server_version }}"
+  when: code_server_version | default('latest') != 'latest'
 - name: Download Coder code-server deb package
   ansible.builtin.get_url:
-    url: "https://github.com/coder/code-server/releases/download/v{{ code_server_actual_version }}/code-server_{{ code_server_actual_version }}_amd64.deb"
+    url: >-
+      https://github.com/coder/code-server/releases/download/v{{
+      code_server_actual_version }}/code-server_{{
+      code_server_actual_version }}_amd64.deb
     dest: "/tmp/code-server_{{ code_server_actual_version }}_amd64.deb"
     mode: '0644'
   become: true
@@ -86,7 +95,10 @@
   become: true
 - name: Parse existing settings.json or default to empty dict
   ansible.builtin.set_fact:
-    existing_settings: "{{ (settings_json_slurp.content | b64decode | from_json) if (settings_json_stat.stat.exists and settings_json_slurp.content is defined) else {} }}"
+    existing_settings: >-
+      {{ (settings_json_slurp.content | b64decode | from_json)
+      if (settings_json_stat.stat.exists and settings_json_slurp.content is defined)
+      else {} }}
 - name: Merge remote.extensionKind setting
   ansible.builtin.set_fact:
     updated_settings: "{{ existing_settings | combine({'remote.extensionKind': {'*': ['workspace']}}, recursive=true) }}"
