@@ -13,7 +13,7 @@
     return_content: true
   register: code_server_github_release
   when: code_server_version | default('latest') == 'latest'
-  check_mode: no
+  check_mode: false
 - name: Set code_server_actual_version fact from GitHub
   ansible.builtin.set_fact:
     code_server_actual_version: "{{ code_server_github_release.json.tag_name | regex_replace('^v', '') }}"
