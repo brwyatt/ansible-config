@@ -80,7 +80,7 @@
     state: directory
     owner: "{{ code_server_user }}"
     group: "{{ code_server_group }}"
-    mode: '0750'
+    mode: '0700'
   become: true
 - name: Check if settings.json exists
   ansible.builtin.stat:
@@ -105,7 +105,7 @@
 - name: Ensure settings.json is configured with remote.extensionKind
   ansible.builtin.copy:
     dest: "{{ code_server_user_home }}/.local/share/code-server/User/settings.json"
-    content: "{{ updated_settings | to_nice_json }}"
+    content: "{{ updated_settings | to_nice_json }}\n"
     owner: "{{ code_server_user }}"
     group: "{{ code_server_group }}"
     mode: '0640'
