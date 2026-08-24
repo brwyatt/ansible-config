@@ -43,4 +43,6 @@
     group: root
     mode: '0644'
   become: true
-  notify: Reload and trigger udev rules
+  notify:
+    - Reload udev rules
+    - Trigger udev rules
