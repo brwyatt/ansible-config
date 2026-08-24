@@ -33,10 +33,10 @@
     content: |
       # Managed by Ansible
       # Disable runtime power management on PCIe bridges / root ports
-      ACTION=="add", SUBSYSTEM=="pci", ATTR{class}=="0x060400", \
+      ACTION=="add|change", SUBSYSTEM=="pci", ATTR{class}=="0x060400", \
         ATTR{power/control}="on"
       # Disable runtime power management on NVMe controllers
-      ACTION=="add", SUBSYSTEM=="pci", ATTR{class}=="0x010802", \
+      ACTION=="add|change", SUBSYSTEM=="pci", ATTR{class}=="0x010802", \
         ATTR{power/control}="on"
     dest: /etc/udev/rules.d/99-pci-pm-disable.rules
     owner: root
