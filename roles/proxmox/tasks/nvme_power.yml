@@ -28,3 +28,19 @@
         group: "{{ nvme_latency_stat.stat.gr_name }}"
         mode: "{{ nvme_latency_stat.stat.mode }}"
       when: (nvme_latency_value.content | b64decode | trim) != '0'
+- name: Create udev rule to disable PCIe runtime PM on bridges and NVMe
+  ansible.builtin.copy:
+    content: |
+      # Managed by Ansible
+      # Disable runtime power management on PCIe bridges / root ports
+      ACTION=="add", SUBSYSTEM=="pci", ATTR{class}=="0x060400", \
+        ATTR{power/control}="on"
+      # Disable runtime power management on NVMe controllers
+      ACTION=="add", SUBSYSTEM=="pci", ATTR{class}=="0x010802", \
+        ATTR{power/control}="on"
+    dest: /etc/udev/rules.d/99-pci-pm-disable.rules
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Reload and trigger udev rules

@@ -3,3 +3,8 @@
   ansible.builtin.apt:
     update_cache: true
   become: true
+- name: Reload and trigger udev rules
+  ansible.builtin.command:
+    cmd: /usr/bin/udevadm control --reload && udevadm trigger --subsystem-match=pci
+  changed_when: true
+  become: true
