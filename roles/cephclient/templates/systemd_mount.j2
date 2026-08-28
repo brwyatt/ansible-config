@@ -1,6 +1,6 @@
 [Unit]
 Description=CephFS Mount for {{ item.mount_path }} from {{ item.fs_name }}
-After=network-online.target remote-fs.target
+After=network-online.target
 Wants=network-online.target
 Conflicts=umount.target
 

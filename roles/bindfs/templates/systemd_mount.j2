@@ -1,10 +1,11 @@
 {% set options = (["noexec"] if item.noexec|default(False) else ["exec"]) -%}
+{% set options = options + ["_netdev", "x-systemd.mount-timeout=5min"] -%}
 {% if ((item.map | default([])) | length) > 0 -%}
 {% set options = options + ["map=" + (item.map | join(":"))] -%}
 {% endif -%}
 [Unit]
 Description=BindFS Mount for {{ item.mount_path }} from {{ item.source_path }}
-After=network-online.target remote-fs.target local-fs.target nss-user-lookup.target{% if systemd_source_unit_stat.stat.exists %} {{ systemd_source_mount_unit }}{% endif %}
+After=network-online.target nss-user-lookup.target{% if systemd_source_unit_stat.stat.exists %} {{ systemd_source_mount_unit }}{% endif %}
 {% if systemd_source_unit_stat.stat.exists %}
 
 Wants={{ systemd_source_mount_unit }}

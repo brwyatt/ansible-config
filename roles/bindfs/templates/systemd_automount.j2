@@ -1,7 +1,7 @@
 [Unit]
 Description=BindFS Automount for {{ item.mount_path }} from {{ item.source_path }}
 
-[Mount]
+[Automount]
 Where={{ item.mount_path }}
 
 [Install]

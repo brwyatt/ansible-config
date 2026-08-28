@@ -1,13 +1,13 @@
 [Unit]
 Description=NFS Mount for Jellyfin cache
-After=network-online.target remote-fs.target
+After=network-online.target
 Wants=network-online.target
 
 [Mount]
 What=jellyfin.server.home.brwyatt.net:/mnt/jellyfin
 Where=/mnt/jellyfin
 Type=nfs
-Options=defaults,vers=3,sync
+Options=defaults,vers=3,sync,_netdev,x-systemd.mount-timeout=5min
 
 [Install]
 WantedBy=multi-user.target
