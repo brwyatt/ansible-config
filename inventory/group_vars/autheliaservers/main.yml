@@ -63,6 +63,7 @@ authelia_oidc_clients:
     grant_types:
       - 'authorization_code'
     token_endpoint_auth_method: 'client_secret_basic'
+    consent_mode: 'implicit'
   homeassistant:
     client_name: 'Home Assistant'
     client_secret: "{{ authelia_oidc_homeassistant_hashed_secret }}"
@@ -74,6 +75,7 @@ authelia_oidc_clients:
       - 'https://homeassistant.home.brwyatt.net/auth/oidc/callback'
       - 'https://homeassistant.iot.home.brwyatt.net/auth/oidc/callback'
     token_endpoint_auth_method: 'client_secret_post'
+    consent_mode: 'implicit'
   jellyfin:
     client_name: 'Jellyfin'
     client_secret: "{{ authelia_oidc_jellyfin_hashed_secret }}"
@@ -95,6 +97,7 @@ authelia_oidc_clients:
     access_token_signed_response_alg: "none"
     userinfo_signed_response_alg: "none"
     token_endpoint_auth_method: 'client_secret_post'
+    consent_mode: 'implicit'
   proxmox:
     client_name: 'Proxmox'
     client_secret: "{{ authelia_oidc_proxmox_hashed_secret }}"
@@ -116,6 +119,7 @@ authelia_oidc_clients:
     access_token_signed_response_alg: 'none'
     userinfo_signed_response_alg: 'none'
     token_endpoint_auth_method: 'client_secret_basic'
+    consent_mode: 'implicit'
 
 authelia_session_redis_host: "valkey.server.home.brwyatt.net"
 authelia_session_redis_password: "{{ valkey_authelia_password }}"
