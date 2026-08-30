@@ -168,6 +168,10 @@ authelia_access_control_rules:
   - domain: "zigbee2mqtt.iot.home.brwyatt.net"
     policy: "two_factor"
     subject: "group:iot-admins"
+  # TheLounge
+  - domain: "thelounge.home.brwyatt.net"
+    policy: "two_factor"
+    subject: "group:thelounge-users"
 
 proxy_port: 9091
 
