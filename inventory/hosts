@@ -136,6 +136,9 @@ valkeyservers:
 otbr:
   hosts:
     thread-br.iot.home.brwyatt.net:
+thelounge:
+  hosts:
+    thelounge.server.home.brwyatt.net
 app_proxy:
   children:
     autheliaservers:
@@ -151,6 +154,7 @@ app_proxy:
     guacamole:
     seedbox:
     devbox:
+    thelounge:
 ceph_clients:
   children:
     jellyfin:

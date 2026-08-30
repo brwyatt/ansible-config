@@ -1,0 +1,13 @@
+---
+proxy_port: 9000
+proxy_sso_enabled: true
+reverseproxy_nginx_after:
+  - network-online.target
+  - thelounge.service
+proxy_healthcheck:
+  path: /health
+  checks:
+    - type: port
+      value: "{{ proxy_port }}"
+    - type: service
+      value: thelounge
