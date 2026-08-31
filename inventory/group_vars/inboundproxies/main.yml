@@ -35,3 +35,10 @@ reverseproxy_sites:
       - "thelounge.home.brwyatt.net"
     destination: "https://thelounge.server.home.brwyatt.net:443"
     sso_enabled: true
+    healthcheck:
+      path: "/health"
+      checks:
+        - type: custom
+          value: "curl -sS -f -k -o /dev/null https://thelounge.server.home.brwyatt.net/health"
+    public_paths:
+      - "/health"
