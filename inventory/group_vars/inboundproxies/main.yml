@@ -40,5 +40,3 @@ reverseproxy_sites:
       checks:
         - type: custom
           value: "curl -sS -f -k -o /dev/null https://thelounge.server.home.brwyatt.net/health"
-    public_paths:
-      - "/health"
