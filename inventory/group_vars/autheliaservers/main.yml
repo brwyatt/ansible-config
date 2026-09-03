@@ -172,6 +172,13 @@ authelia_access_control_rules:
   - domain: "thelounge.home.brwyatt.net"
     policy: "two_factor"
     subject: "group:thelounge-users"
+  # Seerr
+  - domain: "seerr.server.home.brwyatt.net"
+    policy: "two_factor"
+    subject: "group:jellyfin-users"
+  - domain: "seerr.home.brwyatt.net"
+    policy: "two_factor"
+    subject: "group:jellyfin-users"
 
 proxy_port: 9091
 
