@@ -139,6 +139,9 @@ otbr:
 thelounge:
   hosts:
     thelounge.server.home.brwyatt.net
+seerr:
+  hosts:
+    seerr.server.home.brwyatt.net
 app_proxy:
   children:
     autheliaservers:
@@ -155,6 +158,7 @@ app_proxy:
     seedbox:
     devbox:
     thelounge:
+    seerr:
 ceph_clients:
   children:
     jellyfin:
