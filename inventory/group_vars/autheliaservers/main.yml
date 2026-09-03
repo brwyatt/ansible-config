@@ -175,7 +175,13 @@ authelia_access_control_rules:
   # Seerr
   - domain: "seerr.server.home.brwyatt.net"
     policy: "two_factor"
+    subject: "group:jellyfin-admins"
+  - domain: "seerr.server.home.brwyatt.net"
+    policy: "two_factor"
     subject: "group:jellyfin-users"
+  - domain: "seerr.home.brwyatt.net"
+    policy: "two_factor"
+    subject: "group:jellyfin-admins"
   - domain: "seerr.home.brwyatt.net"
     policy: "two_factor"
     subject: "group:jellyfin-users"

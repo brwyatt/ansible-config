@@ -40,3 +40,12 @@ reverseproxy_sites:
       checks:
         - type: custom
           value: "curl -sS -f -k -o /dev/null https://thelounge.server.home.brwyatt.net/health"
+  - server_names:
+      - "seerr.home.brwyatt.net"
+    destination: "https://seerr.server.home.brwyatt.net:443"
+    sso_enabled: true
+    healthcheck:
+      path: "/health"
+      checks:
+        - type: custom
+          value: "curl -sS -f -k -o /dev/null https://seerr.server.home.brwyatt.net/health"
