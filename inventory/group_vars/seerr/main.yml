@@ -3,7 +3,6 @@ certbot_certs:
   - ["{{ inventory_hostname }}", "{{  inventory_hostname | replace('server.', '') }}"]
 
 proxy_port: 5055
-proxy_sso_enabled: true
 reverseproxy_nginx_after:
   - network-online.target
   - thelounge.service

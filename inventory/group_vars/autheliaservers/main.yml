@@ -168,17 +168,11 @@ authelia_access_control_rules:
   - domain: "zigbee2mqtt.iot.home.brwyatt.net"
     policy: "two_factor"
     subject: "group:iot-admins"
-  # TheLounge
+  # TheLounge (External)
   - domain: "thelounge.home.brwyatt.net"
     policy: "two_factor"
     subject: "group:thelounge-users"
-  # Seerr
-  - domain: "seerr.server.home.brwyatt.net"
-    policy: "two_factor"
-    subject: "group:jellyfin-admins"
-  - domain: "seerr.server.home.brwyatt.net"
-    policy: "two_factor"
-    subject: "group:jellyfin-users"
+  # Seerr (External)
   - domain: "seerr.home.brwyatt.net"
     policy: "two_factor"
     subject: "group:jellyfin-admins"
