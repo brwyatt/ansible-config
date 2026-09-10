@@ -83,3 +83,26 @@ If a systemd mount unit lacks the `_netdev` option, systemd classifies it as a l
 
 * **Orchestrate Daemon Reloads**: Any task that modifies systemd unit files (`/etc/systemd/system/*`) or deploys templates for mounts/automounts must notify a handler to perform `daemon_reload: true`.
 * **State Preservation**: Ensure services are restarted correctly upon configurations change by attaching proper `notify` hooks for systemd unit restarts, preventing stale daemon runs.
+
+---
+
+## 5. Git Workspace & Interactive CLI Hygiene
+
+AI agents must maintain clean git worktrees and terminal sessions, leaving complete workspace control in the hands of the human developer.
+
+### 5.1 Staging, Resets, and Commits (No Automatic Index Changes)
+* **Never stage automatically**: Do not run `git add` or update the git index unless explicitly requested by the user.
+* **No blanket resets**: Never run generic `git reset` commands. If unstaging is explicitly requested, only unstage files authored during the current task session.
+* **No commits**: Never make commits (`git commit`) unless explicitly instructed to do so.
+
+### 5.2 Disabling Terminal Pagers
+* **Always bypass pagers**: When executing terminal commands (especially git commands like `git diff`, `git log`, or `git status`), always bypass interactive pagers to prevent blocking or hanging.
+* **Implementation**: Prepend `git --no-pager` or set the pager env variable inline (e.g., `git -c core.pager=cat diff` or `git --no-pager status`).
+
+### 5.3 Provisioning Secrets & Unknown API Keys
+* **Use Clear Placeholders**: When generating default configuration files, group variables, or secrets files, never guess, reuse, or copy credentials from other services.
+* **Standard Placeholder Format**: Use a highly visible plaintext placeholder value like `"FIXME_REPLACE_WITH_REAL_SECRET"` or `"FIXME"` for all unknown passwords, OIDC keys, or sensitive fields. This makes it trivial for the human operator to search the codebase and populate them before encrypting.
+
+### 5.4 Thorough Integration Research & Operational Synchronization
+* **Verify Active Integration Documentation**: Prioritize researching the active, official integration specs for third-party platforms (such as Authelia's client recipes) to ensure variable names, claims, and endpoints match current platform versions (e.g., Open WebUI's updated unified `OAUTH_*` schema vs legacy `OIDC_*` variables).
+* **Synchronize with Workspace Work-in-Progress**: Before proposing or implementing modifications, always check `git status` and inspect newly added/decrypted files. Adapt configuration models to respect any custom placeholdering, specific naming overrides (e.g. specific IAM Role ARNs on host-level subgroups), or formatting applied by the human developer.
