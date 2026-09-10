@@ -142,6 +142,15 @@ thelounge:
 seerr:
   hosts:
     seerr.server.home.brwyatt.net
+openwebui:
+  hosts:
+    openwebui01.server.home.brwyatt.net:
+homelabsre_terminal:
+  hosts:
+    HomeLabSRE.server.home.brwyatt.net:
+openterminal:
+  children:
+    homelabsre_terminal:
 app_proxy:
   children:
     autheliaservers:
@@ -159,6 +168,8 @@ app_proxy:
     devbox:
     thelounge:
     seerr:
+    openwebui:
+    openterminal:
 ceph_clients:
   children:
     jellyfin:

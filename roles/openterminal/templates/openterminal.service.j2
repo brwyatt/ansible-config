@@ -1,0 +1,19 @@
+[Unit]
+Description=OpenTerminal Service (Open WebUI)
+After=network.target
+
+[Service]
+Type=simple
+User={{ openterminal_user }}
+Group={{ openterminal_group }}
+WorkingDirectory={{ openterminal_install_dir }}
+Environment=PORT={{ openterminal_port }}
+{% for key, val in openterminal_extra_env.items() %}
+Environment={{ key }}={{ val }}
+{% endfor %}
+ExecStart={{ openterminal_venv_dir }}/bin/open-terminal serve --port {{ openterminal_port }}
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,5 @@
+---
+proxy_port: 8080
+certbot_certs:
+  - - "{{ inventory_hostname }}"
+    - "agents.server.home.brwyatt.net"

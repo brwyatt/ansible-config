@@ -1,0 +1,10 @@
+---
+openterminal_user: "agent-homelab-sre"
+openterminal_group: "agent-homelab-sre"
+openterminal_version: "latest"
+openterminal_port: 8000
+openterminal_install_dir: "/opt/openterminal"
+openterminal_venv_dir: "{{ openterminal_install_dir }}/venv"
+
+# Extra Environment configuration (if any needed for OpenTerminal)
+openterminal_extra_env: {}

@@ -1,0 +1,30 @@
+---
+openwebui_user: "openwebui"
+openwebui_group: "openwebui"
+openwebui_version: "latest"
+openwebui_port: 8080
+openwebui_install_dir: "/opt/openwebui"
+openwebui_venv_dir: "{{ openwebui_install_dir }}/venv"
+
+# Database Configuration (default is SQLite inside venv/data, but overrideable)
+openwebui_db_url: ""
+
+# Session Persistent Secret Key and general signup options
+openwebui_secret_key: ""
+openwebui_enable_signup: false
+
+# Authelia OIDC / OAuth Integration (Modern Schema)
+openwebui_enable_oidc: true
+openwebui_webui_url: "https://agents.server.home.brwyatt.net"
+openwebui_enable_oauth_signup: true
+openwebui_oauth_merge_accounts_by_email: true
+openwebui_oauth_client_id: "openwebui"
+openwebui_oauth_client_secret: "{{ openwebui_oidc_client_secret | default('') }}"
+openwebui_openid_provider_url: "https://auth.home.brwyatt.net/.well-known/openid-configuration"
+openwebui_oauth_provider_name: "Authelia"
+openwebui_oauth_scopes: "openid email profile groups"
+openwebui_enable_oauth_role_management: true
+openwebui_oauth_roles_claim: "groups"
+openwebui_oauth_allowed_roles: "openwebui-users"
+openwebui_oauth_admin_roles: "openwebui-admins"
+openwebui_oauth_code_challenge_method: "S256"

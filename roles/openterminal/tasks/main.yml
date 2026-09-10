@@ -1,0 +1,46 @@
+---
+- name: Verify SRE LDAP user existence
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ openterminal_user }}"
+- name: Install SRE packages and Python dependencies
+  ansible.builtin.package:
+    name:
+      - python3
+      - python3-pip
+      - python3-venv
+      - git
+      - jq
+      - curl
+    state: present
+- name: Create OpenTerminal directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ openterminal_user }}"
+    group: "{{ openterminal_group }}"
+    mode: '0750'
+  loop:
+    - "{{ openterminal_install_dir }}"
+- name: Install open-terminal package via pip in venv
+  ansible.builtin.pip:
+    name: "{{ 'open-terminal' if openterminal_version == 'latest' else 'open-terminal==' + openterminal_version }}"
+    state: present
+    virtualenv: "{{ openterminal_venv_dir }}"
+    virtualenv_command: "/usr/bin/python3 -m venv"
+  notify: Restart OpenTerminal
+- name: Create OpenTerminal systemd unit
+  ansible.builtin.template:
+    src: openterminal.service.j2
+    dest: /etc/systemd/system/openterminal.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload systemd
+    - Restart OpenTerminal
+- name: Ensure OpenTerminal service is started and enabled
+  ansible.builtin.service:
+    name: openterminal
+    state: started
+    enabled: true
