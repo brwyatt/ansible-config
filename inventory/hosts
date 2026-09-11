@@ -147,7 +147,7 @@ openwebui:
     openwebui01.server.home.brwyatt.net:
 homelabsre_terminal:
   hosts:
-    HomeLabSRE.server.home.brwyatt.net:
+    homelabsre.server.home.brwyatt.net:
 openterminal:
   children:
     homelabsre_terminal:

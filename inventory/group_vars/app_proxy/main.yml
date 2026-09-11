@@ -9,3 +9,4 @@ reverseproxy_sites:
     healthcheck: "{{ proxy_healthcheck | default(omit) }}"
     public_paths: "{{ proxy_public_paths | default(omit) }}"
     public_paths_regex: "{{ proxy_public_paths_regex | default(omit) }}"
+    server_directives: "{{ proxy_server_directives | default(omit) }}"

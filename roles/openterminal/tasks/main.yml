@@ -3,6 +3,13 @@
   ansible.builtin.getent:
     database: passwd
     key: "{{ openterminal_user }}"
+- name: Ensure SRE user home directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_facts.getent_passwd[openterminal_user][4] }}"
+    state: directory
+    owner: "{{ openterminal_user }}"
+    group: "{{ openterminal_group }}"
+    mode: '0750'
 - name: Install SRE packages and Python dependencies
   ansible.builtin.package:
     name:

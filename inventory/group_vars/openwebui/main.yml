@@ -1,5 +1,8 @@
 ---
 proxy_port: 8080
+proxy_server_directives:
+  - "client_max_body_size 100M;"
+  - "proxy_buffering off;"
 certbot_certs:
   - - "{{ inventory_hostname }}"
     - "agents.server.home.brwyatt.net"

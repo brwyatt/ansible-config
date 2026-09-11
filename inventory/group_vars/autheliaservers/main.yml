@@ -18,6 +18,8 @@ authelia_oidc_authorization_policies:
     default_policy: deny
     rules:
       - policy: two_factor
+        subject: 'group:openwebui-admins'
+      - policy: two_factor
         subject: 'group:openwebui-users'
   homebox_policy:
     default_policy: deny
@@ -133,7 +135,7 @@ authelia_oidc_clients:
     require_pkce: true
     pkce_challenge_method: 'S256'
     redirect_uris:
-      - 'https://agents.server.home.brwyatt.net/auth/oidc/callback'
+      - 'https://agents.server.home.brwyatt.net/oauth/oidc/callback'
     scopes:
       - openid
       - groups
