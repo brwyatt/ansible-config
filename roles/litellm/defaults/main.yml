@@ -23,7 +23,6 @@ litellm_model_list:
   - model_name: gemini-flash-latest
     litellm_params:
       model: gemini/gemini-flash-latest
-      api_key: "os.environ/GEMINI_API_KEY"
       safety_settings:
         - category: HARM_CATEGORY_DANGEROUS_CONTENT
           threshold: BLOCK_NONE
@@ -36,7 +35,6 @@ litellm_model_list:
   - model_name: gemini-pro
     litellm_params:
       model: gemini/gemini-pro-latest
-      api_key: "os.environ/GEMINI_API_KEY"
       safety_settings:
         - category: HARM_CATEGORY_DANGEROUS_CONTENT
           threshold: BLOCK_NONE
