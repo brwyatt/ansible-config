@@ -42,7 +42,7 @@ Environment=OAUTH_CODE_CHALLENGE_METHOD={{ openwebui_oauth_code_challenge_method
 Environment={{ key }}={{ val }}
 {% endfor %}
 
-ExecStart={{ openwebui_venv_dir }}/bin/open-webui serve
+ExecStart={{ openwebui_venv_dir }}/bin/open-webui serve --host {{ openwebui_host }} --port {{ openwebui_port }}
 Restart=always
 RestartSec=5
 

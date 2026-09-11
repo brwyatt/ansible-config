@@ -36,6 +36,12 @@
     virtualenv: "{{ openwebui_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"
   notify: Restart Open WebUI
+- name: Ensure Open WebUI directory ownership
+  ansible.builtin.file:
+    path: "{{ openwebui_install_dir }}"
+    owner: "{{ openwebui_user }}"
+    group: "{{ openwebui_group }}"
+    recurse: true
 - name: Create Open WebUI systemd unit
   ansible.builtin.template:
     src: openwebui.service.j2

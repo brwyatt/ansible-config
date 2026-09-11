@@ -36,6 +36,12 @@
     virtualenv: "{{ openterminal_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"
   notify: Restart OpenTerminal
+- name: Ensure OpenTerminal directory ownership
+  ansible.builtin.file:
+    path: "{{ openterminal_install_dir }}"
+    owner: "{{ openterminal_user }}"
+    group: "{{ openterminal_group }}"
+    recurse: true
 - name: Create OpenTerminal systemd unit
   ansible.builtin.template:
     src: openterminal.service.j2

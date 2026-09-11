@@ -2,6 +2,7 @@
 openwebui_user: "openwebui"
 openwebui_group: "openwebui"
 openwebui_version: "latest"
+openwebui_host: "127.0.0.1"
 openwebui_port: 8080
 openwebui_install_dir: "/opt/openwebui"
 openwebui_venv_dir: "{{ openwebui_install_dir }}/venv"
