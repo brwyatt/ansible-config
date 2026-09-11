@@ -157,6 +157,7 @@
   hosts: openwebui
   become: true
   roles:
+    - role: litellm
     - role: openwebui
 - name: OpenTerminal (Agent Devbox) Server
   hosts: openterminal

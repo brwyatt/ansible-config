@@ -1,0 +1,14 @@
+# LiteLLM Configuration
+# Managed by Ansible
+
+model_list:
+{{ litellm_model_list | to_nice_yaml(indent=2) | indent(2, first=true) }}
+
+litellm_settings:
+  drop_params: true
+
+general_settings:
+{% if litellm_master_key %}
+  master_key: "{{ litellm_master_key }}"
+{% endif %}
+  store_model_in_db: false
