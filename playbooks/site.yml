@@ -153,3 +153,14 @@
   become: true
   roles:
     - role: devbox
+- name: Open WebUI Server
+  hosts: openwebui
+  become: true
+  roles:
+    - role: litellm
+    - role: openwebui
+- name: OpenTerminal (Agent Devbox) Server
+  hosts: openterminal
+  become: true
+  roles:
+    - role: openterminal

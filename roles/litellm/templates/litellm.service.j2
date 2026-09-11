@@ -1,0 +1,25 @@
+[Unit]
+Description=LiteLLM Proxy Service
+After=network.target
+
+[Service]
+Type=simple
+User={{ litellm_user }}
+Group={{ litellm_group }}
+WorkingDirectory={{ litellm_install_dir }}
+{% if litellm_master_key %}
+Environment=LITELLM_MASTER_KEY={{ litellm_master_key }}
+{% endif %}
+{% if litellm_gemini_api_key %}
+Environment=GEMINI_API_KEY={{ litellm_gemini_api_key }}
+Environment=GOOGLE_API_KEY={{ litellm_gemini_api_key }}
+{% endif %}
+{% for key, val in litellm_extra_env.items() %}
+Environment={{ key }}={{ val }}
+{% endfor %}
+ExecStart={{ litellm_venv_dir }}/bin/litellm --config {{ litellm_config_file }} --host {{ litellm_host }} --port {{ litellm_port }}
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

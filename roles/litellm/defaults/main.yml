@@ -1,0 +1,46 @@
+---
+litellm_user: "litellm"
+litellm_group: "litellm"
+litellm_version: "latest"
+litellm_host: "127.0.0.1"
+litellm_port: 4000
+litellm_install_dir: "/opt/litellm"
+litellm_venv_dir: "{{ litellm_install_dir }}/venv"
+litellm_config_dir: "/etc/litellm"
+litellm_config_file: "{{ litellm_config_dir }}/config.yaml"
+
+# Master key for proxy authentication (optional, empty means open on host:port)
+litellm_master_key: ""
+
+# Gemini API Key (populated from secrets)
+litellm_gemini_api_key: ""
+
+# Extra Environment variables for LiteLLM (e.g. AWS_REGION, AWS_DEFAULT_REGION, etc.)
+litellm_extra_env: {}
+
+# Models to expose via LiteLLM
+litellm_model_list:
+  - model_name: gemini-flash-latest
+    litellm_params:
+      model: gemini/gemini-flash-latest
+      safety_settings:
+        - category: HARM_CATEGORY_DANGEROUS_CONTENT
+          threshold: BLOCK_NONE
+        - category: HARM_CATEGORY_HARASSMENT
+          threshold: BLOCK_NONE
+        - category: HARM_CATEGORY_HATE_SPEECH
+          threshold: BLOCK_NONE
+        - category: HARM_CATEGORY_SEXUALLY_EXPLICIT
+          threshold: BLOCK_NONE
+  - model_name: gemini-pro
+    litellm_params:
+      model: gemini/gemini-pro-latest
+      safety_settings:
+        - category: HARM_CATEGORY_DANGEROUS_CONTENT
+          threshold: BLOCK_NONE
+        - category: HARM_CATEGORY_HARASSMENT
+          threshold: BLOCK_NONE
+        - category: HARM_CATEGORY_HATE_SPEECH
+          threshold: BLOCK_NONE
+        - category: HARM_CATEGORY_SEXUALLY_EXPLICIT
+          threshold: BLOCK_NONE

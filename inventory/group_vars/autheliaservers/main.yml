@@ -14,6 +14,13 @@ authelia_password_ss_enabled: true
 authelia_oidc_enabled: true
 
 authelia_oidc_authorization_policies:
+  openwebui_policy:
+    default_policy: deny
+    rules:
+      - policy: two_factor
+        subject: 'group:openwebui-admins'
+      - policy: two_factor
+        subject: 'group:openwebui-users'
   homebox_policy:
     default_policy: deny
     rules:
@@ -112,6 +119,28 @@ authelia_oidc_clients:
       - 'profile'
       - 'email'
       - 'groups'
+    response_types:
+      - 'code'
+    grant_types:
+      - 'authorization_code'
+    access_token_signed_response_alg: 'none'
+    userinfo_signed_response_alg: 'none'
+    token_endpoint_auth_method: 'client_secret_basic'
+    consent_mode: 'implicit'
+  openwebui:
+    client_name: 'Open WebUI'
+    client_secret: "{{ authelia_oidc_openwebui_hashed_secret }}"
+    public: false
+    authorization_policy: openwebui_policy
+    require_pkce: true
+    pkce_challenge_method: 'S256'
+    redirect_uris:
+      - 'https://agents.server.home.brwyatt.net/oauth/oidc/callback'
+    scopes:
+      - openid
+      - groups
+      - email
+      - profile
     response_types:
       - 'code'
     grant_types:

@@ -1,0 +1,22 @@
+[Unit]
+Description=OpenTerminal Service (Open WebUI)
+After=network.target
+
+[Service]
+Type=simple
+User={{ openterminal_user }}
+Group={{ openterminal_group }}
+WorkingDirectory={{ openterminal_working_dir | default(ansible_facts.getent_passwd[openterminal_user][4], true) }}
+Environment=PORT={{ openterminal_port }}
+{% if openterminal_api_key %}
+Environment=OPEN_TERMINAL_API_KEY={{ openterminal_api_key }}
+{% endif %}
+{% for key, val in openterminal_extra_env.items() %}
+Environment={{ key }}={{ val }}
+{% endfor %}
+ExecStart={{ openterminal_venv_dir }}/bin/open-terminal run --host {{ openterminal_host }} --port {{ openterminal_port }}
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

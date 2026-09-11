@@ -1,0 +1,69 @@
+---
+- name: Check for LiteLLM user
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ litellm_user }}"
+    fail_key: false
+- name: Create local LiteLLM user
+  ansible.builtin.user:
+    name: "{{ litellm_user }}"
+    home: "{{ litellm_install_dir }}"
+    shell: /bin/false
+    system: true
+  when: ansible_facts.getent_passwd[litellm_user] is none
+- name: Install system package dependencies
+  ansible.builtin.package:
+    name:
+      - python3
+      - python3-pip
+      - python3-venv
+    state: present
+- name: Create LiteLLM directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ litellm_user }}"
+    group: "{{ litellm_group }}"
+    mode: '0750'
+  loop:
+    - "{{ litellm_install_dir }}"
+    - "{{ litellm_config_dir }}"
+- name: Install litellm[proxy] via pip in venv
+  ansible.builtin.pip:
+    name: "{{ 'litellm[proxy]' if litellm_version == 'latest' else 'litellm[proxy]==' + litellm_version }}"
+    state: present
+    virtualenv: "{{ litellm_venv_dir }}"
+    virtualenv_command: "/usr/bin/python3 -m venv"
+  notify: Restart LiteLLM
+- name: Ensure LiteLLM directory ownership
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ litellm_user }}"
+    group: "{{ litellm_group }}"
+    recurse: true
+  loop:
+    - "{{ litellm_install_dir }}"
+    - "{{ litellm_config_dir }}"
+- name: Deploy LiteLLM configuration
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: "{{ litellm_config_file }}"
+    owner: "{{ litellm_user }}"
+    group: "{{ litellm_group }}"
+    mode: '0640'
+  notify: Restart LiteLLM
+- name: Create LiteLLM systemd unit
+  ansible.builtin.template:
+    src: litellm.service.j2
+    dest: /etc/systemd/system/litellm.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload systemd
+    - Restart LiteLLM
+- name: Ensure LiteLLM is started and enabled
+  ansible.builtin.service:
+    name: litellm
+    state: started
+    enabled: true

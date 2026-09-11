@@ -1,0 +1,59 @@
+---
+- name: Check for Open WebUI user
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ openwebui_user }}"
+    fail_key: false
+- name: Create local Open WebUI user
+  ansible.builtin.user:
+    name: "{{ openwebui_user }}"
+    home: "{{ openwebui_install_dir }}"
+    shell: /bin/false
+    system: true
+  when: ansible_facts.getent_passwd[openwebui_user] is none
+- name: Install system package dependencies
+  ansible.builtin.package:
+    name:
+      - python3
+      - python3-pip
+      - python3-venv
+    state: present
+- name: Create Open WebUI directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ openwebui_user }}"
+    group: "{{ openwebui_group }}"
+    mode: '0750'
+  loop:
+    - "{{ openwebui_install_dir }}"
+    - "{{ openwebui_install_dir }}/data"
+    - "{{ openwebui_install_dir }}/data/cache"
+- name: Install open-webui via pip in venv
+  ansible.builtin.pip:
+    name: "{{ 'open-webui' if openwebui_version == 'latest' else 'open-webui==' + openwebui_version }}"
+    state: present
+    virtualenv: "{{ openwebui_venv_dir }}"
+    virtualenv_command: "/usr/bin/python3 -m venv"
+  notify: Restart Open WebUI
+- name: Ensure Open WebUI directory ownership
+  ansible.builtin.file:
+    path: "{{ openwebui_install_dir }}"
+    owner: "{{ openwebui_user }}"
+    group: "{{ openwebui_group }}"
+    recurse: true
+- name: Create Open WebUI systemd unit
+  ansible.builtin.template:
+    src: openwebui.service.j2
+    dest: /etc/systemd/system/openwebui.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload systemd
+    - Restart Open WebUI
+- name: Ensure Open WebUI is started and enabled
+  ansible.builtin.service:
+    name: openwebui
+    state: started
+    enabled: true
