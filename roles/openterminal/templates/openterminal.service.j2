@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 User={{ openterminal_user }}
 Group={{ openterminal_group }}
-WorkingDirectory={{ openterminal_install_dir }}
+WorkingDirectory={{ openterminal_working_dir | default(ansible_facts.getent_passwd[openterminal_user][4], true) }}
 Environment=PORT={{ openterminal_port }}
 {% if openterminal_api_key %}
 Environment=OPEN_TERMINAL_API_KEY={{ openterminal_api_key }}

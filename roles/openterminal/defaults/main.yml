@@ -5,6 +5,7 @@ openterminal_version: "latest"
 openterminal_host: "127.0.0.1"
 openterminal_port: 8000
 openterminal_api_key: ""
+openterminal_working_dir: ""
 openterminal_install_dir: "/opt/openterminal"
 openterminal_venv_dir: "{{ openterminal_install_dir }}/venv"
 

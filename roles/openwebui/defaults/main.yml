@@ -13,6 +13,9 @@ openwebui_db_url: ""
 openwebui_secret_key: ""
 openwebui_enable_signup: false
 
+# Ollama API Configuration (disabled by default when using cloud/remote models)
+openwebui_enable_ollama: false
+
 # Authelia OIDC / OAuth Integration (Modern Schema)
 openwebui_enable_oidc: true
 openwebui_webui_url: "https://agents.server.home.brwyatt.net"
@@ -25,6 +28,9 @@ openwebui_oauth_provider_name: "Authelia"
 openwebui_oauth_scopes: "openid email profile groups"
 openwebui_enable_oauth_role_management: true
 openwebui_oauth_roles_claim: "groups"
-openwebui_oauth_allowed_roles: "openwebui-users"
+openwebui_oauth_allowed_roles: "openwebui-users,openwebui-admins"
 openwebui_oauth_admin_roles: "openwebui-admins"
 openwebui_oauth_code_challenge_method: "S256"
+
+# Extra Environment configuration
+openwebui_extra_env: {}

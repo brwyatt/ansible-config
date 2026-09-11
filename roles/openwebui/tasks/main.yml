@@ -7,6 +7,7 @@
 - name: Create local Open WebUI user
   ansible.builtin.user:
     name: "{{ openwebui_user }}"
+    home: "{{ openwebui_install_dir }}"
     shell: /bin/false
     system: true
   when: ansible_facts.getent_passwd[openwebui_user] is none
@@ -27,6 +28,7 @@
   loop:
     - "{{ openwebui_install_dir }}"
     - "{{ openwebui_install_dir }}/data"
+    - "{{ openwebui_install_dir }}/data/cache"
 - name: Install open-webui via pip in venv
   ansible.builtin.pip:
     name: "{{ 'open-webui' if openwebui_version == 'latest' else 'open-webui==' + openwebui_version }}"

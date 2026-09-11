@@ -9,6 +9,7 @@ Group={{ openwebui_group }}
 WorkingDirectory={{ openwebui_install_dir }}
 Environment=PORT={{ openwebui_port }}
 Environment=DATA_DIR={{ openwebui_install_dir }}/data
+Environment=HF_HOME={{ openwebui_install_dir }}/data/cache/huggingface
 {% if openwebui_db_url %}
 Environment=DATABASE_URL={{ openwebui_db_url }}
 {% endif %}
@@ -16,10 +17,14 @@ Environment=DATABASE_URL={{ openwebui_db_url }}
 Environment=WEBUI_SECRET_KEY={{ openwebui_secret_key }}
 {% endif %}
 Environment=ENABLE_SIGNUP={{ 'True' if openwebui_enable_signup else 'False' }}
+{% if not openwebui_enable_ollama %}
+Environment=ENABLE_OLLAMA_API=False
+{% endif %}
 
 {% if openwebui_enable_oidc %}
 # Authelia OIDC Client Integration
 Environment=WEBUI_URL={{ openwebui_webui_url }}
+Environment=OPENID_REDIRECT_URI={{ openwebui_webui_url }}/oauth/oidc/callback
 Environment=ENABLE_OAUTH_SIGNUP={{ 'True' if openwebui_enable_oauth_signup else 'False' }}
 Environment=OAUTH_MERGE_ACCOUNTS_BY_EMAIL={{ 'True' if openwebui_oauth_merge_accounts_by_email else 'False' }}
 Environment=OAUTH_CLIENT_ID={{ openwebui_oauth_client_id }}
@@ -33,6 +38,9 @@ Environment=OAUTH_ALLOWED_ROLES={{ openwebui_oauth_allowed_roles }}
 Environment=OAUTH_ADMIN_ROLES={{ openwebui_oauth_admin_roles }}
 Environment=OAUTH_CODE_CHALLENGE_METHOD={{ openwebui_oauth_code_challenge_method }}
 {% endif %}
+{% for key, val in openwebui_extra_env.items() %}
+Environment={{ key }}={{ val }}
+{% endfor %}
 
 ExecStart={{ openwebui_venv_dir }}/bin/open-webui serve
 Restart=always
