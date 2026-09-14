@@ -1,0 +1,65 @@
+---
+mcpo_user: "mcpo"
+mcpo_group: "mcpo"
+mcpo_version: "latest"
+mcpo_host: "127.0.0.1"
+mcpo_port: 8000
+mcpo_install_dir: "/opt/mcpo"
+mcpo_venv_dir: "{{ mcpo_install_dir }}/venv"
+mcpo_config_dir: "/etc/mcpo"
+mcpo_config_file: "{{ mcpo_config_dir }}/config.json"
+
+# Internal Bearer token for Open WebUI -> mcpo authentication
+mcpo_api_key: ""
+
+# UniFi Network MCP configuration (@sirkirby/unifi-mcp via npx)
+mcpo_enable_unifi: true
+mcpo_unifi_url: "https://10.0.1.1"
+mcpo_unifi_username: "agent-homelab-sre"
+mcpo_unifi_password: ""
+mcpo_unifi_insecure: true
+
+# Proxmox VE MCP configuration (mcp-proxmox via Python virtualenv)
+mcpo_enable_proxmox: true
+mcpo_proxmox_host: "pve01"
+mcpo_proxmox_port: 8006
+mcpo_proxmox_user: "user@pve"
+mcpo_proxmox_token_name: "mcp"
+mcpo_proxmox_token_value: ""
+mcpo_proxmox_verify_ssl: true
+
+# Extra Environment variables for mcpo
+mcpo_extra_env: {}
+
+# Standard configuration templates for MCP servers (UniFi and Proxmox)
+mcpo_unifi_config:
+  command: "npx"
+  args:
+    - "-y"
+    - "@sirkirby/unifi-mcp"
+  env:
+    UNIFI_CONTROLLER_URL: "{{ mcpo_unifi_url }}"
+    UNIFI_USERNAME: "{{ mcpo_unifi_username }}"
+    UNIFI_PASSWORD: "{{ mcpo_unifi_password }}"
+    NODE_TLS_REJECT_UNAUTHORIZED: "{{ '0' if mcpo_unifi_insecure else '1' }}"
+
+mcpo_proxmox_config:
+  command: "{{ mcpo_venv_dir }}/bin/bsahane-mcp-proxmox"
+  env:
+    PROXMOX_HOST: "{{ mcpo_proxmox_host }}"
+    PROXMOX_PORT: "{{ mcpo_proxmox_port | string }}"
+    PROXMOX_USER: "{{ mcpo_proxmox_user }}"
+    PROXMOX_TOKEN_NAME: "{{ mcpo_proxmox_token_name }}"
+    PROXMOX_TOKEN_VALUE: "{{ mcpo_proxmox_token_value }}"
+    PROXMOX_VERIFY_SSL: "{{ 'true' if mcpo_proxmox_verify_ssl else 'false' }}"
+
+# The active servers dictionary (can be overriden or appended in group_vars)
+mcpo_servers: >-
+  {%- set servers = {} -%}
+  {%- if mcpo_enable_unifi -%}
+    {%- set _ = servers.update({'unifi': mcpo_unifi_config}) -%}
+  {%- endif -%}
+  {%- if mcpo_enable_proxmox -%}
+    {%- set _ = servers.update({'proxmox': mcpo_proxmox_config}) -%}
+  {%- endif -%}
+  {{ servers }}

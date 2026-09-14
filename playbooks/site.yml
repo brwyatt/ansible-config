@@ -158,6 +158,7 @@
   become: true
   roles:
     - role: litellm
+    - role: mcpo
     - role: openwebui
 - name: OpenTerminal (Agent Devbox) Server
   hosts: openterminal
