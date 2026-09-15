@@ -32,9 +32,9 @@ mcpo_proxmox_verify_ssl: true
 
 # Email (IMAP/SMTP) MCP configuration (mcp-email via Python virtualenv)
 mcpo_enable_email: false
-mcpo_email_imap_host: "mail.brwyatt.net"
+mcpo_email_imap_host: "imaps.brwyatt.net"
 mcpo_email_imap_port: 993
-mcpo_email_smtp_host: "mail.brwyatt.net"
+mcpo_email_smtp_host: "smtps.brwyatt.net"
 mcpo_email_smtp_port: 465
 mcpo_email_username: ""
 mcpo_email_password: ""
