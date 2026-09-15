@@ -65,6 +65,9 @@ mcpo_proxmox_config:
 
 mcpo_email_config:
   command: "{{ mcpo_venv_dir }}/bin/mcp-email"
+  disabledTools:
+    - "email_configure"
+    - "email_test_connection"
   env:
     IMAP_HOST: "{{ mcpo_email_imap_host }}"
     IMAP_PORT: "{{ mcpo_email_imap_port | string }}"
