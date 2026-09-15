@@ -30,6 +30,16 @@ mcpo_proxmox_token_name: "mcp"
 mcpo_proxmox_token_value: ""
 mcpo_proxmox_verify_ssl: true
 
+# Email (IMAP/SMTP) MCP configuration (mcp-email via Python virtualenv)
+mcpo_enable_email: false
+mcpo_email_imap_host: "imaps.brwyatt.net"
+mcpo_email_imap_port: 993
+mcpo_email_smtp_host: "smtps.brwyatt.net"
+mcpo_email_smtp_port: 465
+mcpo_email_username: ""
+mcpo_email_password: ""
+mcpo_email_allowed_recipient_domains: "brwyatt.net"
+
 # Extra Environment variables for mcpo
 mcpo_extra_env: {}
 
@@ -53,6 +63,24 @@ mcpo_proxmox_config:
     PROXMOX_TOKEN_SECRET: "{{ mcpo_proxmox_token_value }}"
     PROXMOX_VERIFY_SSL: "{{ 'true' if mcpo_proxmox_verify_ssl else 'false' }}"
 
+mcpo_email_config:
+  command: "{{ mcpo_venv_dir }}/bin/mcp-email"
+  disabledTools:
+    - "email_configure"
+    - "email_test_connection"
+  env:
+    IMAP_HOST: "{{ mcpo_email_imap_host }}"
+    IMAP_PORT: "{{ mcpo_email_imap_port | string }}"
+    IMAP_USER: "{{ mcpo_email_username }}"
+    IMAP_PASS: "{{ mcpo_email_password }}"
+    IMAP_USE_SSL: "true"
+    SMTP_HOST: "{{ mcpo_email_smtp_host }}"
+    SMTP_PORT: "{{ mcpo_email_smtp_port | string }}"
+    SMTP_USER: "{{ mcpo_email_username }}"
+    SMTP_PASS: "{{ mcpo_email_password }}"
+    SMTP_USE_SSL: "true"
+    EMAIL_ALLOWED_RECIPIENT_DOMAINS: "{{ mcpo_email_allowed_recipient_domains }}"
+
 # The active servers dictionary (can be overriden or appended in group_vars)
 mcpo_servers: >-
   {%- set servers = {} -%}
@@ -61,5 +89,8 @@ mcpo_servers: >-
   {%- endif -%}
   {%- if mcpo_enable_proxmox -%}
     {%- set _ = servers.update({'proxmox': mcpo_proxmox_config}) -%}
+  {%- endif -%}
+  {%- if mcpo_enable_email -%}
+    {%- set _ = servers.update({'email': mcpo_email_config}) -%}
   {%- endif -%}
   {{ servers }}
