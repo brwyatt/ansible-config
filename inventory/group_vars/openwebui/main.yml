@@ -13,7 +13,7 @@ openwebui_extra_env:
 
 # mcpo (Model Context Protocol Proxy) Configuration
 mcpo_enable_unifi: true
-mcpo_unifi_url: "https://172.17.0.1"
+mcpo_unifi_host: "172.17.0.1"
 mcpo_unifi_username: "agent-homelab-sre"
 
 mcpo_enable_proxmox: true

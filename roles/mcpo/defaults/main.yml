@@ -14,7 +14,9 @@ mcpo_api_key: ""
 
 # UniFi Network MCP configuration (unifi-network-mcp via Python virtualenv)
 mcpo_enable_unifi: true
-mcpo_unifi_url: "https://10.0.1.1"
+mcpo_unifi_host: "10.0.1.1"
+mcpo_unifi_port: 443
+mcpo_unifi_site: "default"
 mcpo_unifi_username: "agent-homelab-sre"
 mcpo_unifi_password: ""
 mcpo_unifi_insecure: true
@@ -35,10 +37,12 @@ mcpo_extra_env: {}
 mcpo_unifi_config:
   command: "{{ mcpo_venv_dir }}/bin/mcp-server-unifi-network"
   env:
-    UNIFI_NETWORK_HOST: "{{ mcpo_unifi_url | regex_replace('^https?://', '') }}"
-    UNIFI_NETWORK_USERNAME: "{{ mcpo_unifi_username }}"
-    UNIFI_NETWORK_PASSWORD: "{{ mcpo_unifi_password }}"
-    UNIFI_NETWORK_VERIFY_SSL: "{{ 'false' if mcpo_unifi_insecure else 'true' }}"
+    UNIFI_HOST: "{{ mcpo_unifi_host }}"
+    UNIFI_USERNAME: "{{ mcpo_unifi_username }}"
+    UNIFI_PASSWORD: "{{ mcpo_unifi_password }}"
+    UNIFI_PORT: "{{ mcpo_unifi_port | default('443') | string }}"
+    UNIFI_SITE: "{{ mcpo_unifi_site | default('default') }}"
+    UNIFI_VERIFY_SSL: "{{ 'false' if mcpo_unifi_insecure else 'true' }}"
 
 mcpo_proxmox_config:
   command: "{{ mcpo_venv_dir }}/bin/mcp-proxmox"
