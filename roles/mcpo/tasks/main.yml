@@ -14,8 +14,6 @@
 - name: Install system package dependencies
   ansible.builtin.package:
     name:
-      - nodejs
-      - npm
       - python3
       - python3-pip
       - python3-venv
@@ -35,6 +33,7 @@
     name:
       - "{{ 'mcpo' if mcpo_version == 'latest' else 'mcpo==' + mcpo_version }}"
       - "mcp-proxmox"
+      - "unifi-network-mcp"
     state: present
     virtualenv: "{{ mcpo_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"

@@ -12,7 +12,7 @@ mcpo_config_file: "{{ mcpo_config_dir }}/config.json"
 # Internal Bearer token for Open WebUI -> mcpo authentication
 mcpo_api_key: ""
 
-# UniFi Network MCP configuration (@sirkirby/unifi-mcp via npx)
+# UniFi Network MCP configuration (unifi-network-mcp via Python virtualenv)
 mcpo_enable_unifi: true
 mcpo_unifi_url: "https://10.0.1.1"
 mcpo_unifi_username: "agent-homelab-sre"
@@ -33,15 +33,12 @@ mcpo_extra_env: {}
 
 # Standard configuration templates for MCP servers (UniFi and Proxmox)
 mcpo_unifi_config:
-  command: "npx"
-  args:
-    - "-y"
-    - "@sirkirby/unifi-mcp"
+  command: "{{ mcpo_venv_dir }}/bin/unifi-network-mcp"
   env:
-    UNIFI_CONTROLLER_URL: "{{ mcpo_unifi_url }}"
-    UNIFI_USERNAME: "{{ mcpo_unifi_username }}"
-    UNIFI_PASSWORD: "{{ mcpo_unifi_password }}"
-    NODE_TLS_REJECT_UNAUTHORIZED: "{{ '0' if mcpo_unifi_insecure else '1' }}"
+    UNIFI_NETWORK_HOST: "{{ mcpo_unifi_url | regex_replace('^https?://', '') }}"
+    UNIFI_NETWORK_USERNAME: "{{ mcpo_unifi_username }}"
+    UNIFI_NETWORK_PASSWORD: "{{ mcpo_unifi_password }}"
+    UNIFI_NETWORK_VERIFY_SSL: "{{ 'false' if mcpo_unifi_insecure else 'true' }}"
 
 mcpo_proxmox_config:
   command: "{{ mcpo_venv_dir }}/bin/mcp-proxmox"
