@@ -34,7 +34,7 @@
   ansible.builtin.pip:
     name:
       - "{{ 'mcpo' if mcpo_version == 'latest' else 'mcpo==' + mcpo_version }}"
-      - "bsahane-mcp-proxmox"
+      - "mcp-proxmox"
     state: present
     virtualenv: "{{ mcpo_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"

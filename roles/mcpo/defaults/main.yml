@@ -44,13 +44,12 @@ mcpo_unifi_config:
     NODE_TLS_REJECT_UNAUTHORIZED: "{{ '0' if mcpo_unifi_insecure else '1' }}"
 
 mcpo_proxmox_config:
-  command: "{{ mcpo_venv_dir }}/bin/bsahane-mcp-proxmox"
+  command: "{{ mcpo_venv_dir }}/bin/mcp-proxmox"
   env:
     PROXMOX_HOST: "{{ mcpo_proxmox_host }}"
     PROXMOX_PORT: "{{ mcpo_proxmox_port | string }}"
-    PROXMOX_USER: "{{ mcpo_proxmox_user }}"
-    PROXMOX_TOKEN_NAME: "{{ mcpo_proxmox_token_name }}"
-    PROXMOX_TOKEN_VALUE: "{{ mcpo_proxmox_token_value }}"
+    PROXMOX_TOKEN_ID: "{{ mcpo_proxmox_user }}!{{ mcpo_proxmox_token_name }}"
+    PROXMOX_TOKEN_SECRET: "{{ mcpo_proxmox_token_value }}"
     PROXMOX_VERIFY_SSL: "{{ 'true' if mcpo_proxmox_verify_ssl else 'false' }}"
 
 # The active servers dictionary (can be overriden or appended in group_vars)
