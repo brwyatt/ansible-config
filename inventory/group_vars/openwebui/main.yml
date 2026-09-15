@@ -6,3 +6,18 @@ proxy_server_directives:
 certbot_certs:
   - - "{{ inventory_hostname }}"
     - "agents.server.home.brwyatt.net"
+
+# Open WebUI Extra Environment
+openwebui_extra_env:
+  MCP_INITIALIZE_TIMEOUT: "30"
+
+# mcpo (Model Context Protocol Proxy) Configuration
+mcpo_enable_unifi: true
+mcpo_unifi_host: "172.17.0.1"
+mcpo_unifi_username: "agent-homelab-sre"
+
+mcpo_enable_proxmox: true
+mcpo_proxmox_host: "proxmox.home.brwyatt.net"
+mcpo_proxmox_port: 443
+mcpo_proxmox_user: "agent-homelab-sre@home.brwyatt.net"
+mcpo_proxmox_token_name: "openwebui"

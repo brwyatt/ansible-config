@@ -1,0 +1,72 @@
+---
+- name: Check for mcpo user
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ mcpo_user }}"
+    fail_key: false
+- name: Create local mcpo user
+  ansible.builtin.user:
+    name: "{{ mcpo_user }}"
+    home: "{{ mcpo_install_dir }}"
+    shell: /bin/false
+    system: true
+  when: ansible_facts.getent_passwd[mcpo_user] is none
+- name: Install system package dependencies
+  ansible.builtin.package:
+    name:
+      - python3
+      - python3-pip
+      - python3-venv
+    state: present
+- name: Create mcpo directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ mcpo_user }}"
+    group: "{{ mcpo_group }}"
+    mode: '0750'
+  loop:
+    - "{{ mcpo_install_dir }}"
+    - "{{ mcpo_config_dir }}"
+- name: Install mcpo and python MCP servers via pip in venv
+  ansible.builtin.pip:
+    name:
+      - "{{ 'mcpo' if mcpo_version == 'latest' else 'mcpo==' + mcpo_version }}"
+      - "mcp-proxmox"
+      - "unifi-network-mcp"
+    state: present
+    virtualenv: "{{ mcpo_venv_dir }}"
+    virtualenv_command: "/usr/bin/python3 -m venv"
+  notify: Restart mcpo
+- name: Ensure mcpo directory ownership
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ mcpo_user }}"
+    group: "{{ mcpo_group }}"
+    recurse: true
+  loop:
+    - "{{ mcpo_install_dir }}"
+    - "{{ mcpo_config_dir }}"
+- name: Deploy mcpo configuration
+  ansible.builtin.template:
+    src: config.json.j2
+    dest: "{{ mcpo_config_file }}"
+    owner: "{{ mcpo_user }}"
+    group: "{{ mcpo_group }}"
+    mode: '0600'
+  notify: Restart mcpo
+- name: Create mcpo systemd unit
+  ansible.builtin.template:
+    src: mcpo.service.j2
+    dest: /etc/systemd/system/mcpo.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload systemd
+    - Restart mcpo
+- name: Ensure mcpo is started and enabled
+  ansible.builtin.service:
+    name: mcpo
+    state: started
+    enabled: true

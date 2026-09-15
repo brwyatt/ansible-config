@@ -1,0 +1,8 @@
+---
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+- name: Restart mcpo
+  ansible.builtin.service:
+    name: mcpo
+    state: restarted

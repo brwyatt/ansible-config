@@ -1,0 +1,19 @@
+[Unit]
+Description=Model Context Protocol Proxy (mcpo)
+After=network.target
+
+[Service]
+Type=simple
+User={{ mcpo_user }}
+Group={{ mcpo_group }}
+WorkingDirectory={{ mcpo_install_dir }}
+Environment=PATH={{ mcpo_venv_dir }}/bin:/usr/local/bin:/usr/bin:/bin
+{% for key, val in mcpo_extra_env.items() %}
+Environment={{ key }}={{ val }}
+{% endfor %}
+ExecStart={{ mcpo_venv_dir }}/bin/mcpo --host {{ mcpo_host }} --port {{ mcpo_port }}{% if mcpo_api_key %} --api-key {{ mcpo_api_key }}{% endif %} --config {{ mcpo_config_file }} --hot-reload
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

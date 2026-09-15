@@ -1,0 +1,65 @@
+---
+mcpo_user: "mcpo"
+mcpo_group: "mcpo"
+mcpo_version: "latest"
+mcpo_host: "127.0.0.1"
+mcpo_port: 8000
+mcpo_install_dir: "/opt/mcpo"
+mcpo_venv_dir: "{{ mcpo_install_dir }}/venv"
+mcpo_config_dir: "/etc/mcpo"
+mcpo_config_file: "{{ mcpo_config_dir }}/config.json"
+
+# Internal Bearer token for Open WebUI -> mcpo authentication
+mcpo_api_key: ""
+
+# UniFi Network MCP configuration (unifi-network-mcp via Python virtualenv)
+mcpo_enable_unifi: true
+mcpo_unifi_host: "10.0.1.1"
+mcpo_unifi_port: 443
+mcpo_unifi_site: "default"
+mcpo_unifi_username: "agent-homelab-sre"
+mcpo_unifi_password: ""
+mcpo_unifi_insecure: true
+
+# Proxmox VE MCP configuration (mcp-proxmox via Python virtualenv)
+mcpo_enable_proxmox: true
+mcpo_proxmox_host: "pve01"
+mcpo_proxmox_port: 8006
+mcpo_proxmox_user: "user@pve"
+mcpo_proxmox_token_name: "mcp"
+mcpo_proxmox_token_value: ""
+mcpo_proxmox_verify_ssl: true
+
+# Extra Environment variables for mcpo
+mcpo_extra_env: {}
+
+# Standard configuration templates for MCP servers (UniFi and Proxmox)
+mcpo_unifi_config:
+  command: "{{ mcpo_venv_dir }}/bin/mcp-server-unifi-network"
+  env:
+    UNIFI_HOST: "{{ mcpo_unifi_host }}"
+    UNIFI_USERNAME: "{{ mcpo_unifi_username }}"
+    UNIFI_PASSWORD: "{{ mcpo_unifi_password }}"
+    UNIFI_PORT: "{{ mcpo_unifi_port | default('443') | string }}"
+    UNIFI_SITE: "{{ mcpo_unifi_site | default('default') }}"
+    UNIFI_VERIFY_SSL: "{{ 'false' if mcpo_unifi_insecure else 'true' }}"
+
+mcpo_proxmox_config:
+  command: "{{ mcpo_venv_dir }}/bin/mcp-proxmox"
+  env:
+    PROXMOX_HOST: "{{ mcpo_proxmox_host }}"
+    PROXMOX_PORT: "{{ mcpo_proxmox_port | string }}"
+    PROXMOX_TOKEN_ID: "{{ mcpo_proxmox_user }}!{{ mcpo_proxmox_token_name }}"
+    PROXMOX_TOKEN_SECRET: "{{ mcpo_proxmox_token_value }}"
+    PROXMOX_VERIFY_SSL: "{{ 'true' if mcpo_proxmox_verify_ssl else 'false' }}"
+
+# The active servers dictionary (can be overriden or appended in group_vars)
+mcpo_servers: >-
+  {%- set servers = {} -%}
+  {%- if mcpo_enable_unifi -%}
+    {%- set _ = servers.update({'unifi': mcpo_unifi_config}) -%}
+  {%- endif -%}
+  {%- if mcpo_enable_proxmox -%}
+    {%- set _ = servers.update({'proxmox': mcpo_proxmox_config}) -%}
+  {%- endif -%}
+  {{ servers }}
