@@ -33,7 +33,7 @@ mcpo_extra_env: {}
 
 # Standard configuration templates for MCP servers (UniFi and Proxmox)
 mcpo_unifi_config:
-  command: "{{ mcpo_venv_dir }}/bin/unifi-network-mcp"
+  command: "{{ mcpo_venv_dir }}/bin/mcp-server-unifi-network"
   env:
     UNIFI_NETWORK_HOST: "{{ mcpo_unifi_url | regex_replace('^https?://', '') }}"
     UNIFI_NETWORK_USERNAME: "{{ mcpo_unifi_username }}"
