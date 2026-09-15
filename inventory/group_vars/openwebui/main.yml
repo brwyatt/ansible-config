@@ -21,3 +21,5 @@ mcpo_proxmox_host: "proxmox.home.brwyatt.net"
 mcpo_proxmox_port: 443
 mcpo_proxmox_user: "agent-homelab-sre@home.brwyatt.net"
 mcpo_proxmox_token_name: "openwebui"
+
+mcpo_enable_email: true
