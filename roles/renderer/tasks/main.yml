@@ -9,7 +9,7 @@
     name: jellyfinrepo
 - name: Install ffmpeg
   ansible.builtin.apt:
-    name: jellyfin-ffmpeg7
+    name: jellyfin-ffmpeg8
     state: present
   become: true
 - name: Setup ffmpeg link

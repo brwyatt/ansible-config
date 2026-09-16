@@ -27,6 +27,7 @@
   loop:
     - vim
     - htop
+    - sssd-tools
 - name: Install common packages (dnf)
   ansible.builtin.dnf:
     name: "{{ item }}"
@@ -36,6 +37,7 @@
   loop:
     - vim
     - htop
+    - sssd-tools
 - name: Qemu guest agent
   ansible.builtin.include_tasks:
     file: qemu-guest-agent.yml
