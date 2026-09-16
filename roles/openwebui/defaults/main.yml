@@ -18,9 +18,11 @@ openwebui_enable_signup: false
 openwebui_enable_ollama: false
 
 # Authelia OIDC / OAuth Integration (Modern Schema)
+openwebui_disable_login_form: true
 openwebui_enable_oidc: true
 openwebui_webui_url: "https://agents.server.home.brwyatt.net"
 openwebui_enable_oauth_signup: true
+openwebui_oauth_auto_redirect: false
 openwebui_oauth_merge_accounts_by_email: true
 openwebui_oauth_client_id: "openwebui"
 openwebui_oauth_client_secret: "{{ openwebui_oidc_client_secret | default('') }}"

@@ -7,6 +7,8 @@ certbot_certs:
   - - "{{ inventory_hostname }}"
     - "agents.server.home.brwyatt.net"
 
+openwebui_oauth_auto_redirect: true
+
 # Open WebUI Extra Environment
 openwebui_extra_env:
   MCP_INITIALIZE_TIMEOUT: "30"
