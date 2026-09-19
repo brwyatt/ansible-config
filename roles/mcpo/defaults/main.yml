@@ -40,6 +40,14 @@ mcpo_email_username: ""
 mcpo_email_password: ""
 mcpo_email_allowed_recipient_domains: "brwyatt.net"
 
+# AWS MCP configuration (mcp-proxy-for-aws via Python virtualenv)
+mcpo_enable_aws: false
+mcpo_aws_endpoint: "https://aws-mcp.us-east-1.api.aws/mcp"
+mcpo_aws_region: "us-west-2"
+mcpo_aws_access_key_id: ""
+mcpo_aws_secret_access_key: ""
+mcpo_aws_read_only: false
+
 # Extra Environment variables for mcpo
 mcpo_extra_env: {}
 
@@ -81,6 +89,15 @@ mcpo_email_config:
     SMTP_USE_SSL: "true"
     EMAIL_ALLOWED_RECIPIENT_DOMAINS: "{{ mcpo_email_allowed_recipient_domains }}"
 
+mcpo_aws_config:
+  command: "{{ mcpo_venv_dir }}/bin/mcp-proxy-for-aws"
+  args: "{{ [mcpo_aws_endpoint, '--metadata', 'AWS_REGION=' + mcpo_aws_region] + (['--read-only'] if mcpo_aws_read_only else []) }}"
+  env:
+    AWS_REGION: "{{ mcpo_aws_region }}"
+    AWS_DEFAULT_REGION: "{{ mcpo_aws_region }}"
+    AWS_ACCESS_KEY_ID: "{{ mcpo_aws_access_key_id }}"
+    AWS_SECRET_ACCESS_KEY: "{{ mcpo_aws_secret_access_key }}"
+
 # The active servers dictionary (can be overriden or appended in group_vars)
 mcpo_servers: >-
   {%- set servers = {} -%}
@@ -92,5 +109,8 @@ mcpo_servers: >-
   {%- endif -%}
   {%- if mcpo_enable_email -%}
     {%- set _ = servers.update({'email': mcpo_email_config}) -%}
+  {%- endif -%}
+  {%- if mcpo_enable_aws -%}
+    {%- set _ = servers.update({'aws': mcpo_aws_config}) -%}
   {%- endif -%}
   {{ servers }}

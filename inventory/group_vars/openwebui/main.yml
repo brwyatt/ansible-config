@@ -25,3 +25,6 @@ mcpo_proxmox_user: "agent-homelab-sre@home.brwyatt.net"
 mcpo_proxmox_token_name: "openwebui"
 
 mcpo_enable_email: true
+
+mcpo_enable_aws: true
+mcpo_aws_region: "us-west-2"
