@@ -46,7 +46,7 @@ mcpo_aws_endpoint: "https://aws-mcp.us-east-1.api.aws/mcp"
 mcpo_aws_region: "us-west-2"
 mcpo_aws_access_key_id: ""
 mcpo_aws_secret_access_key: ""
-mcpo_aws_read_only: true
+mcpo_aws_read_only: false
 
 # Extra Environment variables for mcpo
 mcpo_extra_env: {}
