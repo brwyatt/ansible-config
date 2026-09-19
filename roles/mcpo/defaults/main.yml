@@ -48,6 +48,11 @@ mcpo_aws_access_key_id: ""
 mcpo_aws_secret_access_key: ""
 mcpo_aws_read_only: false
 
+# Home Assistant MCP configuration (Streamable HTTP)
+mcpo_enable_homeassistant: false
+mcpo_homeassistant_url: "https://homeassistant.home.brwyatt.net/api/mcp"
+mcpo_homeassistant_token: ""
+
 # Extra Environment variables for mcpo
 mcpo_extra_env: {}
 
@@ -98,6 +103,12 @@ mcpo_aws_config:
     AWS_ACCESS_KEY_ID: "{{ mcpo_aws_access_key_id }}"
     AWS_SECRET_ACCESS_KEY: "{{ mcpo_aws_secret_access_key }}"
 
+mcpo_homeassistant_config:
+  type: "streamable-http"
+  url: "{{ mcpo_homeassistant_url }}"
+  headers:
+    Authorization: "Bearer {{ mcpo_homeassistant_token }}"
+
 # The active servers dictionary (can be overriden or appended in group_vars)
 mcpo_servers: >-
   {%- set servers = {} -%}
@@ -112,5 +123,8 @@ mcpo_servers: >-
   {%- endif -%}
   {%- if mcpo_enable_aws -%}
     {%- set _ = servers.update({'aws': mcpo_aws_config}) -%}
+  {%- endif -%}
+  {%- if mcpo_enable_homeassistant -%}
+    {%- set _ = servers.update({'homeassistant': mcpo_homeassistant_config}) -%}
   {%- endif -%}
   {{ servers }}

@@ -28,3 +28,5 @@ mcpo_enable_email: true
 
 mcpo_enable_aws: true
 mcpo_aws_region: "us-west-2"
+
+mcpo_enable_homeassistant: true
