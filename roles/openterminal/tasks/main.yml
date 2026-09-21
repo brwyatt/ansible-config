@@ -29,9 +29,27 @@
     mode: '0750'
   loop:
     - "{{ openterminal_install_dir }}"
+- name: Fetch latest open-terminal release version from PyPI
+  ansible.builtin.uri:
+    url: "https://pypi.org/pypi/open-terminal/json"
+    return_content: true
+  register: openterminal_pypi_release
+  when: openterminal_version | default('latest') == 'latest'
+  check_mode: false
+
+- name: Set openterminal_actual_version fact from PyPI
+  ansible.builtin.set_fact:
+    openterminal_actual_version: "{{ openterminal_pypi_release.json.info.version }}"
+  when: openterminal_version | default('latest') == 'latest'
+
+- name: Set openterminal_actual_version fact from explicit version
+  ansible.builtin.set_fact:
+    openterminal_actual_version: "{{ openterminal_version }}"
+  when: openterminal_version | default('latest') != 'latest'
+
 - name: Install open-terminal package via pip in venv
   ansible.builtin.pip:
-    name: "{{ 'open-terminal' if openterminal_version == 'latest' else 'open-terminal==' + openterminal_version }}"
+    name: "open-terminal=={{ openterminal_actual_version }}"
     state: present
     virtualenv: "{{ openterminal_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"

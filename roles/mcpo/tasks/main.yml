@@ -28,14 +28,47 @@
   loop:
     - "{{ mcpo_install_dir }}"
     - "{{ mcpo_config_dir }}"
+- name: Define MCP packages specification
+  ansible.builtin.set_fact:
+    mcpo_pip_packages_spec:
+      - name: "mcpo"
+        version: "{{ mcpo_version | default('latest') }}"
+      - name: "mcp-proxmox"
+        version: "{{ mcpo_proxmox_version | default('latest') }}"
+      - name: "unifi-network-mcp"
+        version: "{{ mcpo_unifi_version | default('latest') }}"
+      - name: "mcp-email"
+        version: "{{ mcpo_email_version | default('latest') }}"
+      - name: "mcp-proxy-for-aws"
+        version: "{{ mcpo_aws_version | default('latest') }}"
+
+- name: Fetch latest MCP package versions from PyPI
+  ansible.builtin.uri:
+    url: "https://pypi.org/pypi/{{ item.name }}/json"
+    return_content: true
+  loop: "{{ mcpo_pip_packages_spec }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: mcpo_pypi_releases
+  when: item.version == 'latest'
+  check_mode: false
+
+- name: Build resolved MCP pip packages list
+  ansible.builtin.set_fact:
+    mcpo_pip_packages_resolved: >-
+      {%- set resolved = [] -%}
+      {%- for r in mcpo_pypi_releases.results -%}
+        {%- if r.skipped | default(false) -%}
+          {%- set _ = resolved.append(r.item.name ~ '==' ~ r.item.version) -%}
+        {%- else -%}
+          {%- set _ = resolved.append(r.item.name ~ '==' ~ r.json.info.version) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ resolved }}
+
 - name: Install mcpo and python MCP servers via pip in venv
   ansible.builtin.pip:
-    name:
-      - "{{ 'mcpo' if mcpo_version == 'latest' else 'mcpo==' + mcpo_version }}"
-      - "mcp-proxmox"
-      - "unifi-network-mcp"
-      - "mcp-email"
-      - "mcp-proxy-for-aws"
+    name: "{{ mcpo_pip_packages_resolved }}"
     state: present
     virtualenv: "{{ mcpo_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"

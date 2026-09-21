@@ -28,9 +28,27 @@
   loop:
     - "{{ litellm_install_dir }}"
     - "{{ litellm_config_dir }}"
+- name: Fetch latest litellm release version from PyPI
+  ansible.builtin.uri:
+    url: "https://pypi.org/pypi/litellm/json"
+    return_content: true
+  register: litellm_pypi_release
+  when: litellm_version | default('latest') == 'latest'
+  check_mode: false
+
+- name: Set litellm_actual_version fact from PyPI
+  ansible.builtin.set_fact:
+    litellm_actual_version: "{{ litellm_pypi_release.json.info.version }}"
+  when: litellm_version | default('latest') == 'latest'
+
+- name: Set litellm_actual_version fact from explicit version
+  ansible.builtin.set_fact:
+    litellm_actual_version: "{{ litellm_version }}"
+  when: litellm_version | default('latest') != 'latest'
+
 - name: Install litellm[proxy] via pip in venv
   ansible.builtin.pip:
-    name: "{{ 'litellm[proxy]' if litellm_version == 'latest' else 'litellm[proxy]==' + litellm_version }}"
+    name: "litellm[proxy]=={{ litellm_actual_version }}"
     state: present
     virtualenv: "{{ litellm_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"
