@@ -32,7 +32,7 @@
 - name: Install open-webui via pip in venv
   ansible.builtin.pip:
     name: "{{ 'open-webui' if openwebui_version == 'latest' else 'open-webui==' + openwebui_version }}"
-    state: present
+    state: "{{ 'latest' if openwebui_version == 'latest' else 'present' }}"
     virtualenv: "{{ openwebui_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"
   notify: Restart Open WebUI

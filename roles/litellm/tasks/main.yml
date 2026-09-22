@@ -31,7 +31,7 @@
 - name: Install litellm[proxy] via pip in venv
   ansible.builtin.pip:
     name: "{{ 'litellm[proxy]' if litellm_version == 'latest' else 'litellm[proxy]==' + litellm_version }}"
-    state: present
+    state: "{{ 'latest' if litellm_version == 'latest' else 'present' }}"
     virtualenv: "{{ litellm_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"
   notify: Restart LiteLLM

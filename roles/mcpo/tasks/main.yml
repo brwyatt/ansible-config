@@ -32,11 +32,11 @@
   ansible.builtin.pip:
     name:
       - "{{ 'mcpo' if mcpo_version == 'latest' else 'mcpo==' + mcpo_version }}"
-      - "mcp-proxmox"
-      - "unifi-network-mcp"
-      - "mcp-email"
-      - "mcp-proxy-for-aws"
-    state: present
+      - "{{ 'mcp-proxmox' if mcpo_proxmox_version == 'latest' else 'mcp-proxmox==' + mcpo_proxmox_version }}"
+      - "{{ 'unifi-network-mcp' if mcpo_unifi_version == 'latest' else 'unifi-network-mcp==' + mcpo_unifi_version }}"
+      - "{{ 'mcp-email' if mcpo_email_version == 'latest' else 'mcp-email==' + mcpo_email_version }}"
+      - "{{ 'mcp-proxy-for-aws' if mcpo_aws_version == 'latest' else 'mcp-proxy-for-aws==' + mcpo_aws_version }}"
+    state: latest
     virtualenv: "{{ mcpo_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"
   notify: Restart mcpo

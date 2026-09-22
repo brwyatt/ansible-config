@@ -32,7 +32,7 @@
 - name: Install open-terminal package via pip in venv
   ansible.builtin.pip:
     name: "{{ 'open-terminal' if openterminal_version == 'latest' else 'open-terminal==' + openterminal_version }}"
-    state: present
+    state: "{{ 'latest' if openterminal_version == 'latest' else 'present' }}"
     virtualenv: "{{ openterminal_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"
   notify: Restart OpenTerminal

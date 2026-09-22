@@ -14,6 +14,7 @@ mcpo_api_key: ""
 
 # UniFi Network MCP configuration (unifi-network-mcp via Python virtualenv)
 mcpo_enable_unifi: true
+mcpo_unifi_version: "latest"
 mcpo_unifi_host: "10.0.1.1"
 mcpo_unifi_port: 443
 mcpo_unifi_site: "default"
@@ -23,6 +24,7 @@ mcpo_unifi_insecure: true
 
 # Proxmox VE MCP configuration (mcp-proxmox via Python virtualenv)
 mcpo_enable_proxmox: true
+mcpo_proxmox_version: "latest"
 mcpo_proxmox_host: "pve01"
 mcpo_proxmox_port: 8006
 mcpo_proxmox_user: "user@pve"
@@ -32,6 +34,7 @@ mcpo_proxmox_verify_ssl: true
 
 # Email (IMAP/SMTP) MCP configuration (mcp-email via Python virtualenv)
 mcpo_enable_email: false
+mcpo_email_version: "latest"
 mcpo_email_imap_host: "imaps.brwyatt.net"
 mcpo_email_imap_port: 993
 mcpo_email_smtp_host: "smtps.brwyatt.net"
@@ -42,6 +45,7 @@ mcpo_email_allowed_recipient_domains: "brwyatt.net"
 
 # AWS MCP configuration (mcp-proxy-for-aws via Python virtualenv)
 mcpo_enable_aws: false
+mcpo_aws_version: "latest"
 mcpo_aws_endpoint: "https://aws-mcp.us-east-1.api.aws/mcp"
 mcpo_aws_region: "us-west-2"
 mcpo_aws_access_key_id: ""
