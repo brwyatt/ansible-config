@@ -29,28 +29,10 @@
     - "{{ openwebui_install_dir }}"
     - "{{ openwebui_install_dir }}/data"
     - "{{ openwebui_install_dir }}/data/cache"
-- name: Fetch latest open-webui release version from PyPI
-  ansible.builtin.uri:
-    url: "https://pypi.org/pypi/open-webui/json"
-    return_content: true
-  register: openwebui_pypi_release
-  when: openwebui_version | default('latest') == 'latest'
-  check_mode: false
-
-- name: Set openwebui_actual_version fact from PyPI
-  ansible.builtin.set_fact:
-    openwebui_actual_version: "{{ openwebui_pypi_release.json.info.version }}"
-  when: openwebui_version | default('latest') == 'latest'
-
-- name: Set openwebui_actual_version fact from explicit version
-  ansible.builtin.set_fact:
-    openwebui_actual_version: "{{ openwebui_version }}"
-  when: openwebui_version | default('latest') != 'latest'
-
 - name: Install open-webui via pip in venv
   ansible.builtin.pip:
-    name: "open-webui=={{ openwebui_actual_version }}"
-    state: present
+    name: "{{ 'open-webui' if openwebui_version == 'latest' else 'open-webui==' + openwebui_version }}"
+    state: "{{ 'latest' if openwebui_version == 'latest' else 'present' }}"
     virtualenv: "{{ openwebui_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"
   notify: Restart Open WebUI
