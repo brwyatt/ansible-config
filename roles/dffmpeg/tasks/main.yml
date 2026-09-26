@@ -1,9 +1,16 @@
 ---
+- name: Check if the DFFmpeg group exists
+  # This is to handle LDAP-based accounts we don't need to create
+  ansible.builtin.getent:
+    database: group
+    key: "{{ dffmpeg_group }}"
+    fail_key: false
 - name: Ensure DFFmpeg group exists
   ansible.builtin.group:
     name: "{{ dffmpeg_group }}"
     state: present
   become: true
+  when: ansible_facts.getent_group[dffmpeg_group] is none
 - name: Check if the DFFmpeg user exists
   # This is to handle LDAP-based accounts we don't need to create
   ansible.builtin.getent:
