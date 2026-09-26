@@ -80,3 +80,9 @@ trusted_proxies:
   {{ dffmpeg_trusted_proxies | to_nice_yaml(indent=2) | indent(2) | trim }}
 {% endif %}
 shutdown_delay_seconds: {{ dffmpeg_coordinator_shutdown_delay }}
+{% if dffmpeg_streams_storage_root is defined %}
+streams_storage_root: "{{ dffmpeg_streams_storage_root }}"
+{% endif %}
+{% if dffmpeg_stream_retention_minutes is defined %}
+stream_retention_minutes: {{ dffmpeg_stream_retention_minutes }}
+{% endif %}

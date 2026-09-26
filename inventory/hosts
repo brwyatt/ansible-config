@@ -179,6 +179,7 @@ ceph_clients:
     radarr:
     sonarr:
     cephiscsi:
+    dffmpegcoordinators:
 aws_usw2:
   children:
     aws_usw2_bastions:

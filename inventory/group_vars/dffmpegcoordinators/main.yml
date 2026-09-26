@@ -17,3 +17,11 @@ dffmpeg_trusted_proxies:
   - "172.17.30.208/32"
 
 proxy_port: 8000
+
+dffmpeg_streams_storage_root: "/mnt/dffmpegcache"
+
+cephclient_mounts:
+  - user: "dffmpeg-coordinator"
+    fs_name: "Media_EC"
+    remote_path: "/DFFmpegCache"
+    mount_path: "{{ dffmpeg_streams_storage_root }}"
