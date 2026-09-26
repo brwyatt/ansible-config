@@ -15,10 +15,9 @@ dffmpeg_trusted_proxies:
   - "172.17.30.89/32"
   - "172.17.30.134/32"
   - "172.17.30.208/32"
+dffmpeg_streams_storage_root: "/mnt/dffmpegcache"
 
 proxy_port: 8000
-
-dffmpeg_streams_storage_root: "/mnt/dffmpegcache"
 
 cephclient_mounts:
   - user: "dffmpeg-coordinator"
