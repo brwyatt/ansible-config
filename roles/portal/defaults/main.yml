@@ -1,0 +1,96 @@
+---
+portal_user: "portal"
+portal_group: "portal"
+portal_install_dir: "/opt/homelab-portal"
+portal_git_repo: "https://github.com/brwyatt/homelab-portal.git"
+portal_version: "main"
+portal_config_dir: "/etc/homelab-portal"
+portal_config_file: "{{ portal_config_dir }}/config.yml"
+portal_host: "127.0.0.1"
+portal_port: 8080
+
+portal_ui_title: "Homelab Portal"
+portal_ui_subtitle: "Services & Dashboard"
+portal_ui_theme: "fiber-optic"
+portal_ui_custom_themes_dir: ""
+portal_ui_show_search: true
+portal_ui_show_network_badge: true
+portal_ui_show_user_badge: true
+portal_ui_footer_text: "Homelab Infrastructure"
+
+portal_auth_enabled: true
+portal_auth_header_user: "Remote-User"
+portal_auth_header_name: "Remote-Name"
+portal_auth_header_email: "Remote-Email"
+portal_auth_header_groups: "Remote-Groups"
+portal_auth_header_group_delimiter: ","
+portal_auth_login_url: "https://auth.home.brwyatt.net/"
+portal_auth_logout_url: "https://auth.home.brwyatt.net/logout"
+
+portal_network_trusted_proxies:
+  - "127.0.0.1/32"
+  - "::1/128"
+  - "172.17.30.197/24"
+  - "172.17.30.111/24"
+  - "172.17.30.201/24"
+portal_network_fallback_class: "external"
+portal_network_fallback_name: "WAN / External"
+portal_network_fallback_icon: "globe"
+
+portal_network_classes:
+  management:
+    name: "Management Network"
+    icon: "shield"
+  internal:
+    name: "Trusted LAN"
+    icon: "house"
+  guest:
+    name: "Guest Network"
+    icon: "users"
+  external:
+    name: "WAN / External"
+    icon: "globe"
+
+portal_subnets:
+  - cidr: "192.168.1.0/24"
+    name: "Primary LAN"
+    network_class: "internal"
+  - cidr: "10.10.0.0/24"
+    name: "Admin Subnet"
+    network_class: "management"
+  - cidr: "172.16.50.0/24"
+    name: "Guest Wi-Fi"
+    network_class: "guest"
+
+portal_categories:
+  - id: "core"
+    name: "Core Services"
+    icon: "server"
+    order: 10
+  - id: "media"
+    name: "Media & Streaming"
+    icon: "film"
+    order: 20
+
+portal_services:
+  - name: "Authelia"
+    url: "https://auth.home.brwyatt.net/"
+    description: "Single sign-on and identity provider portal"
+    category: "core"
+    icon: "shield"
+    public: false
+    requires_groups:
+      - "ipausers"
+    order: 10
+  - name: "Jellyfin"
+    url: "https://jellyfin.home.brwyatt.net"
+    description: "Movies, television, music, and streaming media library"
+    category: "media"
+    icon: "film"
+    order: 10
+  - name: "Seerr"
+    url: "https://seerr.home.brwyatt.net"
+    description: "Media request management and discovery"
+    category: "media"
+    icon: "film"
+    order: 20

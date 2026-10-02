@@ -1,0 +1,78 @@
+---
+- name: Check for portal user
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ portal_user }}"
+    fail_key: false
+- name: Create local portal user
+  ansible.builtin.user:
+    name: "{{ portal_user }}"
+    home: "{{ portal_install_dir }}"
+    shell: /bin/false
+    system: true
+  when: ansible_facts.getent_passwd[portal_user] is none
+- name: Install system package dependencies
+  ansible.builtin.package:
+    name:
+      - git
+      - python3
+      - python3-pip
+      - python3-venv
+    state: present
+- name: Create portal directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ portal_user }}"
+    group: "{{ portal_group }}"
+    mode: '0750'
+  loop:
+    - "{{ portal_install_dir }}"
+    - "{{ portal_config_dir }}"
+- name: Clone homelab-portal repository
+  ansible.builtin.git:
+    repo: "{{ portal_git_repo }}"
+    dest: "{{ portal_install_dir }}/src"
+    version: "{{ portal_version }}"
+    force: true
+  notify: Restart portal
+- name: Install homelab-portal into virtual environment
+  ansible.builtin.pip:
+    name: "{{ portal_install_dir }}/src"
+    virtualenv: "{{ portal_install_dir }}/venv"
+    virtualenv_command: "/usr/bin/python3 -m venv"
+    state: present
+    editable: false
+  notify: Restart portal
+- name: Ensure portal directory ownership
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ portal_user }}"
+    group: "{{ portal_group }}"
+    recurse: true
+  loop:
+    - "{{ portal_install_dir }}"
+    - "{{ portal_config_dir }}"
+- name: Deploy portal configuration
+  ansible.builtin.template:
+    src: config.yml.j2
+    dest: "{{ portal_config_file }}"
+    owner: "{{ portal_user }}"
+    group: "{{ portal_group }}"
+    mode: '0640'
+  notify: Restart portal
+- name: Create portal systemd unit
+  ansible.builtin.template:
+    src: portal.service.j2
+    dest: /etc/systemd/system/portal.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload systemd
+    - Restart portal
+- name: Ensure portal is started and enabled
+  ansible.builtin.service:
+    name: portal
+    state: started
+    enabled: true

@@ -1,0 +1,23 @@
+[Unit]
+Description=Homelab Portal
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User={{ portal_user }}
+Group={{ portal_group }}
+WorkingDirectory={{ portal_install_dir }}
+Environment=PORTAL_CONFIG_PATH={{ portal_config_file }}
+ExecStart={{ portal_install_dir }}/venv/bin/uvicorn app.main:app --host {{ portal_host }} --port {{ portal_port }}
+Restart=always
+RestartSec=5s
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

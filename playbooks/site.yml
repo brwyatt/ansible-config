@@ -165,3 +165,9 @@
   become: true
   roles:
     - role: openterminal
+- name: Portal Server
+  hosts: portal
+  become: true
+  roles:
+    - role: portal
+

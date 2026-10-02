@@ -1,0 +1,56 @@
+---
+cert:
+  - "home.brwyatt.net"
+haproxy_certbot_certs:
+  - "{{ cert[0] }}"
+haproxy_options:
+  - "forwardfor"
+  - "http-server-close"
+haproxy_resolvers:
+  localdns:
+    nameservers:
+      dns1:
+        host: "127.0.0.53"
+        port: "53"
+    options:
+      - "accepted_payload_size 8192"
+haproxy_frontends:
+  stats:
+    bind:
+      port: 8404
+    options:
+      - "stats enable"
+      - "stats uri /"
+      - "stats refresh 5s"
+  www-http:
+    bind:
+      port: 80
+    options:
+      - "http-request redirect scheme https code 301"
+  portal-https:
+    bind:
+      port: 443
+      ssl_cert: "/etc/haproxy/certs/{{ cert[0] }}.pem"
+    backend: "portal-backend"
+    options:
+      - "http-request set-header X-Forwarded-Proto https"
+haproxy_backends:
+  portal-backend:
+    balance: "roundrobin"
+    options:
+      - "option httpchk"
+      - "http-check connect ssl"
+      - "http-check send meth GET uri /healthz ver HTTP/1.1 hdr Host check hdr Connection close"
+      - "http-check expect status 200"
+      - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
+      - "server-template portal 1-5 _https._tcp.home.brwyatt.net resolvers localdns init-addr none"
+keepalived_check_scripts:
+  haproxy:
+    type: haproxy
+    backend_name: "portal-backend"
+keepalived_instances:
+  portal:
+    virtual_ip: "FIXME_REPLACE_WITH_REAL_VIP"
+    auth_pass: "{{ keepalived_auth_pass }}"
+    check_scripts:
+      - haproxy
