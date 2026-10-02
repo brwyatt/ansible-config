@@ -57,4 +57,3 @@ reverseproxy_sites:
       checks:
         - type: custom
           value: "curl -sS -f -k -o /dev/null https://home.brwyatt.net/healthz"
-

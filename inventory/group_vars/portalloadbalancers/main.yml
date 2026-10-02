@@ -1,5 +1,6 @@
 ---
 cert:
+  - "portal.home.brwyatt.net"
   - "home.brwyatt.net"
 haproxy_certbot_certs:
   - "{{ cert[0] }}"
@@ -43,14 +44,14 @@ haproxy_backends:
       - "http-check send meth GET uri /healthz ver HTTP/1.1 hdr Host check hdr Connection close"
       - "http-check expect status 200"
       - "default-server check check-ssl ssl ca-file /etc/ssl/certs/ca-certificates.crt"
-      - "server-template portal 1-5 _https._tcp.home.brwyatt.net resolvers localdns init-addr none"
+      - "server-template portal 1-5 _https._tcp.portal.home.brwyatt.net resolvers localdns init-addr none"
 keepalived_check_scripts:
   haproxy:
     type: haproxy
     backend_name: "portal-backend"
 keepalived_instances:
   portal:
-    virtual_ip: "FIXME_REPLACE_WITH_REAL_VIP"
+    virtual_ip: "172.17.30.212/24"
     auth_pass: "{{ keepalived_auth_pass }}"
     check_scripts:
       - haproxy

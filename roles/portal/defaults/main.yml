@@ -30,17 +30,11 @@ portal_auth_logout_url: "https://auth.home.brwyatt.net/logout"
 portal_network_trusted_proxies:
   - "127.0.0.1/32"
   - "::1/128"
-  - "172.17.30.197/24"
-  - "172.17.30.111/24"
-  - "172.17.30.201/24"
 portal_network_fallback_class: "external"
-portal_network_fallback_name: "WAN / External"
+portal_network_fallback_name: "WAN"
 portal_network_fallback_icon: "globe"
 
 portal_network_classes:
-  management:
-    name: "Management Network"
-    icon: "shield"
   internal:
     name: "Trusted LAN"
     icon: "house"
@@ -72,25 +66,4 @@ portal_categories:
     icon: "film"
     order: 20
 
-portal_services:
-  - name: "Authelia"
-    url: "https://auth.home.brwyatt.net/"
-    description: "Single sign-on and identity provider portal"
-    category: "core"
-    icon: "shield"
-    public: false
-    requires_groups:
-      - "ipausers"
-    order: 10
-  - name: "Jellyfin"
-    url: "https://jellyfin.home.brwyatt.net"
-    description: "Movies, television, music, and streaming media library"
-    category: "media"
-    icon: "film"
-    order: 10
-  - name: "Seerr"
-    url: "https://seerr.home.brwyatt.net"
-    description: "Media request management and discovery"
-    category: "media"
-    icon: "film"
-    order: 20
+portal_services: []

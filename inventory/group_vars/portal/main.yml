@@ -1,10 +1,7 @@
 ---
 certbot_certs:
-  - - "{{ inventory_hostname }}"
-    - "{{ inventory_hostname | replace('server.', '') }}"
+  - - "portal.home.brwyatt.net"
     - "home.brwyatt.net"
-    - "portal.server.home.brwyatt.net"
-    - "portal.home.brwyatt.net"
 
 proxy_port: 8080
 reverseproxy_nginx_after:
@@ -14,11 +11,8 @@ reverseproxy_nginx_after:
 reverseproxy_configs:
   - destination: "http://127.0.0.1:{{ proxy_port }}"
     server_names:
-      - "{{ inventory_hostname }}"
-      - "{{ inventory_hostname | replace('server.', '') }}"
-      - "home.brwyatt.net"
-      - "portal.server.home.brwyatt.net"
       - "portal.home.brwyatt.net"
+      - "home.brwyatt.net"
     sso_enabled: true
     public_paths:
       - "/static/"
@@ -38,3 +32,78 @@ reverseproxy_trusted_proxies:
   # Inbound Proxy Hosts
   - "172.17.30.111"
   - "172.17.30.197"
+  # Inbound Proxy VIP
+  - "172.17.30.201"
+  # Load Balancer Hosts
+  - "172.17.30.120"
+  - "172.17.30.124"
+  # Load Balancer VIP
+  - "172.17.30.212"
+
+portal_ui_title: "BRNET-Home Portal"
+portal_ui_footer_text: "Homelab Portal"
+portal_network_trusted_proxies:
+  - "127.0.0.1/32"
+  - "::1/128"
+  # Inbound Proxy Hosts
+  - "172.17.30.197/24"
+  - "172.17.30.111/24"
+  # Inbound Proxy VIP
+  - "172.17.30.201/24"
+  # Load Balancer Hosts
+  - "172.17.30.120/24"
+  - "172.17.30.124/24"
+  # Load Balancer VIP
+  - "172.17.30.212/24"
+portal_network_classes:
+  external:
+    name: "External"
+    icon: "globe"
+  internal:
+    name: "Local"
+    icon: "house"
+  vpn:
+    name: "VPN"
+    icon: "shield"
+  remote_site:
+    name: "Remote Site"
+    icon: "network"
+portal_subnets:
+  - cidr: "172.17.10.0/24"
+    name: "User VLAN"
+    network_class: "internal"
+  - cidr: "172.16.10.0/24"
+    name: "User VPN"
+    network_class: "internal"
+  - cidr: "172.18.10.0/24"
+    name: "ChickenCoop User"
+    network_class: "remote_site"
+portal_categories:
+  - id: "core"
+    name: "Core Services"
+    icon: "server"
+    order: 10
+  - id: "media"
+    name: "Media & Streaming"
+    icon: "film"
+    order: 20
+portal_services:
+  - name: "Authelia"
+    url: "https://auth.home.brwyatt.net/"
+    description: "Single sign-on and identity provider portal"
+    category: "core"
+    icon: "shield"
+    public: true
+    order: 10
+  - name: "Jellyfin"
+    url: "https://jellyfin.home.brwyatt.net"
+    description: "Movies, television, music, and streaming media library"
+    category: "media"
+    icon: "film"
+    order: 10
+  - name: "Seerr"
+    url: "https://seerr.home.brwyatt.net"
+    description: "Media request management and discovery"
+    category: "media"
+    icon: "film"
+    order: 20
