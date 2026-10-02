@@ -87,23 +87,41 @@ portal_categories:
     name: "Media & Streaming"
     icon: "film"
     order: 20
+  - id: "iot"
+    name: "IoT and Home Automation"
+    icon: "house"
+    order: 30
 portal_services:
   - name: "Authelia"
     url: "https://auth.home.brwyatt.net/"
     description: "Single sign-on and identity provider portal"
     category: "core"
     icon: "shield"
-    public: true
+    order: 10
+  - name: "Home Assistant"
+    url: "https://homeassistant.home.brwyatt.net/"
+    description: "Home automation service"
+    category: "iot"
+    icon: "house"
+    requires_groups:
+      - "homeassistantusers"
+      - "homeassistantadmins"
     order: 10
   - name: "Jellyfin"
     url: "https://jellyfin.home.brwyatt.net"
     description: "Movies, television, music, and streaming media library"
     category: "media"
     icon: "film"
+    requires_groups:
+      - "jellyfin-users"
+      - "jellyfin-admins"
     order: 10
   - name: "Seerr"
     url: "https://seerr.home.brwyatt.net"
     description: "Media request management and discovery"
     category: "media"
     icon: "film"
+    requires_groups:
+      - "jellyfin-users"
+      - "jellyfin-admins"
     order: 20
