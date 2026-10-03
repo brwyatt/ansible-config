@@ -29,27 +29,6 @@
   loop:
     - "{{ portal_install_dir }}"
     - "{{ portal_config_dir }}"
-- name: Configure safe.directory for portal repository
-  community.general.git_config:
-    name: safe.directory
-    scope: global
-    value: "{{ portal_install_dir }}/src"
-    add_mode: true
-- name: Clone homelab-portal repository
-  ansible.builtin.git:
-    repo: "{{ portal_git_repo }}"
-    dest: "{{ portal_install_dir }}/src"
-    version: "{{ portal_version }}"
-    force: true
-  notify: Restart portal
-- name: Install homelab-portal into virtual environment
-  ansible.builtin.pip:
-    name: "{{ portal_install_dir }}/src"
-    virtualenv: "{{ portal_install_dir }}/venv"
-    virtualenv_command: "/usr/bin/python3 -m venv"
-    state: present
-    editable: false
-  notify: Restart portal
 - name: Ensure portal directory ownership
   ansible.builtin.file:
     path: "{{ item }}"
@@ -59,6 +38,23 @@
   loop:
     - "{{ portal_install_dir }}"
     - "{{ portal_config_dir }}"
+- name: Clone homelab-portal repository
+  ansible.builtin.git:
+    repo: "{{ portal_git_repo }}"
+    dest: "{{ portal_install_dir }}/src"
+    version: "{{ portal_version }}"
+    force: true
+  become_user: "{{ portal_user }}"
+  notify: Restart portal
+- name: Install homelab-portal into virtual environment
+  ansible.builtin.pip:
+    name: "{{ portal_install_dir }}/src"
+    virtualenv: "{{ portal_install_dir }}/venv"
+    virtualenv_command: "/usr/bin/python3 -m venv"
+    state: present
+    editable: false
+  become_user: "{{ portal_user }}"
+  notify: Restart portal
 - name: Deploy portal configuration
   ansible.builtin.template:
     src: config.yml.j2
