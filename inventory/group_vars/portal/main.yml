@@ -16,7 +16,6 @@ proxy_healthcheck:
 proxy_public_paths:
   - "/static/"
   - "/theme.css"
-  - "/healthz"
   - "/readyz"
 
 reverseproxy_nginx_after:
