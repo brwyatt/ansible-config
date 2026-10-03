@@ -37,7 +37,35 @@ server {
 {% endfor %}
 {% if item.sso_enabled|default(false) %}
 
-  include snippets/authelia-auth.conf;
+  location /authelia {
+    internal;
+    proxy_pass {{ reverseproxy_sso_verify_url }};
+    proxy_set_header Host {{ reverseproxy_sso_verify_host }};
+    proxy_ssl_server_name on;
+    proxy_ssl_name {{ reverseproxy_sso_verify_host }};
+    proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $http_host;
+    proxy_set_header X-Forwarded-Uri $request_uri;
+    proxy_set_header X-Forwarded-Method $request_method;
+    proxy_set_header Content-Length "";
+    proxy_pass_request_body off;
+
+{% if item.sso_cache_enabled | default(reverseproxy_sso_cache_enabled) %}
+    # Caching
+    proxy_cache auth_cache;
+    proxy_cache_key "$remote_addr|$cookie_authelia_session|$request_method|$http_host|$request_uri";
+    proxy_cache_valid 200 {{ item.sso_cache_valid | default(reverseproxy_sso_cache_valid) }};
+    proxy_cache_valid 401 403 0s;
+    proxy_cache_valid any 0s;
+    proxy_cache_bypass $auth_cache_bypass_referer $auth_cache_bypass_cc $auth_cache_bypass_pragma;
+    proxy_cache_use_stale error timeout invalid_header http_500 http_502 http_503 http_504;
+{% else %}
+    proxy_cache off;
+{% endif %}
+  }
 {% endif %}
 
   # Initialize SSO variables
