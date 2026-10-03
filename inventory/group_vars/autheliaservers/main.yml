@@ -183,7 +183,7 @@ authelia_access_control_rules:
   - domain:
       - "home.brwyatt.net"
       - "portal.home.brwyatt.net"
-    policy: "bypass"
+    policy: "one_factor"
 
 proxy_port: 9091
 

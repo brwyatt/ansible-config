@@ -14,6 +14,7 @@ reverseproxy_configs:
       - "portal.home.brwyatt.net"
       - "home.brwyatt.net"
     sso_enabled: true
+    sso_optional: true
     public_paths:
       - "/static/"
       - "/theme.css"
