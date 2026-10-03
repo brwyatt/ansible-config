@@ -12,3 +12,4 @@ reverseproxy_nginx_after:
 proxy_public_paths:
   - /ping
   - /api
+  - /favicon.ico

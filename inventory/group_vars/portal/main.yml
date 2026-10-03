@@ -17,6 +17,7 @@ proxy_public_paths:
   - "/static/"
   - "/theme.css"
   - "/readyz"
+  - "/favicon.ico"
 
 reverseproxy_nginx_after:
   - network-online.target

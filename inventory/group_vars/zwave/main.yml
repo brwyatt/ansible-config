@@ -11,3 +11,5 @@ proxy_healthcheck:
       value: "{{ proxy_port }}"
     - type: service
       value: zwave-js-ui
+proxy_public_paths:
+  - /favicon.ico
