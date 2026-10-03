@@ -4,29 +4,24 @@ certbot_certs:
     - "home.brwyatt.net"
 
 proxy_port: 8080
+proxy_sso_enabled: true
+proxy_sso_optional: true
+proxy_healthcheck:
+  path: /healthz
+  checks:
+    - type: port
+      value: "{{ proxy_port }}"
+    - type: service
+      value: portal
+proxy_public_paths:
+  - "/static/"
+  - "/theme.css"
+  - "/healthz"
+  - "/readyz"
+
 reverseproxy_nginx_after:
   - network-online.target
   - portal.service
-
-reverseproxy_configs:
-  - destination: "http://127.0.0.1:{{ proxy_port }}"
-    server_names:
-      - "portal.home.brwyatt.net"
-      - "home.brwyatt.net"
-    sso_enabled: true
-    sso_optional: true
-    public_paths:
-      - "/static/"
-      - "/theme.css"
-      - "/healthz"
-      - "/readyz"
-    healthcheck:
-      path: /healthz
-      checks:
-        - type: port
-          value: "{{ proxy_port }}"
-        - type: service
-          value: portal
 
 reverseproxy_recursive_proxies: true
 reverseproxy_trusted_proxies:
