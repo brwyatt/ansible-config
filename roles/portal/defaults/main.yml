@@ -24,8 +24,8 @@ portal_auth_header_name: "Remote-Name"
 portal_auth_header_email: "Remote-Email"
 portal_auth_header_groups: "Remote-Groups"
 portal_auth_header_group_delimiter: ","
-portal_auth_login_url: "{{ reverseproxy_sso_url | default('https://auth.home.brwyatt.net') }}/?rd=$scheme://$http_host$request_uri"
-portal_auth_logout_url: "{{ reverseproxy_sso_url | default('https://auth.home.brwyatt.net') }}/logout?rd=$scheme://$http_host$request_uri"
+portal_auth_login_url: "https://auth.home.brwyatt.net/?rd=$url"
+portal_auth_logout_url: "https://auth.home.brwyatt.net/logout?rd=$url"
 
 portal_network_trusted_proxies:
   - "127.0.0.1/32"
