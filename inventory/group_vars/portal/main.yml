@@ -129,7 +129,7 @@ portal_categories:
           - "pve-users"
         healthcheck:
           interval: 15
-          text_match: '<title>pve-orca - Proxmox Virtual Environment</title>'
+          text_match: 'Proxmox Virtual Environment</title>'
 
   - id: "media"
     name: "Media & Streaming"
