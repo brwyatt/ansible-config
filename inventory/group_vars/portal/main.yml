@@ -74,7 +74,7 @@ portal_subnets:
     network_class: "internal"
   - cidr: "172.16.10.0/24"
     name: "User VPN"
-    network_class: "internal"
+    network_class: "vpn"
   - cidr: "172.18.10.0/24"
     name: "ChickenCoop User"
     network_class: "remote_site"
