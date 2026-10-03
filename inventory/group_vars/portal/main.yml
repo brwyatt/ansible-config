@@ -84,6 +84,10 @@ portal_categories:
         url: "https://auth.home.brwyatt.net/"
         description: "Single sign-on and identity provider portal"
         icon: "shield"
+        healthcheck:
+          path: "/api/health"
+          interval: 15
+          json_query: '$.status = "OK"'
       - name: "FreeIPA"
         url: "https://ipa.home.brwyatt.net/"
         description: "LDAP account management"
@@ -104,6 +108,10 @@ portal_categories:
         icon: "globe"
         requires_groups:
           - "thelounge-users"
+        healthcheck:
+          path: "/health"
+          interval: 15
+          json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
 
   - id: "infra"
     name: "Infrastructure Services"
@@ -119,6 +127,9 @@ portal_categories:
         requires_groups:
           - "pve-admins"
           - "pve-users"
+        healthcheck:
+          interval: 15
+          text_match: '<title>pve-orca - Proxmox Virtual Environment</title>'
 
   - id: "media"
     name: "Media & Streaming"
@@ -131,6 +142,10 @@ portal_categories:
         requires_groups:
           - "jellyfin-users"
           - "jellyfin-admins"
+        healthcheck:
+          path: "/health"
+          interval: 15
+          text_match: 'Healthy'
       - name: "Seerr"
         url: "https://seerr.home.brwyatt.net"
         description: "Media request management and discovery"
@@ -138,6 +153,10 @@ portal_categories:
         requires_groups:
           - "jellyfin-users"
           - "jellyfin-admins"
+        healthcheck:
+          path: "/health"
+          interval: 15
+          json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
       - name: "Radarr"
         url: "https://radarr.server.home.brwyatt.net"
         description: "Movie manager"
