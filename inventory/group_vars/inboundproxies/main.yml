@@ -51,7 +51,8 @@ reverseproxy_sites:
           value: "curl -sS -f -k -o /dev/null https://seerr.server.home.brwyatt.net/health"
   - server_names:
       - "home.brwyatt.net"
-    destination: "https://home.brwyatt.net:443"
+      - "portal.home.brwyatt.net"
+    destination: "https://portal.home.brwyatt.net:443"
     healthcheck:
       path: "/healthz"
       checks:
