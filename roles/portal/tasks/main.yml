@@ -34,7 +34,7 @@
     name: safe.directory
     scope: global
     value: "{{ portal_install_dir }}/src"
-    add_mode: true
+    add_mode: add
 - name: Clone homelab-portal repository
   ansible.builtin.git:
     repo: "{{ portal_git_repo }}"
