@@ -166,6 +166,10 @@ portal_categories:
           - "vpn"
         requires_groups:
           - "arrsusers"
+        healthcheck:
+          path: "/ping"
+          interval: 15
+          json_query: '$.status = "OK"'
       - name: "Sonarr"
         url: "https://sonarr.server.home.brwyatt.net"
         description: "TV show manager"
@@ -175,6 +179,10 @@ portal_categories:
           - "vpn"
         requires_groups:
           - "arrsusers"
+        healthcheck:
+          path: "/ping"
+          interval: 15
+          json_query: '$.status = "OK"'
       - name: "Prowlarr"
         url: "https://prowlarr.server.home.brwyatt.net"
         description: "Tracker manager"
@@ -184,6 +192,10 @@ portal_categories:
           - "vpn"
         requires_groups:
           - "arrsusers"
+        healthcheck:
+          path: "/ping"
+          interval: 15
+          json_query: '$.status = "OK"'
       - name: "Seedbox"
         url: "https://seedbox.server.home.brwyatt.net"
         description: "qBittorrent Web UI"
@@ -193,6 +205,9 @@ portal_categories:
           - "vpn"
         requires_groups:
           - "seedboxusers"
+        healthcheck:
+          interval: 15
+          text_match: '<title>qBittorrent WebUI</title>'
 
   - id: "iot"
     name: "IoT and Home Automation"
@@ -205,6 +220,10 @@ portal_categories:
         requires_groups:
           - "homeassistantusers"
           - "homeassistantadmins"
+        healthcheck:
+          path: "/local/ping?skip_oidc_redirect=true"
+          interval: 15
+          text_match: "OK"
       - name: "Zigbee2MQTT"
         url: "https://zigbee2mqtt.iot.home.brwyatt.net/"
         description: "Zigbee device manager"
@@ -214,6 +233,10 @@ portal_categories:
           - "vpn"
         requires_groups:
           - "iot-admins"
+        healthcheck:
+          path: "/health"
+          interval: 15
+          json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
       - name: "Z-Wave JS UI"
         url: "https://zwave-js-ui.iot.home.brwyatt.net/"
         description: "Z-Wave device manager"
@@ -223,6 +246,10 @@ portal_categories:
           - "vpn"
         requires_groups:
           - "iot-admins"
+        healthcheck:
+          path: "/health"
+          interval: 15
+          json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
 
   - id: "home"
     name: "Household Management"
