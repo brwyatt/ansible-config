@@ -4,7 +4,7 @@ reverseproxy_sso_url: "https://auth.home.brwyatt.net"
 reverseproxy_sso_verify_url: "https://172.17.30.210/api/verify"
 reverseproxy_sso_verify_host: "auth.home.brwyatt.net"
 reverseproxy_sso_cache_enabled: true
-reverseproxy_sso_cache_valid: "10s"
+reverseproxy_sso_cache_valid: "15m"
 reverseproxy_recursive_proxies: false
 reverseproxy_nginx_after:
   - network-online.target
