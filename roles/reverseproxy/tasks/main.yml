@@ -40,15 +40,6 @@
     mode: '0644'
   become: true
   notify: Restart Nginx
-- name: "Authelia SSO Cache Bypass Maps"
-  ansible.builtin.template:
-    src: auth-cache.conf.j2
-    dest: /etc/nginx/conf.d/auth-cache.conf
-    owner: root
-    group: root
-    mode: '0644'
-  become: true
-  notify: Restart Nginx
 - name: "Configure Nginx Caching for Auth"
   ansible.builtin.lineinfile:
     path: /etc/nginx/nginx.conf

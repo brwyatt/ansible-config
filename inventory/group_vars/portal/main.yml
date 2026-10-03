@@ -6,7 +6,6 @@ certbot_certs:
 proxy_port: 8080
 proxy_sso_enabled: true
 proxy_sso_optional: true
-proxy_sso_cache_enabled: false
 proxy_healthcheck:
   path: /healthz
   checks:
