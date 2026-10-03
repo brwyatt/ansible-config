@@ -46,15 +46,15 @@ portal_network_trusted_proxies:
   - "127.0.0.1/32"
   - "::1/128"
   # Inbound Proxy Hosts
-  - "172.17.30.197/24"
-  - "172.17.30.111/24"
+  - "172.17.30.197/32"
+  - "172.17.30.111/32"
   # Inbound Proxy VIP
-  - "172.17.30.201/24"
+  - "172.17.30.201/32"
   # Load Balancer Hosts
-  - "172.17.30.120/24"
-  - "172.17.30.124/24"
+  - "172.17.30.120/32"
+  - "172.17.30.124/32"
   # Load Balancer VIP
-  - "172.17.30.212/24"
+  - "172.17.30.212/32"
 portal_network_classes:
   external:
     name: "External"
