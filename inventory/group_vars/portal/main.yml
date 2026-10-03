@@ -36,8 +36,9 @@ reverseproxy_trusted_proxies:
   # Load Balancer VIP
   - "172.17.30.212"
 
-portal_ui_title: "BRNET-Home Portal"
-portal_ui_footer_text: "Homelab Portal"
+portal_ui_title: "BRNET-Home"
+portal_ui_subtitle: "HomeLab Services Portal"
+portal_ui_footer_text: "HomeLab Portal"
 portal_network_trusted_proxies:
   - "127.0.0.1/32"
   - "::1/128"
