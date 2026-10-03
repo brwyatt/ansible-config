@@ -45,5 +45,7 @@ subnets:
 {{ portal_subnets | to_nice_yaml(indent=2) | indent(2, first=True) }}
 categories:
 {{ portal_categories | to_nice_yaml(indent=2) | indent(2, first=True) }}
+{% if portal_services is defined and portal_services %}
 services:
 {{ portal_services | to_nice_yaml(indent=2) | indent(2, first=True) }}
+{% endif %}

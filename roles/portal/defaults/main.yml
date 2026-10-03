@@ -60,10 +60,24 @@ portal_categories:
   - id: "core"
     name: "Core Services"
     icon: "server"
-    order: 10
+    services:
+      - name: "Proxmox VE"
+        url: "https://pve.example.com:8006"
+        description: "Virtualization management cluster"
+        icon: "server"
+        network_classes:
+          - "management"
+      - name: "Home Assistant"
+        url: "https://homeassistant.example.com"
+        description: "Home automation and IoT dashboard"
+        icon: "home"
   - id: "media"
     name: "Media & Streaming"
     icon: "film"
-    order: 20
+    services:
+      - name: "Jellyfin"
+        url: "https://jellyfin.example.com"
+        description: "Open source media streaming system"
+        icon: "film"
 
 portal_services: []

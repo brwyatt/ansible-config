@@ -79,172 +79,142 @@ portal_categories:
   - id: "auth"
     name: "Authentication Services"
     icon: "key"
-    order: 10
+    services:
+      - name: "Authelia"
+        url: "https://auth.home.brwyatt.net/"
+        description: "Single sign-on and identity provider portal"
+        icon: "shield"
+      - name: "FreeIPA"
+        url: "https://ipa.home.brwyatt.net/"
+        description: "LDAP account management"
+        icon: "key"
+        network_classes:
+          - "internal"
+          - "vpn"
+        requires_groups:
+          - "admins"
+
   - id: "comms"
     name: "Communications Services"
     icon: "phone"
-    order: 20
+    services:
+      - name: "The Lounge"
+        url: "https://thelounge.home.brwyatt.net/"
+        description: "IRC Web Client"
+        icon: "globe"
+        requires_groups:
+          - "thelounge-users"
+
   - id: "infra"
     name: "Infrastructure Services"
     icon: "server"
-    order: 30
+    services:
+      - name: "Proxmox"
+        url: "https://proxmox.home.brwyatt.net/"
+        description: "Proxmox virtualization cluster"
+        icon: "server"
+        network_classes:
+          - "internal"
+          - "vpn"
+        requires_groups:
+          - "pve-admins"
+          - "pve-users"
+
   - id: "media"
     name: "Media & Streaming"
     icon: "film"
-    order: 40
+    services:
+      - name: "Jellyfin"
+        url: "https://jellyfin.home.brwyatt.net"
+        description: "Movies, television, music, and streaming media library"
+        icon: "film"
+        requires_groups:
+          - "jellyfin-users"
+          - "jellyfin-admins"
+      - name: "Seerr"
+        url: "https://seerr.home.brwyatt.net"
+        description: "Media request management and discovery"
+        icon: "film"
+        requires_groups:
+          - "jellyfin-users"
+          - "jellyfin-admins"
+      - name: "Radarr"
+        url: "https://radarr.server.home.brwyatt.net"
+        description: "Movie manager"
+        icon: "film"
+        network_classes:
+          - "internal"
+          - "vpn"
+        requires_groups:
+          - "arrsusers"
+      - name: "Sonarr"
+        url: "https://sonarr.server.home.brwyatt.net"
+        description: "TV show manager"
+        icon: "tv"
+        network_classes:
+          - "internal"
+          - "vpn"
+        requires_groups:
+          - "arrsusers"
+      - name: "Prowlarr"
+        url: "https://prowlarr.server.home.brwyatt.net"
+        description: "Tracker manager"
+        icon: "network"
+        network_classes:
+          - "internal"
+          - "vpn"
+        requires_groups:
+          - "arrsusers"
+      - name: "Seedbox"
+        url: "https://seedbox.server.home.brwyatt.net"
+        description: "qBittorrent Web UI"
+        icon: "download"
+        network_classes:
+          - "internal"
+          - "vpn"
+        requires_groups:
+          - "seedboxusers"
+
   - id: "iot"
     name: "IoT and Home Automation"
     icon: "house"
-    order: 50
+    services:
+      - name: "Home Assistant"
+        url: "https://homeassistant.home.brwyatt.net/"
+        description: "Home automation service"
+        icon: "house"
+        requires_groups:
+          - "homeassistantusers"
+          - "homeassistantadmins"
+      - name: "Zigbee2MQTT"
+        url: "https://zigbee2mqtt.iot.home.brwyatt.net/"
+        description: "Zigbee device manager"
+        icon: "radio"
+        network_classes:
+          - "internal"
+          - "vpn"
+        requires_groups:
+          - "iot-admins"
+      - name: "Z-Wave JS UI"
+        url: "https://zwave-js-ui.iot.home.brwyatt.net/"
+        description: "Z-Wave device manager"
+        icon: "radio"
+        network_classes:
+          - "internal"
+          - "vpn"
+        requires_groups:
+          - "iot-admins"
+
   - id: "home"
-    name: "Houshold Management"
+    name: "Household Management"
     icon: "house"
-    order: 60
-portal_services:
-  # Auth
-  - name: "Authelia"
-    url: "https://auth.home.brwyatt.net/"
-    description: "Single sign-on and identity provider portal"
-    category: "auth"
-    icon: "shield"
-    order: 10
-  - name: "FreeIPA"
-    url: "https://ipa.home.brwyatt.net/"
-    description: "LDAP account management"
-    category: "auth"
-    icon: "key"
-    network_classes:
-      - "internal"
-      - "vpn"
-    requires_groups:
-      - "admins"
-    order: 20
-  # Communications
-  - name: "The Lounge"
-    url: "https://thelounge.home.brwyatt.net/"
-    description: "IRC Web Client"
-    category: "comms"
-    icon: "globe"
-    requires_groups:
-      - "thelounge-users"
-    order: 10
-  # Infrastructure
-  - name: "Proxmox"
-    url: "https://proxmox.home.brwyatt.net/"
-    description: "Proxmox virtualization cluster"
-    category: "infra"
-    icon: "server"
-    network_classes:
-      - "internal"
-      - "vpn"
-    requires_groups:
-      - "pve-admins"
-      - "pve-users"
-    order: 10
-  # Media
-  - name: "Jellyfin"
-    url: "https://jellyfin.home.brwyatt.net"
-    description: "Movies, television, music, and streaming media library"
-    category: "media"
-    icon: "film"
-    requires_groups:
-      - "jellyfin-users"
-      - "jellyfin-admins"
-    order: 10
-  - name: "Seerr"
-    url: "https://seerr.home.brwyatt.net"
-    description: "Media request management and discovery"
-    category: "media"
-    icon: "film"
-    requires_groups:
-      - "jellyfin-users"
-      - "jellyfin-admins"
-    order: 20
-  - name: "Radarr"
-    url: "https://radarr.server.home.brwyatt.net"
-    description: "Movie manager"
-    category: "media"
-    icon: "film"
-    network_classes:
-      - "internal"
-      - "vpn"
-    requires_groups:
-      - "arrsusers"
-    order: 30
-  - name: "Sonarr"
-    url: "https://sonarr.server.home.brwyatt.net"
-    description: "TV show manager"
-    category: "media"
-    icon: "tv"
-    network_classes:
-      - "internal"
-      - "vpn"
-    requires_groups:
-      - "arrsusers"
-    order: 40
-  - name: "Prowlarr"
-    url: "https://prowlarr.server.home.brwyatt.net"
-    description: "Tracker manager"
-    category: "media"
-    icon: "network"
-    network_classes:
-      - "internal"
-      - "vpn"
-    requires_groups:
-      - "arrsusers"
-    order: 50
-  - name: "Seedbox"
-    url: "https://seedbox.server.home.brwyatt.net"
-    description: "qBittorrent Web UI"
-    category: "media"
-    icon: "download"
-    network_classes:
-      - "internal"
-      - "vpn"
-    requires_groups:
-      - "seedboxusers"
-    order: 60
-  # IoT
-  - name: "Home Assistant"
-    url: "https://homeassistant.home.brwyatt.net/"
-    description: "Home automation service"
-    category: "iot"
-    icon: "house"
-    requires_groups:
-      - "homeassistantusers"
-      - "homeassistantadmins"
-    order: 10
-  - name: "Zigbee2MQTT"
-    url: "https://zigbee2mqtt.iot.home.brwyatt.net/"
-    description: "Zigbee device manager"
-    category: "iot"
-    icon: "radio"
-    network_classes:
-      - "internal"
-      - "vpn"
-    requires_groups:
-      - "iot-admins"
-    order: 20
-  - name: "Z-Wave JS UI"
-    url: "https://zwave-js-ui.iot.home.brwyatt.net/"
-    description: "Z-Wave device manager"
-    category: "iot"
-    icon: "radio"
-    network_classes:
-      - "internal"
-      - "vpn"
-    requires_groups:
-      - "iot-admins"
-    order: 30
-  # Household Management
-  - name: "HomeBox"
-    url: "https://homebox.server.home.brwyatt.net"
-    description: "Household inventory management"
-    category: "home"
-    icon: "house"
-    network_classes:
-      - "internal"
-      - "vpn"
-    requires_groups:
-      - "homeboxusers"
-    order: 60
+    services:
+      - name: "HomeBox"
+        url: "https://homebox.server.home.brwyatt.net"
+        description: "Household inventory management"
+        icon: "house"
+        network_classes:
+          - "internal"
+          - "vpn"
+        requires_groups:
+          - "homeboxusers"
