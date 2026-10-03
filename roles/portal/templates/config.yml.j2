@@ -1,0 +1,49 @@
+# {{ ansible_managed }}
+
+ui:
+  title: "{{ portal_ui_title }}"
+{% if portal_ui_subtitle is defined and portal_ui_subtitle %}
+  subtitle: "{{ portal_ui_subtitle }}"
+{% endif %}
+  theme: "{{ portal_ui_theme }}"
+{% if portal_ui_custom_themes_dir is defined and portal_ui_custom_themes_dir %}
+  custom_themes_dir: "{{ portal_ui_custom_themes_dir }}"
+{% endif %}
+  show_search: {{ portal_ui_show_search | bool | lower }}
+  show_network_badge: {{ portal_ui_show_network_badge | bool | lower }}
+  show_user_badge: {{ portal_ui_show_user_badge | bool | lower }}
+{% if portal_ui_footer_text is defined and portal_ui_footer_text %}
+  footer_text: "{{ portal_ui_footer_text }}"
+{% endif %}
+
+auth:
+  enabled: {{ portal_auth_enabled | bool | lower }}
+  header_user: "{{ portal_auth_header_user }}"
+  header_name: "{{ portal_auth_header_name }}"
+  header_email: "{{ portal_auth_header_email }}"
+  header_groups: "{{ portal_auth_header_groups }}"
+  header_group_delimiter: "{{ portal_auth_header_group_delimiter }}"
+{% if portal_auth_login_url is defined and portal_auth_login_url %}
+  login_url: "{{ portal_auth_login_url }}"
+{% endif %}
+{% if portal_auth_logout_url is defined and portal_auth_logout_url %}
+  logout_url: "{{ portal_auth_logout_url }}"
+{% endif %}
+
+network:
+  trusted_proxies:
+{% for proxy in portal_network_trusted_proxies %}
+    - "{{ proxy }}"
+{% endfor %}
+  fallback_class: "{{ portal_network_fallback_class }}"
+  fallback_name: "{{ portal_network_fallback_name }}"
+  fallback_icon: "{{ portal_network_fallback_icon }}"
+
+network_classes:
+{{ portal_network_classes | to_nice_yaml(indent=2) | indent(2, first=True) }}
+subnets:
+{{ portal_subnets | to_nice_yaml(indent=2) | indent(2, first=True) }}
+categories:
+{{ portal_categories | to_nice_yaml(indent=2) | indent(2, first=True) }}
+services:
+{{ portal_services | to_nice_yaml(indent=2) | indent(2, first=True) }}

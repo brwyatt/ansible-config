@@ -49,3 +49,12 @@ reverseproxy_sites:
       checks:
         - type: custom
           value: "curl -sS -f -k -o /dev/null https://seerr.server.home.brwyatt.net/health"
+  - server_names:
+      - "home.brwyatt.net"
+      - "portal.home.brwyatt.net"
+    destination: "https://portal.home.brwyatt.net:443"
+    healthcheck:
+      path: "/healthz"
+      checks:
+        - type: custom
+          value: "curl -sS -f -k -o /dev/null https://home.brwyatt.net/healthz"

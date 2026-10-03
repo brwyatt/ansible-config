@@ -17,6 +17,9 @@ location /authelia {
     # Caching
     proxy_cache auth_cache;
     proxy_cache_key "$remote_addr|$cookie_authelia_session|$request_method|$http_host|$request_uri";
-    proxy_cache_valid 200 15m;
+    proxy_cache_valid 200 {{ reverseproxy_sso_cache_valid }};
+    proxy_cache_valid 401 403 0s;
+    proxy_cache_valid any 0s;
+    proxy_cache_bypass $auth_cache_bypass_referer $auth_cache_bypass_cc $auth_cache_bypass_pragma;
     proxy_cache_use_stale error timeout invalid_header http_500 http_502 http_503 http_504;
 }

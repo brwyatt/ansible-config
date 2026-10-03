@@ -179,6 +179,11 @@ authelia_access_control_rules:
   - domain: "seerr.home.brwyatt.net"
     policy: "two_factor"
     subject: "group:jellyfin-users"
+  # Homelab Portal
+  - domain:
+      - "home.brwyatt.net"
+      - "portal.home.brwyatt.net"
+    policy: "one_factor"
 
 proxy_port: 9091
 

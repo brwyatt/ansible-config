@@ -1,0 +1,122 @@
+---
+certbot_certs:
+  - - "portal.home.brwyatt.net"
+    - "home.brwyatt.net"
+
+proxy_port: 8080
+proxy_sso_enabled: true
+proxy_sso_optional: true
+proxy_healthcheck:
+  path: /healthz
+  checks:
+    - type: port
+      value: "{{ proxy_port }}"
+    - type: service
+      value: portal
+proxy_public_paths:
+  - "/static/"
+  - "/theme.css"
+  - "/readyz"
+
+reverseproxy_nginx_after:
+  - network-online.target
+  - portal.service
+
+reverseproxy_recursive_proxies: true
+reverseproxy_trusted_proxies:
+  # Inbound Proxy Hosts
+  - "172.17.30.111"
+  - "172.17.30.197"
+  # Inbound Proxy VIP
+  - "172.17.30.201"
+  # Load Balancer Hosts
+  - "172.17.30.120"
+  - "172.17.30.124"
+  # Load Balancer VIP
+  - "172.17.30.212"
+
+portal_ui_title: "BRNET-Home Portal"
+portal_ui_footer_text: "Homelab Portal"
+portal_network_trusted_proxies:
+  - "127.0.0.1/32"
+  - "::1/128"
+  # Inbound Proxy Hosts
+  - "172.17.30.197/32"
+  - "172.17.30.111/32"
+  # Inbound Proxy VIP
+  - "172.17.30.201/32"
+  # Load Balancer Hosts
+  - "172.17.30.120/32"
+  - "172.17.30.124/32"
+  # Load Balancer VIP
+  - "172.17.30.212/32"
+portal_network_classes:
+  external:
+    name: "External"
+    icon: "globe"
+  internal:
+    name: "Local"
+    icon: "house"
+  vpn:
+    name: "VPN"
+    icon: "shield"
+  remote_site:
+    name: "Remote Site"
+    icon: "network"
+portal_subnets:
+  - cidr: "172.17.10.0/24"
+    name: "User VLAN"
+    network_class: "internal"
+  - cidr: "172.16.10.0/24"
+    name: "User VPN"
+    network_class: "vpn"
+  - cidr: "172.18.10.0/24"
+    name: "ChickenCoop User"
+    network_class: "remote_site"
+portal_categories:
+  - id: "core"
+    name: "Core Services"
+    icon: "server"
+    order: 10
+  - id: "media"
+    name: "Media & Streaming"
+    icon: "film"
+    order: 20
+  - id: "iot"
+    name: "IoT and Home Automation"
+    icon: "house"
+    order: 30
+portal_services:
+  - name: "Authelia"
+    url: "https://auth.home.brwyatt.net/"
+    description: "Single sign-on and identity provider portal"
+    category: "core"
+    icon: "shield"
+    order: 10
+  - name: "Home Assistant"
+    url: "https://homeassistant.home.brwyatt.net/"
+    description: "Home automation service"
+    category: "iot"
+    icon: "house"
+    requires_groups:
+      - "homeassistantusers"
+      - "homeassistantadmins"
+    order: 10
+  - name: "Jellyfin"
+    url: "https://jellyfin.home.brwyatt.net"
+    description: "Movies, television, music, and streaming media library"
+    category: "media"
+    icon: "film"
+    requires_groups:
+      - "jellyfin-users"
+      - "jellyfin-admins"
+    order: 10
+  - name: "Seerr"
+    url: "https://seerr.home.brwyatt.net"
+    description: "Media request management and discovery"
+    category: "media"
+    icon: "film"
+    requires_groups:
+      - "jellyfin-users"
+      - "jellyfin-admins"
+    order: 20

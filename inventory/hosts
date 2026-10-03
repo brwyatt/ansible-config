@@ -19,6 +19,7 @@ loadbalancers:
     guacamoleloadbalancers:
     authelialoadbalancers:
     valkeyloadbalancers:
+    portalloadbalancers:
 mqttloadbalancers:
   hosts:
     mqtt-haproxy[01:02].iot.home.brwyatt.net:
@@ -127,6 +128,9 @@ authelialoadbalancers:
 valkeyloadbalancers:
   hosts:
     valkey-haproxy[01:02].server.home.brwyatt.net:
+portalloadbalancers:
+  hosts:
+    portal-haproxy[01:02].server.home.brwyatt.net:
 valkeyproxies:
   hosts:
     valkey-proxy[01:02].server.home.brwyatt.net:
@@ -151,6 +155,9 @@ homelabsre_terminal:
 openterminal:
   children:
     homelabsre_terminal:
+portal:
+  hosts:
+    portal[01:02].server.home.brwyatt.net:
 app_proxy:
   children:
     autheliaservers:
@@ -170,6 +177,7 @@ app_proxy:
     seerr:
     openwebui:
     openterminal:
+    portal:
 ceph_clients:
   children:
     jellyfin:
