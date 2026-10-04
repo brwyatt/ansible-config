@@ -65,8 +65,9 @@ portal_categories:
         url: "https://pve.example.com:8006"
         description: "Virtualization management cluster"
         icon: "server"
-        network_classes:
-          - "management"
+        access:
+          network_classes:
+            - "management"
       - name: "Home Assistant"
         url: "https://homeassistant.example.com"
         description: "Home automation and IoT dashboard"
