@@ -137,16 +137,20 @@ portal_categories:
         network_classes:
           - "internal"
           - "vpn"
+        requires_groups:
+          - "admins"
         healthcheck:
           interval: 15
           text_match: '<title>GLKVM</title>'
       - name: "Rack KVM"
         url: "https://rackkvm.kvm.home.brwyatt.net/"
-        description: "Rack KVM"
+        description: "Rack KVM (Proxmox hosts)"
         icon: "monitor"
         network_classes:
           - "internal"
           - "vpn"
+        requires_groups:
+          - "admins"
         healthcheck:
           path: "/login/"
           interval: 15
