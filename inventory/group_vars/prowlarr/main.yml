@@ -10,3 +10,10 @@ proxy_public_paths:
   - /favicon.ico
 proxy_public_paths_regex:
   - "^/([0-9]+)/(api|download)"
+proxy_healthcheck:
+  path: /health
+  checks:
+    - type: port
+      value: "{{ proxy_port }}"
+    - type: service
+      value: "prowlarr"
