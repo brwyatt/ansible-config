@@ -137,8 +137,6 @@ portal_categories:
         network_classes:
           - "internal"
           - "vpn"
-        requires_groups:
-          - "brwyatt"
         healthcheck:
           interval: 15
           text_match: '<title>GLKVM</title>'
@@ -149,8 +147,6 @@ portal_categories:
         network_classes:
           - "internal"
           - "vpn"
-        requires_groups:
-          - "brwyatt"
         healthcheck:
           path: "/login/"
           interval: 15
