@@ -200,9 +200,9 @@ portal_categories:
           groups:
             - "arrsusers"
         healthcheck:
-          path: "/ping"
+          path: "/health"
           interval: 15
-          json_query: '$.status = "OK"'
+          json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
       - name: "Sonarr"
         url: "https://sonarr.server.home.brwyatt.net"
         description: "TV show manager"
@@ -214,9 +214,9 @@ portal_categories:
           groups:
             - "arrsusers"
         healthcheck:
-          path: "/ping"
+          path: "/health"
           interval: 15
-          json_query: '$.status = "OK"'
+          json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
       - name: "Prowlarr"
         url: "https://prowlarr.server.home.brwyatt.net"
         description: "Tracker manager"
@@ -228,9 +228,9 @@ portal_categories:
           groups:
             - "arrsusers"
         healthcheck:
-          path: "/ping"
+          path: "/health"
           interval: 15
-          json_query: '$.status = "OK"'
+          json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
       - name: "Seedbox"
         url: "https://seedbox.server.home.brwyatt.net"
         description: "qBittorrent Web UI"
@@ -242,8 +242,9 @@ portal_categories:
           groups:
             - "seedboxusers"
         healthcheck:
+          path: "/health"
           interval: 15
-          text_match: '<title>qBittorrent WebUI</title>'
+          json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
 
   - id: "iot"
     name: "IoT and Home Automation"
@@ -314,9 +315,9 @@ portal_categories:
         description: "DevBox VSCode Web UI"
         icon: "code"
         healthcheck:
-          path: "/healthz"
+          path: "/health"
           interval: 15
-          json_query: '$.status = "alive"'
+          json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
         access:
           network_classes:
             - "internal"
@@ -332,6 +333,10 @@ portal_categories:
         url: "https://homebox.server.home.brwyatt.net"
         description: "Household inventory management"
         icon: "house"
+        healthcheck:
+          path: "/health"
+          interval: 15
+          json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
         access:
           network_classes:
             - "internal"
