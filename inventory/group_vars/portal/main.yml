@@ -92,11 +92,12 @@ portal_categories:
         url: "https://ipa.home.brwyatt.net/"
         description: "LDAP account management"
         icon: "key"
-        network_classes:
-          - "internal"
-          - "vpn"
-        requires_groups:
-          - "admins"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "admins"
 
   - id: "comms"
     name: "Communications Services"
@@ -106,8 +107,9 @@ portal_categories:
         url: "https://thelounge.home.brwyatt.net/"
         description: "IRC Web Client"
         icon: "globe"
-        requires_groups:
-          - "thelounge-users"
+        access:
+          groups:
+            - "thelounge-users"
         healthcheck:
           path: "/health"
           interval: 15
@@ -121,12 +123,13 @@ portal_categories:
         url: "https://proxmox.home.brwyatt.net/"
         description: "Proxmox virtualization cluster"
         icon: "server"
-        network_classes:
-          - "internal"
-          - "vpn"
-        requires_groups:
-          - "pve-admins"
-          - "pve-users"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "pve-admins"
+            - "pve-users"
         healthcheck:
           interval: 15
           text_match: 'Proxmox Virtual Environment</title>'
@@ -134,11 +137,12 @@ portal_categories:
         url: "https://skylightkvm.kvm.home.brwyatt.net/"
         description: "Skylight KVM (\"Wintendo\")"
         icon: "monitor"
-        network_classes:
-          - "internal"
-          - "vpn"
-        requires_groups:
-          - "admins"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          users:
+            - "brwyatt"
         healthcheck:
           interval: 15
           text_match: '<title>GLKVM</title>'
@@ -146,11 +150,12 @@ portal_categories:
         url: "https://rackkvm.kvm.home.brwyatt.net/"
         description: "Rack KVM (Proxmox hosts)"
         icon: "monitor"
-        network_classes:
-          - "internal"
-          - "vpn"
-        requires_groups:
-          - "admins"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "admins"
         healthcheck:
           path: "/login/"
           interval: 15
@@ -164,9 +169,10 @@ portal_categories:
         url: "https://jellyfin.home.brwyatt.net"
         description: "Movies, television, music, and streaming media library"
         icon: "film"
-        requires_groups:
-          - "jellyfin-users"
-          - "jellyfin-admins"
+        access:
+          groups:
+            - "jellyfin-users"
+            - "jellyfin-admins"
         healthcheck:
           path: "/health"
           interval: 15
@@ -175,9 +181,10 @@ portal_categories:
         url: "https://seerr.home.brwyatt.net"
         description: "Media request management and discovery"
         icon: "film"
-        requires_groups:
-          - "jellyfin-users"
-          - "jellyfin-admins"
+        access:
+          groups:
+            - "jellyfin-users"
+            - "jellyfin-admins"
         healthcheck:
           path: "/health"
           interval: 15
@@ -186,11 +193,12 @@ portal_categories:
         url: "https://radarr.server.home.brwyatt.net"
         description: "Movie manager"
         icon: "film"
-        network_classes:
-          - "internal"
-          - "vpn"
-        requires_groups:
-          - "arrsusers"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "arrsusers"
         healthcheck:
           path: "/ping"
           interval: 15
@@ -199,11 +207,12 @@ portal_categories:
         url: "https://sonarr.server.home.brwyatt.net"
         description: "TV show manager"
         icon: "tv"
-        network_classes:
-          - "internal"
-          - "vpn"
-        requires_groups:
-          - "arrsusers"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "arrsusers"
         healthcheck:
           path: "/ping"
           interval: 15
@@ -212,11 +221,12 @@ portal_categories:
         url: "https://prowlarr.server.home.brwyatt.net"
         description: "Tracker manager"
         icon: "network"
-        network_classes:
-          - "internal"
-          - "vpn"
-        requires_groups:
-          - "arrsusers"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "arrsusers"
         healthcheck:
           path: "/ping"
           interval: 15
@@ -225,11 +235,12 @@ portal_categories:
         url: "https://seedbox.server.home.brwyatt.net"
         description: "qBittorrent Web UI"
         icon: "download"
-        network_classes:
-          - "internal"
-          - "vpn"
-        requires_groups:
-          - "seedboxusers"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "seedboxusers"
         healthcheck:
           interval: 15
           text_match: '<title>qBittorrent WebUI</title>'
@@ -242,9 +253,10 @@ portal_categories:
         url: "https://homeassistant.home.brwyatt.net/"
         description: "Home automation service"
         icon: "house"
-        requires_groups:
-          - "homeassistantusers"
-          - "homeassistantadmins"
+        access:
+          groups:
+            - "homeassistantusers"
+            - "homeassistantadmins"
         healthcheck:
           path: "/local/ping?skip_oidc_redirect=true"
           interval: 15
@@ -253,11 +265,12 @@ portal_categories:
         url: "https://zigbee2mqtt.iot.home.brwyatt.net/"
         description: "Zigbee device manager"
         icon: "radio"
-        network_classes:
-          - "internal"
-          - "vpn"
-        requires_groups:
-          - "iot-admins"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "iot-admins"
         healthcheck:
           path: "/health"
           interval: 15
@@ -266,11 +279,12 @@ portal_categories:
         url: "https://zwave-js-ui.iot.home.brwyatt.net/"
         description: "Z-Wave device manager"
         icon: "radio"
-        network_classes:
-          - "internal"
-          - "vpn"
-        requires_groups:
-          - "iot-admins"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "iot-admins"
         healthcheck:
           path: "/health"
           interval: 15
@@ -284,8 +298,9 @@ portal_categories:
         url: "https://homebox.server.home.brwyatt.net"
         description: "Household inventory management"
         icon: "house"
-        network_classes:
-          - "internal"
-          - "vpn"
-        requires_groups:
-          - "homeboxusers"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "homeboxusers"
