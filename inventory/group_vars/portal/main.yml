@@ -290,6 +290,40 @@ portal_categories:
           interval: 15
           json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
 
+  - id: "dev"
+    name: "Developer Tools"
+    icon: "terminal"
+    services:
+      - name: "Open WebUI"
+        url: "https://agents.server.home.brwyatt.net"
+        description: "Open WebUI Agents"
+        icon: "code"
+        healthcheck:
+          path: "/health"
+          interval: 15
+          json_query: '$.status = true'
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "openwebui-admins"
+            - "openwebui-users"
+      - name: "DevBox"
+        url: "https://devbox.server.home.brwyatt.net"
+        description: "DevBox VSCode Web UI"
+        icon: "code"
+        healthcheck:
+          path: "/healthz"
+          interval: 15
+          json_query: '$.status = "alive"'
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          users:
+            - "brwyatt"
+
   - id: "home"
     name: "Household Management"
     icon: "house"
