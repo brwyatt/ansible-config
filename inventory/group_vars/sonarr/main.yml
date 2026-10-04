@@ -13,3 +13,10 @@ proxy_public_paths:
   - /ping
   - /api
   - /favicon.ico
+proxy_healthcheck:
+  path: /health
+  checks:
+    - type: port
+      value: "{{ proxy_port }}"
+    - type: service
+      value: sonarr

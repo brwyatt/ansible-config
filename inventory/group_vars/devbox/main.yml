@@ -4,3 +4,10 @@ proxy_port: "{{ devbox_server_port }}"
 proxy_sso_enabled: true
 proxy_public_paths:
   - /healthz
+proxy_healthcheck:
+  path: /health
+  checks:
+    - type: port
+      value: "{{ proxy_port }}"
+    - type: service
+      value: "code-server@brwyatt"

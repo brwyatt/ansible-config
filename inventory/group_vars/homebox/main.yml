@@ -2,6 +2,14 @@
 homebox_web_host: "127.0.0.1"
 homebox_web_port: 7745
 proxy_port: "{{ homebox_web_port }}"
+proxy_healthcheck:
+  path: /health
+  checks:
+    - type: port
+      value: "{{ proxy_port }}"
+    - type: service
+      value: "homebox"
+
 
 homebox_enable_oidc: true
 homebox_options_hostname: "homebox.server.home.brwyatt.net"
