@@ -130,6 +130,31 @@ portal_categories:
         healthcheck:
           interval: 15
           text_match: 'Proxmox Virtual Environment</title>'
+      - name: "Skylight KVM"
+        url: "https://skylightkvm.kvm.home.brwyatt.net/"
+        description: "Skylight KVM (\"Wintendo\")"
+        icon: "monitor"
+        network_classes:
+          - "internal"
+          - "vpn"
+        requires_groups:
+          - "brwyatt"
+        healthcheck:
+          interval: 15
+          text_match: '<title>GLKVM</title>'
+      - name: "Rack KVM"
+        url: "https://rackkvm.kvm.home.brwyatt.net/"
+        description: "Rack KVM"
+        icon: "monitor"
+        network_classes:
+          - "internal"
+          - "vpn"
+        requires_groups:
+          - "brwyatt"
+        healthcheck:
+          path: "/login/"
+          interval: 15
+          text_match: '<title>PiKVM Login</title>'
 
   - id: "media"
     name: "Media & Streaming"
