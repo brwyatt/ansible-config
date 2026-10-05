@@ -12,3 +12,5 @@ general_settings:
   master_key: "{{ litellm_master_key }}"
 {% endif %}
   store_model_in_db: false
+  trusted_proxy_ranges:
+    {{ litellm_trusted_proxies | to_nice_yaml(indent=4) | indent(4, first=false) }}

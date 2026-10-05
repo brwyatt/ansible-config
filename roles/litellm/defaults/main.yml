@@ -44,3 +44,6 @@ litellm_model_list:
           threshold: BLOCK_NONE
         - category: HARM_CATEGORY_SEXUALLY_EXPLICIT
           threshold: BLOCK_NONE
+
+litellm_trusted_proxies:
+  - "127.0.0.0/8"
