@@ -161,6 +161,23 @@ portal_categories:
           interval: 15
           text_match: '<title>PiKVM Login</title>'
 
+  - id: "monitoring"
+    name: "Monitoring"
+    icon: "activity"
+    services:
+      - name: "Uptime Kuma"
+        url: "https://uptimekuma.server.home.brwyatt.net"
+        description: "Service health monitoring"
+        icon: "activity"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+        healthcheck:
+          path: "/dashboard"
+          interval: 15
+          text_match: '<title>Uptime Kuma</title>'
+
   - id: "media"
     name: "Media & Streaming"
     icon: "film"
@@ -245,6 +262,20 @@ portal_categories:
           path: "/health"
           interval: 15
           json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
+      - name: "dffmpeg"
+        url: "https://dffmpeg.server.home.brwyatt.net"
+        description: "Distributed ffmpeg transcoding service"
+        icon: "cpu"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "jellyfin-admins"
+        healthcheck:
+          path: "/health"
+          interval: 15
+          json_query: '$.status = "online"'
 
   - id: "iot"
     name: "IoT and Home Automation"
