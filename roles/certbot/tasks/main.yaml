@@ -1,15 +1,27 @@
 ---
-- name: Install certbot and route53 plugin
+- name: Install certbot and route53 plugin (Debian)
   ansible.builtin.apt:
     name:
       - certbot
       - python3-certbot-dns-route53
     state: present
   become: true
+  when: ansible_os_family == "Debian"
+
+- name: Install certbot and route53 plugin (RedHat)
+  ansible.builtin.dnf:
+    name:
+      - certbot
+      - python3-certbot-dns-route53
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
 - name: Certbot account
   become: true
   certbotaccount:
     email: "{{ certbot_email }}"
+
 - name: "Request certificates using Route53"
   certbotcert:
     state: present

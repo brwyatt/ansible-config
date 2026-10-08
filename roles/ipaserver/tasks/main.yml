@@ -1,0 +1,80 @@
+---
+- name: Ensure Let's Encrypt renewal hooks deploy directory exists
+  ansible.builtin.file:
+    path: /etc/letsencrypt/renewal-hooks/deploy
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Deploy ISRG Root X1 CA certificate
+  ansible.builtin.copy:
+    src: isrgrootx1.pem
+    dest: "{{ ipaserver_isrgrootx1_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Check if ISRG Root X1 is trusted in FreeIPA CA store
+  ansible.builtin.command:
+    cmd: "ipa-cacert-manage list"
+  register: ipa_ca_list
+  changed_when: false
+
+- name: Import ISRG Root X1 into FreeIPA CA store
+  when: "'ISRG Root X1' not in ipa_ca_list.stdout"
+  block:
+    - name: Install ISRG Root X1 into FreeIPA
+      ansible.builtin.command:
+        cmd: "ipa-cacert-manage install {{ ipaserver_isrgrootx1_path }} -t C,,"
+      register: ipa_cacert_install
+
+    - name: Update FreeIPA CA certificates
+      ansible.builtin.command:
+        cmd: "ipa-certupdate"
+      register: ipa_certupdate
+
+- name: Deploy Certbot renewal hook for FreeIPA
+  ansible.builtin.template:
+    src: ipa-cert-deploy.sh.j2
+    dest: "{{ ipaserver_deploy_hook_path }}"
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: Check if Let's Encrypt certificates exist
+  ansible.builtin.stat:
+    path: "{{ ipaserver_cert_dir }}/cert.pem"
+  register: le_cert_stat
+
+- name: Check current Apache certificate fingerprint
+  ansible.builtin.command:
+    cmd: "openssl x509 -in {{ ipaserver_httpd_cert_path }} -noout -fingerprint -sha256"
+  register: current_httpd_cert_fingerprint
+  changed_when: false
+  when: le_cert_stat.stat.exists
+
+- name: Check Let's Encrypt certificate fingerprint
+  ansible.builtin.command:
+    cmd: "openssl x509 -in {{ ipaserver_cert_dir }}/cert.pem -noout -fingerprint -sha256"
+  register: le_cert_fingerprint
+  changed_when: false
+  when: le_cert_stat.stat.exists
+
+- name: Initial FreeIPA certificate installation
+  when:
+    - le_cert_stat.stat.exists
+    - current_httpd_cert_fingerprint.stdout != le_cert_fingerprint.stdout
+  ansible.builtin.command:
+    cmd: "{{ ipaserver_deploy_hook_path }}"
+  environment:
+    RENEWED_LINEAGE: "{{ ipaserver_cert_dir }}"
+
+- name: Opportunistically allow VIP hostname in Apache rewrite rules
+  when: ipaserver_prevent_vip_redirect
+  ansible.builtin.lineinfile:
+    path: /etc/httpd/conf.d/ipa-rewrite.conf
+    insertafter: '^RewriteCond %{HTTP_HOST} !^ipa-ca\.'
+    line: 'RewriteCond %{HTTP_HOST} !^{{ ipaserver_vip_hostname | regex_escape }}$ [NC]'
+    state: present
+  notify: Reload Apache

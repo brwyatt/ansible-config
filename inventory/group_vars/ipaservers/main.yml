@@ -1,2 +1,5 @@
 ---
 common_manage_etc_hosts: true
+
+certbot_certs:
+  - ["{{ inventory_hostname }}"]

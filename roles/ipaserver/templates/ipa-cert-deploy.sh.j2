@@ -1,0 +1,39 @@
+#!/bin/bash
+# Certbot deploy hook for FreeIPA (Apache & 389 Directory Server)
+set -euo pipefail
+
+DOMAIN="{{ inventory_hostname }}"
+LINEAGE="${RENEWED_LINEAGE:-/etc/letsencrypt/live/$DOMAIN}"
+
+# If triggered by certbot renew, ensure this renewal applies to this host
+if [ -n "${RENEWED_DOMAINS:-}" ]; then
+    MATCH=0
+    for d in $RENEWED_DOMAINS; do
+        if [ "$d" = "$DOMAIN" ]; then
+            MATCH=1
+            break
+        fi
+    done
+    if [ "$MATCH" -ne 1 ]; then
+        exit 0
+    fi
+fi
+
+if [ ! -f "$LINEAGE/privkey.pem" ] || [ ! -f "$LINEAGE/fullchain.pem" ]; then
+    echo "Certificate files not found in $LINEAGE" >&2
+    exit 1
+fi
+
+# Ensure Let's Encrypt ISRG Root X1 is trusted in FreeIPA
+if ! ipa-cacert-manage list | grep -q "ISRG Root X1"; then
+    if [ -f "{{ ipaserver_isrgrootx1_path }}" ]; then
+        ipa-cacert-manage install "{{ ipaserver_isrgrootx1_path }}" -t C,,
+        ipa-certupdate
+    fi
+fi
+
+# Install certificates for Apache (-w) and Directory Server (-d)
+ipa-server-certinstall -w -d "$LINEAGE/privkey.pem" "$LINEAGE/fullchain.pem" -p "{{ ipaserver_dirman_password }}"
+
+# Restart FreeIPA services to activate new certificates
+ipactl restart
