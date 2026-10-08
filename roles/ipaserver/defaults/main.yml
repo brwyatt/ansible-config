@@ -1,0 +1,7 @@
+---
+ipaserver_cert_dir: "/etc/letsencrypt/live/{{ inventory_hostname }}"
+ipaserver_httpd_cert_path: "/var/lib/ipa/certs/httpd.crt"
+ipaserver_deploy_hook_path: "/etc/letsencrypt/renewal-hooks/deploy/ipa-server-cert"
+ipaserver_isrgrootx1_path: "/etc/ipa/isrgrootx1.pem"
+ipaserver_vip_hostname: "ipa.home.brwyatt.net"
+ipaserver_prevent_vip_redirect: true

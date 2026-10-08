@@ -62,7 +62,11 @@
     - role: openmediavault
 - name: IPA Servers
   hosts: ipaservers
+  become: true
   roles:
+    - role: aws_creds
+    - role: certbot
+    - role: ipaserver
     - role: freeipa.ansible_freeipa.ipareplica
       tags: ipa_replica_setup
 - name: Authelia SSO Servers
