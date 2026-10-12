@@ -115,8 +115,6 @@ identity_providers:
         - introspection
         - userinfo
       allowed_origins_from_client_redirect_uris: true
-      allowed_origins:
-        - http://localhost:5173
     hmac_secret: {{ authelia_oidc_hmac_secret }}
     jwks:
       - key_id: 'main'
