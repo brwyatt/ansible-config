@@ -107,6 +107,16 @@ identity_validation:
 identity_providers:
 {% if authelia_oidc_enabled %}
   oidc:
+    cors:
+      endpoints:
+        - authorization
+        - token
+        - revocation
+        - introspection
+        - userinfo
+      allowed_origins_from_client_redirect_uris: true
+      allowed_origins:
+        - http://localhost:5173
     hmac_secret: {{ authelia_oidc_hmac_secret }}
     jwks:
       - key_id: 'main'
