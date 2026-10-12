@@ -57,8 +57,9 @@ authelia_oidc_clients:
     require_pkce: true
     pkce_challenge_method: 'S256'
     redirect_uris:
-      - 'https://cards-beta.brwyatt.net/api/auth/oidc/callback'
-      - 'https://cards.brwyatt.net/api/auth/oidc/callback'
+      - 'https://cards-beta.brwyatt.net/callback'
+      - 'https://cards.brwyatt.net/callback'
+      - 'http://localhost:5173/callback'
     scopes:
       - openid
       - groups
