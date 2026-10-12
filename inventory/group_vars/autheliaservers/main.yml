@@ -59,7 +59,6 @@ authelia_oidc_clients:
     redirect_uris:
       - 'https://cards-beta.brwyatt.net/callback'
       - 'https://cards.brwyatt.net/callback'
-      - 'http://localhost:5173/callback'
     scopes:
       - openid
       - groups
