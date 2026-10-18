@@ -28,10 +28,12 @@
   loop:
     - "{{ litellm_install_dir }}"
     - "{{ litellm_config_dir }}"
-- name: Install litellm[proxy] via pip in venv
+- name: Install litellm[proxy] and dependencies via pip in venv
   ansible.builtin.pip:
-    name: "{{ 'litellm[proxy]' if litellm_version == 'latest' else 'litellm[proxy]==' + litellm_version }}"
-    state: "{{ 'latest' if litellm_version == 'latest' else 'present' }}"
+    name:
+      - "{{ 'litellm[proxy]' if litellm_version == 'latest' else 'litellm[proxy]==' + litellm_version }}"
+      - "{{ 'boto3' if litellm_boto3_version == 'latest' else 'boto3==' + litellm_boto3_version }}"
+    state: "{{ 'latest' if (litellm_version == 'latest' or litellm_boto3_version == 'latest') else 'present' }}"
     virtualenv: "{{ litellm_venv_dir }}"
     virtualenv_command: "/usr/bin/python3 -m venv"
   notify: Restart LiteLLM
