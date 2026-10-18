@@ -160,6 +160,19 @@ portal_categories:
           path: "/login/"
           interval: 15
           text_match: '<title>PiKVM Login</title>'
+      - name: "RabbitMQ"
+        url: "https://rabbitmq.server.home.brwyatt.net/"
+        description: "RabbitMQ Management Web Portal"
+        icon: "send"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "admins"
+        healthcheck:
+          interval: 15
+          text_match: '<title>RabbitMQ Management</title>'
 
   - id: "monitoring"
     name: "Monitoring"
@@ -321,6 +334,19 @@ portal_categories:
           path: "/health"
           interval: 15
           json_query: '$.*.status and $count(*[status="OK"]) = $count(*)'
+      - name: "MQTT"
+        url: "https://mqtt.iot.home.brwyatt.net/"
+        description: "EMQX Admin Dashboard"
+        icon: "send"
+        access:
+          network_classes:
+            - "internal"
+            - "vpn"
+          groups:
+            - "iot-admins"
+        healthcheck:
+          interval: 15
+          text_match: '<title>EMQX Dashboard</title>'
 
   - id: "dev"
     name: "Developer Tools"
