@@ -13,6 +13,9 @@ openwebui_oauth_auto_redirect: true
 openwebui_extra_env:
   MCP_INITIALIZE_TIMEOUT: "30"
 
+# LiteLLM Configuration
+litellm_aws_region: "us-west-2"
+
 # mcpo (Model Context Protocol Proxy) Configuration
 mcpo_enable_unifi: true
 mcpo_unifi_host: "172.17.0.1"

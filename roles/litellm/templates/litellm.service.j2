@@ -14,6 +14,23 @@ Environment=LITELLM_MASTER_KEY={{ litellm_master_key }}
 Environment=GEMINI_API_KEY={{ litellm_gemini_api_key }}
 Environment=GOOGLE_API_KEY={{ litellm_gemini_api_key }}
 {% endif %}
+{% if litellm_aws_bearer_token %}
+Environment=AWS_BEARER_TOKEN_BEDROCK={{ litellm_aws_bearer_token }}
+{% endif %}
+{% if litellm_aws_access_key_id %}
+Environment=AWS_ACCESS_KEY_ID={{ litellm_aws_access_key_id }}
+{% endif %}
+{% if litellm_aws_secret_access_key %}
+Environment=AWS_SECRET_ACCESS_KEY={{ litellm_aws_secret_access_key }}
+{% endif %}
+{% if litellm_aws_session_token %}
+Environment=AWS_SESSION_TOKEN={{ litellm_aws_session_token }}
+{% endif %}
+{% if litellm_aws_region %}
+Environment=AWS_REGION={{ litellm_aws_region }}
+Environment=AWS_DEFAULT_REGION={{ litellm_aws_region }}
+Environment=AWS_REGION_NAME={{ litellm_aws_region }}
+{% endif %}
 {% for key, val in litellm_extra_env.items() %}
 Environment={{ key }}={{ val }}
 {% endfor %}

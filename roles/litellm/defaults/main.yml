@@ -2,6 +2,7 @@
 litellm_user: "litellm"
 litellm_group: "litellm"
 litellm_version: "latest"
+litellm_boto3_version: "latest"
 litellm_host: "127.0.0.1"
 litellm_port: 4000
 litellm_install_dir: "/opt/litellm"
@@ -14,6 +15,13 @@ litellm_master_key: ""
 
 # Gemini API Key (populated from secrets)
 litellm_gemini_api_key: ""
+
+# AWS / Amazon Bedrock Configuration (populated from secrets/vars)
+litellm_aws_region: "us-west-2"
+litellm_aws_bearer_token: ""
+litellm_aws_access_key_id: ""
+litellm_aws_secret_access_key: ""
+litellm_aws_session_token: ""
 
 # Extra Environment variables for LiteLLM (e.g. AWS_REGION, AWS_DEFAULT_REGION, etc.)
 litellm_extra_env: {}
@@ -44,6 +52,26 @@ litellm_model_list:
           threshold: BLOCK_NONE
         - category: HARM_CATEGORY_SEXUALLY_EXPLICIT
           threshold: BLOCK_NONE
+  - model_name: claude-3-7-sonnet
+    litellm_params:
+      model: bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0
+      aws_region_name: "{{ litellm_aws_region }}"
+  - model_name: claude-3-5-sonnet
+    litellm_params:
+      model: bedrock/us.anthropic.claude-3-5-sonnet-20241022-v2:0
+      aws_region_name: "{{ litellm_aws_region }}"
+  - model_name: claude-3-5-haiku
+    litellm_params:
+      model: bedrock/us.anthropic.claude-3-5-haiku-20241022-v1:0
+      aws_region_name: "{{ litellm_aws_region }}"
+  - model_name: amazon-nova-pro
+    litellm_params:
+      model: bedrock/amazon.nova-pro-v1:0
+      aws_region_name: "{{ litellm_aws_region }}"
+  - model_name: amazon-nova-lite
+    litellm_params:
+      model: bedrock/amazon.nova-lite-v1:0
+      aws_region_name: "{{ litellm_aws_region }}"
 
 litellm_trusted_proxies:
   - "127.0.0.0/8"
