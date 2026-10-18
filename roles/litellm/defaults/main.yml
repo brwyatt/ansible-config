@@ -64,10 +64,6 @@ litellm_model_list:
     litellm_params:
       model: bedrock/us.anthropic.claude-opus-5-5
       aws_region_name: "{{ litellm_aws_region }}"
-  - model_name: claude-fable-5-1
-    litellm_params:
-      model: bedrock/us.anthropic.claude-fable-5-1
-      aws_region_name: "{{ litellm_aws_region }}"
   - model_name: amazon-nova-pro
     litellm_params:
       model: bedrock/us.amazon.nova-pro-v1:0
