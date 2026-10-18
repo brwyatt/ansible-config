@@ -52,25 +52,29 @@ litellm_model_list:
           threshold: BLOCK_NONE
         - category: HARM_CATEGORY_SEXUALLY_EXPLICIT
           threshold: BLOCK_NONE
-  - model_name: claude-3-7-sonnet
+  - model_name: claude-sonnet-5-5
     litellm_params:
-      model: bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0
+      model: bedrock/us.anthropic.claude-sonnet-5-5
       aws_region_name: "{{ litellm_aws_region }}"
-  - model_name: claude-3-5-sonnet
+  - model_name: claude-haiku-5-5
     litellm_params:
-      model: bedrock/us.anthropic.claude-3-5-sonnet-20241022-v2:0
+      model: bedrock/us.anthropic.claude-haiku-5-5
       aws_region_name: "{{ litellm_aws_region }}"
-  - model_name: claude-3-5-haiku
+  - model_name: claude-opus-5-5
     litellm_params:
-      model: bedrock/us.anthropic.claude-3-5-haiku-20241022-v1:0
+      model: bedrock/us.anthropic.claude-opus-5-5
+      aws_region_name: "{{ litellm_aws_region }}"
+  - model_name: claude-fable-5-1
+    litellm_params:
+      model: bedrock/us.anthropic.claude-fable-5-1
       aws_region_name: "{{ litellm_aws_region }}"
   - model_name: amazon-nova-pro
     litellm_params:
-      model: bedrock/amazon.nova-pro-v1:0
+      model: bedrock/us.amazon.nova-pro-v1:0
       aws_region_name: "{{ litellm_aws_region }}"
   - model_name: amazon-nova-lite
     litellm_params:
-      model: bedrock/amazon.nova-lite-v1:0
+      model: bedrock/us.amazon.nova-lite-v1:0
       aws_region_name: "{{ litellm_aws_region }}"
 
 litellm_trusted_proxies:
