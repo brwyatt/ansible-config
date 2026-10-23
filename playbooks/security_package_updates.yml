@@ -4,7 +4,7 @@
   become: true
   gather_facts: true
   vars:
-    security_package_pattern: '^(ca-certificates|nodejs|npm|nginx.*|php.*)$'
+    security_package_pattern: '^(ca-certificates|nodejs|npm|nginx.*|php.*|openssh.*|cups.*|libcups.*|curl|libcurl.*|git(-.*)?)$'
   tasks:
     - name: Update apt cache
       ansible.builtin.apt:
