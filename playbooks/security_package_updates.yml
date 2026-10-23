@@ -1,0 +1,46 @@
+---
+- name: Conditionally update security-sensitive packages
+  hosts: "{{ target_hosts | default('all') }}"
+  become: true
+  gather_facts: true
+  vars:
+    security_package_pattern: '^(ca-certificates|nodejs|npm|nginx.*|php.*)$'
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      when: ansible_facts['os_family'] == 'Debian'
+    - name: Update dnf cache
+      ansible.builtin.dnf:
+        update_cache: true
+      when: ansible_facts['os_family'] == 'RedHat'
+    - name: Gather installed package facts
+      ansible.builtin.package_facts:
+        manager: auto
+    - name: Identify installed target packages
+      ansible.builtin.set_fact:
+        installed_security_packages: >-
+          {{
+            ansible_facts.packages.keys()
+            | select('match', security_package_pattern)
+            | list
+          }}
+    - name: Display identified packages to update
+      ansible.builtin.debug:
+        msg: "Found target packages on {{ inventory_hostname }}: {{ installed_security_packages }}"
+    - name: Update identified packages on Debian and Ubuntu
+      ansible.builtin.apt:
+        name: "{{ installed_security_packages }}"
+        state: latest
+        only_upgrade: true
+      when:
+        - ansible_facts['os_family'] == 'Debian'
+        - installed_security_packages | length > 0
+    - name: Update identified packages on Fedora
+      ansible.builtin.dnf:
+        name: "{{ installed_security_packages }}"
+        state: latest
+      when:
+        - ansible_facts['os_family'] == 'RedHat'
+        - installed_security_packages | length > 0
