@@ -56,6 +56,7 @@ authelia_oidc_clients:
     authorization_policy: cardgame_policy
     audience:
       - 'cardgame'
+      - 'cardgame-api'
     require_pkce: true
     pkce_challenge_method: 'S256'
     redirect_uris:
