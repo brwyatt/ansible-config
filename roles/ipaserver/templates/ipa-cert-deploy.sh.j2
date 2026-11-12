@@ -1,5 +1,5 @@
 #!/bin/bash
-# Certbot deploy hook for FreeIPA (Apache & 389 Directory Server)
+# Certbot deploy hook for FreeIPA (Apache/HTTPS only; LDAP keeps the IPA CA cert)
 set -euo pipefail
 
 DOMAIN="{{ inventory_hostname }}"
@@ -32,8 +32,8 @@ if ! ipa-cacert-manage list | grep -q "ISRG Root X1"; then
     fi
 fi
 
-# Install certificates for Apache (-w) and Directory Server (-d)
-ipa-server-certinstall -w -d "$LINEAGE/privkey.pem" "$LINEAGE/fullchain.pem" -p "{{ ipaserver_dirman_password }}"
+# Install certificate for Apache only (-w); do NOT pass -d, LDAP stays on the IPA CA cert
+ipa-server-certinstall -w "$LINEAGE/privkey.pem" "$LINEAGE/fullchain.pem" -p "{{ ipaserver_dirman_password }}"
 
-# Restart FreeIPA services to activate new certificates
-ipactl restart
+# Only httpd is affected; dirsrv/krb5kdc/etc. are untouched
+systemctl restart httpd
