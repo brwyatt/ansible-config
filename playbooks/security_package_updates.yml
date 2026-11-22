@@ -2,6 +2,7 @@
 - name: Conditionally update security-sensitive packages
   hosts: "{{ target_hosts | default('all') }}"
   serial: "{{ update_serial | default(1) }}"
+  ignore_unreachable: true
   become: true
   gather_facts: true
   vars:
