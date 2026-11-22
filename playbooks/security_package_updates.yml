@@ -4,7 +4,22 @@
   become: true
   gather_facts: true
   vars:
-    security_package_pattern: '^(ca-certificates|nodejs|npm|nginx.*|php.*|openssh.*|cups.*|libcups.*|curl|libcurl.*|git(-.*)?)$'
+    security_package_patterns:
+      - 'ca-certificates'
+      - 'nodejs'
+      - 'npm'
+      - 'nginx.*'
+      - 'httpd'
+      - 'haproxy'
+      - 'php.*'
+      - 'openssh.*'
+      - 'openssl'
+      - 'cups.*'
+      - 'libcups.*'
+      - 'curl'
+      - 'libcurl.*'
+      - 'git(-.*)?'
+    security_package_pattern: "^({{ security_package_patterns | join('|') }})$"
   tasks:
     - name: Update apt cache
       ansible.builtin.apt:
@@ -29,7 +44,7 @@
     - name: Display identified packages to update
       ansible.builtin.debug:
         msg: "Found target packages on {{ inventory_hostname }}: {{ installed_security_packages }}"
-    - name: Update identified packages on Debian and Ubuntu
+    - name: Update identified packages on Debian and Ubuntu  # noqa: package-latest
       ansible.builtin.apt:
         name: "{{ installed_security_packages }}"
         state: latest
@@ -37,7 +52,7 @@
       when:
         - ansible_facts['os_family'] == 'Debian'
         - installed_security_packages | length > 0
-    - name: Update identified packages on Fedora
+    - name: Update identified packages on Fedora  # noqa: package-latest
       ansible.builtin.dnf:
         name: "{{ installed_security_packages }}"
         state: latest
