@@ -94,3 +94,31 @@
     name: mcpo
     state: started
     enabled: true
+# The unit is Type=simple, so systemd (and the service module) report success as
+# soon as the process is forked, even if it crashes immediately afterwards.
+# Apply any pending restarts now, then verify mcpo actually came up.
+- name: Apply pending mcpo handlers before health check
+  ansible.builtin.meta: flush_handlers
+- name: Wait for mcpo to listen
+  ansible.builtin.wait_for:
+    host: "{{ '127.0.0.1' if mcpo_host in ['0.0.0.0', ''] else mcpo_host }}"
+    port: "{{ mcpo_port }}"
+    state: started
+    delay: 2
+    timeout: 60
+  when: not ansible_check_mode
+- name: Check mcpo unit state
+  ansible.builtin.systemd:
+    name: mcpo
+  register: mcpo_unit_state
+  changed_when: false
+  when: not ansible_check_mode
+- name: Assert mcpo is active
+  ansible.builtin.assert:
+    that:
+      - mcpo_unit_state.status.ActiveState == 'active'
+    fail_msg: >-
+      mcpo.service is {{ mcpo_unit_state.status.ActiveState }}/{{ mcpo_unit_state.status.SubState }}
+      after start. Check 'journalctl -u mcpo'.
+    quiet: true
+  when: not ansible_check_mode
