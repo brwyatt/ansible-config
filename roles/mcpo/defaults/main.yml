@@ -5,11 +5,22 @@ mcpo_version: "latest"
 mcpo_host: "127.0.0.1"
 mcpo_port: 8000
 mcpo_install_dir: "/opt/mcpo"
-mcpo_venv_dir: "{{ mcpo_install_dir }}/venv"
+# Each Python MCP server (and mcpo itself) gets its own venv so their
+# dependency trees (notably `mcp`) can't conflict with each other.
+mcpo_venvs_dir: "{{ mcpo_install_dir }}/venvs"
+mcpo_venv_dir: "{{ mcpo_venvs_dir }}/mcpo"
+mcpo_unifi_venv_dir: "{{ mcpo_venvs_dir }}/unifi"
+mcpo_proxmox_venv_dir: "{{ mcpo_venvs_dir }}/proxmox"
+mcpo_email_venv_dir: "{{ mcpo_venvs_dir }}/email"
+mcpo_aws_venv_dir: "{{ mcpo_venvs_dir }}/aws"
 mcpo_config_dir: "/etc/mcpo"
 mcpo_config_file: "{{ mcpo_config_dir }}/config.json"
+mcpo_env_file: "{{ mcpo_config_dir }}/mcpo.env"
 
 # Internal Bearer token for Open WebUI -> mcpo authentication
+# Written to mcpo_env_file as MCPO_API_KEY (not passed on the command line).
+# Constraints (systemd EnvironmentFile parsing): single line, no leading/trailing
+# whitespace, and no quotes or backslashes. Stored in secrets.yml (vault).
 mcpo_api_key: ""
 
 # UniFi Network MCP configuration (unifi-network-mcp via Python virtualenv)
@@ -62,7 +73,7 @@ mcpo_extra_env: {}
 
 # Standard configuration templates for MCP servers (UniFi and Proxmox)
 mcpo_unifi_config:
-  command: "{{ mcpo_venv_dir }}/bin/mcp-server-unifi-network"
+  command: "{{ mcpo_unifi_venv_dir }}/bin/mcp-server-unifi-network"
   env:
     UNIFI_HOST: "{{ mcpo_unifi_host }}"
     UNIFI_USERNAME: "{{ mcpo_unifi_username }}"
@@ -72,7 +83,7 @@ mcpo_unifi_config:
     UNIFI_VERIFY_SSL: "{{ 'false' if mcpo_unifi_insecure else 'true' }}"
 
 mcpo_proxmox_config:
-  command: "{{ mcpo_venv_dir }}/bin/mcp-proxmox"
+  command: "{{ mcpo_proxmox_venv_dir }}/bin/mcp-proxmox"
   env:
     PROXMOX_HOST: "{{ mcpo_proxmox_host }}"
     PROXMOX_PORT: "{{ mcpo_proxmox_port | string }}"
@@ -81,7 +92,7 @@ mcpo_proxmox_config:
     PROXMOX_VERIFY_SSL: "{{ 'true' if mcpo_proxmox_verify_ssl else 'false' }}"
 
 mcpo_email_config:
-  command: "{{ mcpo_venv_dir }}/bin/mcp-email"
+  command: "{{ mcpo_email_venv_dir }}/bin/mcp-email"
   disabledTools:
     - "email_configure"
     - "email_test_connection"
@@ -99,7 +110,7 @@ mcpo_email_config:
     EMAIL_ALLOWED_RECIPIENT_DOMAINS: "{{ mcpo_email_allowed_recipient_domains }}"
 
 mcpo_aws_config:
-  command: "{{ mcpo_venv_dir }}/bin/mcp-proxy-for-aws"
+  command: "{{ mcpo_aws_venv_dir }}/bin/mcp-proxy-for-aws"
   args: "{{ [mcpo_aws_endpoint, '--metadata', 'AWS_REGION=' + mcpo_aws_region] + (['--read-only'] if mcpo_aws_read_only else []) }}"
   env:
     AWS_REGION: "{{ mcpo_aws_region }}"
@@ -112,6 +123,25 @@ mcpo_homeassistant_config:
   url: "{{ mcpo_homeassistant_url }}"
   headers:
     Authorization: "Bearer {{ mcpo_homeassistant_token }}"
+
+# Python-based MCP servers installed via pip, one venv each (only if enabled)
+mcpo_python_servers:
+  - package: unifi-network-mcp
+    version: "{{ mcpo_unifi_version }}"
+    venv: "{{ mcpo_unifi_venv_dir }}"
+    enabled: "{{ mcpo_enable_unifi }}"
+  - package: mcp-proxmox
+    version: "{{ mcpo_proxmox_version }}"
+    venv: "{{ mcpo_proxmox_venv_dir }}"
+    enabled: "{{ mcpo_enable_proxmox }}"
+  - package: mcp-email
+    version: "{{ mcpo_email_version }}"
+    venv: "{{ mcpo_email_venv_dir }}"
+    enabled: "{{ mcpo_enable_email }}"
+  - package: mcp-proxy-for-aws
+    version: "{{ mcpo_aws_version }}"
+    venv: "{{ mcpo_aws_venv_dir }}"
+    enabled: "{{ mcpo_enable_aws }}"
 
 # The active servers dictionary (can be overriden or appended in group_vars)
 mcpo_servers: >-
